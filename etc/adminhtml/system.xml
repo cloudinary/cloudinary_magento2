@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="cloudinary" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Cloudinary</label>
+            <tab>service</tab>
+            <resource>Cloudinary_Cloudinary::config_cloudinary</resource>
+            <group id="cloud" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Enable module</label>
+                <field id="cloudinary_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable cloudinary</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="setup" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cloudinary Setup</label>
+                <field id="cloudinary_environment_variable" translate="label comment" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cloudinary Account Credentials</label>
+                    <comment>Set the credentials of your Cloudinary account. Copy the "Environment variable" string from the dashboard of Cloudinary's Management Console.</comment>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
+                </field>
+            </group>
+            <group id="configuration" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cloudinary Configuration</label>
+                <field id="cloudinary_cdn_subdomain" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Delivery Domain Sharding</label>
+                    <comment>Enable multiple sub-domains of image delivery URLs for faster page load speed.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cloudinary_auto_upload_mapping_request" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use auto upload mapping to upload images</label>
+                    <comment>When enabled, Cloudinary will fetch images it does not have from your site automatically without requiring the manual migration process.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="transformations" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Default Image Transformations</label>
+                <field id="cloudinary_fetch_format" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatic Image Format Optimisation</label>
+                    <comment>Automatically deliver images converted to modern image formats based on viewing device and browser. For example, deliver WebP on Chrome and JPEG-XR on Internet Explorer for better performance and user experience.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cloudinary_image_quality" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Quality</label>
+                    <comment>Adjust quality of generated images to balance between visual quality and file size minimization. The quality is relevant for JPEG and WebP compression levels for example.</comment>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Quality</source_model>
+                </field>
+                <field id="cloudinary_gravity" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Cropping Gravity</label>
+                    <comment>Define the part of the image to focus on when cropping images in order to better match your graphic design.</comment>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Gravity</source_model>
+                </field>
+                <field id="cloudinary_image_dpr" translate="label comment" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Device Pixel Ratio (DPR)</label>
+                    <comment>Use DPR value higher than 1.0 to generate and deliver hi-res images for better visual result on HiDPI devices, such as Retina Display devices (e.g., 2.0).</comment>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Dpr</source_model>
+                </field>
+                <field id="cloudinary_free_transform_global" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Global custom transform</label>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>
+                    <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\Form\Field\Free</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

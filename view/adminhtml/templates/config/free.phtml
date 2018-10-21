@@ -1,0 +1,22 @@
+<p class="note">
+    <span>
+        Custom transformations will be added to the default image transformations settings chosen above.<br />
+        For information about the full range of transforms available see the
+        <a href="http://cloudinary.com/documentation/image_transformation_reference" target="_blank">Cloudinary documentation</a>.
+        <br />
+        You may need to clear or rebuild the Magento block and full page caches to see the changes in the front end.
+    </span>
+</p>
+
+<button id="cloudinary_free_transform_preview_button"
+        title="Preview"
+        type="button"
+        class="scalable"
+        style="margin-top: 10px;">
+    <span><span><span>Preview custom transformation</span></span></span>
+</button>
+
+<div id="cloudinary_custom_transform_preview"
+     style="margin-top: 10px;"
+     data-mage-init='{"cloudinaryFreeTransform":{"previewButtonId": "#cloudinary_free_transform_preview_button", "transformInputFieldId": "#cloudinary_transformations_cloudinary_free_transform_global", "ajaxUrl": "<?php echo $this->getUrl('cloudinary/ajax_free/sample'); ?>", "ajaxKey": "<?php echo $this->getFormKey(); ?>"}}'>
+</div>

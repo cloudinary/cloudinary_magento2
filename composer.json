@@ -1,0 +1,62 @@
+{
+    "name": "cloudinary/cloudinary",
+    "description": "Cloudinary Magento 2 Integration.",
+    "type": "magento2-module",
+    "version": "1.5.3",
+    "minimum-stability": "dev",
+    "repositories": {
+        "0": {
+            "type": "git",
+            "url": "git@github.com:GiritInteractive/magento2-module-cloudinary.git"
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "cloudinary/cloudinary_php": "1.8.0",
+        "inviqa/cloudinary-core": "1.7.1"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.0",
+        "behat/behat": "~3.0.15",
+        "sensiolabs/behat-page-object-extension": "2.0.*@dev",
+        "behat/mink-selenium2-driver": "*",
+        "behat/mink-goutte-driver": "^1.0",
+        "squizlabs/php_codesniffer": "1.*",
+        "phpmd/phpmd": "1.*",
+        "sebastian/phpcpd": "2.*",
+        "pdepend/pdepend": "1.*",
+        "phploc/phploc": "2.*",
+        "theseer/phpdox": "0.6.*",
+        "theseer/fxsl": "1.0.*@dev",
+        "covex-nn/phpcb": "1.0.*@dev",
+        "bossa/phpspec2-expect": "^2.0",
+        "bex/behat-magento2-init": "dev-master",
+        "bex/behat-browser-initialiser": "^1.0",
+        "bex/behat-screenshot": "^1.0"
+    },
+    "config": {
+        "bin-dir": "bin",
+        "use-include-path": true
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "": [
+                "features/bootstrap",
+                "features/fixtures",
+                "/app/app/code/"
+            ]
+        },
+        "psr-4": {
+            "Magento\\Framework\\": "/app/vendor/magento/framework/",
+            "Magento\\Catalog\\": "/app/vendor/magento/module-catalog"
+        }
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Cloudinary\\Cloudinary\\": ""
+        }
+    }
+}

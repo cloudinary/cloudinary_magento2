@@ -1,0 +1,44 @@
+<div class="admin__data-grid-wrap">
+    <table class="data-grid">
+        <thead>
+        <tr>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content">Image</span>
+            </th>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content">Label</span>
+            </th>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content">File</span>
+            </th>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content">Free transform</span>
+            </th>
+            <th class="data-grid-th">
+                <span class="data-grid-cell-content">Action</span>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody each="data: elems, as: 'element'" render="" afterRender="afterRender" />
+    </table>
+</div>
+
+<p>
+    Product image transformations will be added to the the site-wide default image transformation options
+    chosen from dropdowns on the Cloudinary config page. Product image transformations will override any
+    free form transformation options that have been specified in the 'Global custom transform' field
+    of the Cloudinary config page.
+</p>
+<p>
+    For information about the full range of transforms available see the
+    <a href="http://cloudinary.com/documentation/image_transformation_reference" target="_blank">
+        Cloudinary documentation
+    </a>.
+</p>
+<p>
+    You may need to clear or rebuild the Magento block and full page caches to see the changes in the front end.
+</p>
+<p>
+    Only images are listed - transforms to videos are not yet possible using the Magento module.
+</p>

@@ -1,0 +1,37 @@
+<tr class="data-row">
+    <td>
+        <div class="data-grid-cell-content">
+            <if args="hasError">
+                <p class="admin__field-error" text="error"></p>
+            </if>
+            <ifnot args="hasError">
+                <img style="width: auto; height: auto; max-width: 250px; max-height: 250px; min-height: 50px;"
+                     data-bind="attr: { src: src }" />
+            </ifnot>
+        </div>
+    </td>
+    <td>
+        <div class="data-grid-cell-content" text="label"></div>
+    </td>
+    <td>
+        <div class="data-grid-cell-content" text="file"></div>
+    </td>
+    <td>
+        <div class="data-grid-cell-content">
+            <input data-bind="attr: { name: inputName() }, value: freeTransformation, valueUpdate: 'afterkeydown'"
+                   style="width: 95%;"
+                   data-form-part="product_form" />
+            <input data-bind="attr: { name: changesName() }, value: hasChangesToSave"
+                   type="hidden"
+                   data-form-part="product_form" />
+        </div>
+    </td>
+    <td>
+        <div class="data-grid-cell-content">
+            <button data-bind="click: refreshImage, css: {
+                'action-primary': true,
+                'disabled': !hasChanges()
+             }">Preview</button>
+        </div>
+    </td>
+</tr>
