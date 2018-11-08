@@ -2,9 +2,9 @@
 
 namespace Cloudinary\Cloudinary\Model;
 
+use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Cloud;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Credentials;
 use Cloudinary\Cloudinary\Core\Exception\InvalidCredentials;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
@@ -17,9 +17,8 @@ use Cloudinary\Cloudinary\Core\Security\CloudinaryEnvironmentVariable;
 use Cloudinary\Cloudinary\Core\UploadConfig;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Encryption\EncryptorInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -133,7 +132,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.5.3', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.0', '2.0.0');
     }
 
     /**
