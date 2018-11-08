@@ -15,16 +15,6 @@ php bin/magento setup:static-content:deploy
 php bin/magento cache:flush
 ```
 
-## Install manually under app/code
-Download & place the contents of this repository under {YOUR-MAGENTO2-ROOT-DIR}/app/code/Cloudinary/Cloudinary  
-Then, run the following commands under your Magento 2 root dir:
-```
-php bin/magento setup:upgrade
-php bin/magento setup:di:compile
-php bin/magento setup:static-content:deploy
-php bin/magento cache:flush
-```
-
 ---
 
 https://www.cloudinary.com/
