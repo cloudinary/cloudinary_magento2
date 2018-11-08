@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+	<!-- cloudinary/resources/image -->
+	<route method="GET" url="/V1/cloudinary/resources/image">
+		<service class="Cloudinary\Cloudinary\Api\ResourcesManagementInterface" method="getImage"/>
+		<resources>
+			<resource ref="anonymous"/>
+		</resources>
+	</route>
+	<!--/ cloudinary/resources/image -->
+
+	<!-- cloudinary/resources/video -->
+	<route method="GET" url="/V1/cloudinary/resources/video">
+		<service class="Cloudinary\Cloudinary\Api\ResourcesManagementInterface" method="getVideo"/>
+		<resources>
+			<resource ref="anonymous"/>
+		</resources>
+	</route>
+	<!--/ cloudinary/resources/video -->
+
+</routes>

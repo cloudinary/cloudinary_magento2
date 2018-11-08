@@ -17,6 +17,9 @@
     <preference for="Cloudinary\Cloudinary\Api\SynchronisationRepositoryInterface"
                 type="Cloudinary\Cloudinary\Model\SynchronisationRepository" />
 
+    <preference for="Cloudinary\Cloudinary\Api\ResourcesManagementInterface"
+                type="Cloudinary\Cloudinary\Model\Api\ResourcesManagement"/>
+
     <preference for="Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface"
                 type="Cloudinary\Cloudinary\Model\SynchronisationRepository" />
 
