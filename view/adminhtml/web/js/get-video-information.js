@@ -348,7 +348,7 @@ define([
                 .attr('class', 'cld-video-player')
                 .attr('width', this._width)
                 .attr('height', this._height)
-                .attr('src', this._videoSrc)
+                .attr('src', this._videoSrc.replace(/(^\w+:|^)/, ''))
                 .on("loadstart", function() {
                     $('body').loader('show');
                 })

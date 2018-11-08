@@ -403,7 +403,7 @@ define(['jquery', 'jquery/ui'], function($) {
                 .attr('class', 'cld-video-player')
                 .attr('width', this._width)
                 .attr('height', this._height)
-                .attr('src', this._videoUrl)
+                .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
                 .attr('webkitallowfullscreen', '')
                 .attr('mozallowfullscreen', '')
                 .attr('allowfullscreen', '')
