@@ -11,4 +11,6 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <preference for="Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVideo" type="Cloudinary\Cloudinary\Block\Adminhtml\Product\Edit\NewVideo" />
 </config>
