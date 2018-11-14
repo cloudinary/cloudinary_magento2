@@ -2,7 +2,7 @@
     "name": "cloudinary/magento2-module-cloudinary",
     "description": "Cloudinary Magento 2 Integration.",
     "type": "magento2-module",
-    "version": "1.6.0",
+    "version": "1.6.2",
     "minimum-stability": "dev",
     "license": "MIT",
     "repositories": {

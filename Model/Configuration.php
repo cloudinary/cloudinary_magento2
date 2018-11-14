@@ -26,11 +26,16 @@ class Configuration implements ConfigurationInterface
     const USER_PLATFORM_TEMPLATE = 'CloudinaryMagento/%s (Magento %s)';
     const CONFIG_PATH_ENVIRONMENT_VARIABLE = 'cloudinary/setup/cloudinary_environment_variable';
     const CONFIG_CDN_SUBDOMAIN = 'cloudinary/configuration/cloudinary_cdn_subdomain';
+    // Transformations
     const CONFIG_DEFAULT_GRAVITY = 'cloudinary/transformations/cloudinary_gravity';
     const CONFIG_DEFAULT_QUALITY = 'cloudinary/transformations/cloudinary_image_quality';
     const CONFIG_DEFAULT_DPR = 'cloudinary/transformations/cloudinary_image_dpr';
     const CONFIG_DEFAULT_FETCH_FORMAT = 'cloudinary/transformations/cloudinary_fetch_format';
     const CONFIG_GLOBAL_FREEFORM = 'cloudinary/transformations/cloudinary_free_transform_global';
+    // Advanced
+    const CONFIG_PATH_REMOVE_VERSION_NUMBER = 'cloudinary/advanced/remove_version_number';
+    const CONFIG_PATH_USE_ROOT_PATH = 'cloudinary/advanced/use_root_path';
+
     const USE_FILENAME = true;
     const UNIQUE_FILENAME = false;
     const OVERWRITE = false;
@@ -132,7 +137,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.0', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.2', '2.0.0');
     }
 
     /**
@@ -235,5 +240,21 @@ class Configuration implements ConfigurationInterface
             }
         }
         return $this->environmentVariable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRemoveVersionNumber()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseRootPath()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
     }
 }
