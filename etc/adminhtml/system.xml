@@ -62,6 +62,19 @@
                     <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\Form\Field\Free</frontend_model>
                 </field>
             </group>
+            <group id="advanced" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Advanced</label>
+                <field id="remove_version_number" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Remove version number from URLs</label>
+                    <comment>Remove version number (e.g '/v1/') from URLs</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="use_root_path" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use root path</label>
+                    <comment>Remove '/image/upload/' from URLs</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
         </section>
     </system>
 </config>
