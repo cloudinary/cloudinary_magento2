@@ -2,6 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Core\AutoUploadMapping;
 
+use Magento\Store\Model\ScopeInterface;
+
 class RequestProcessor
 {
     /**
@@ -13,6 +15,10 @@ class RequestProcessor
      * @var ApiClient
      */
     private $apiClient;
+
+    protected $scope = ScopeInterface::SCOPE_STORE;
+
+    protected $scopeId = null;
 
     /**
      * @param AutoUploadConfigurationInterface $configuration
@@ -27,17 +33,57 @@ class RequestProcessor
     }
 
     /**
+     * @method setScopeId
+     * @param  string|null  $scopeId
+     * @return $this
+     */
+    public function setScope($scope)
+    {
+        $this->scope = $scope;
+        return $this;
+    }
+
+    /**
+     * @method getScope
+     * @return string|null
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @method setScopeId
+     * @param  integer|null  $scopeId
+     * @return $this
+     */
+    public function setScopeId($scopeId)
+    {
+        $this->scopeId = $scopeId;
+        return $this;
+    }
+
+    /**
+     * @method getScopeId
+     * @return integer|null
+     */
+    public function getScopeId($scope)
+    {
+        return $this->scopeId;
+    }
+
+    /**
      * @param string $folder
      * @param string $url
      * @return bool
      */
     public function handle($folder, $url)
     {
-        if ($this->configuration->isActive() == $this->configuration->getRequestState()) {
+        if ($this->configuration->isActive($this->scope, $this->scopeId) == $this->configuration->getRequestState($this->scope, $this->scopeId)) {
             return true;
         }
 
-        if ($this->configuration->getRequestState() == AutoUploadConfigurationInterface::ACTIVE) {
+        if ($this->configuration->getRequestState($this->scope, $this->scopeId) == AutoUploadConfigurationInterface::ACTIVE) {
             return $this->handleActiveRequest($folder, $url);
         }
 
@@ -56,9 +102,9 @@ class RequestProcessor
         $result = $this->apiClient->prepareMapping($folder, $url);
 
         if ($result) {
-            $this->configuration->setState(AutoUploadConfigurationInterface::ACTIVE);
+            $this->configuration->setState(AutoUploadConfigurationInterface::ACTIVE, $this->scope, $this->scopeId);
         } else {
-            $this->configuration->setRequestState(AutoUploadConfigurationInterface::INACTIVE);
+            $this->configuration->setRequestState(AutoUploadConfigurationInterface::INACTIVE, $this->scope, $this->scopeId);
         }
 
         return $result;
