@@ -6,9 +6,7 @@ use Cloudinary;
 use Cloudinary\Uploader;
 use Cloudinary\Cloudinary\Core\Exception\ApiError;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
-use Cloudinary\Cloudinary\Core\Security;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Format;
-use Cloudinary\Cloudinary\Core\Image\Transformation\FetchFormat;
 
 class CloudinaryImageProvider implements ImageProvider
 {
