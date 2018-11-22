@@ -19,7 +19,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
-use Magento\Store\Model\ScopeInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -95,46 +94,46 @@ class Configuration implements ConfigurationInterface
     /**
      * @return Cloud
      */
-    public function getCloud($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getCloud()
     {
-        return $this->getEnvironmentVariable($scope, $scopeId)->getCloud();
+        return $this->getEnvironmentVariable()->getCloud();
     }
 
     /**
      * @return Credentials
      */
-    public function getCredentials($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getCredentials()
     {
-        return $this->getEnvironmentVariable($scope, $scopeId)->getCredentials();
+        return $this->getEnvironmentVariable()->getCredentials();
     }
 
     /**
      * @return Transformation
      */
-    public function getDefaultTransformation($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getDefaultTransformation()
     {
         return Transformation::builder()
-            ->withGravity(Gravity::fromString($this->getDefaultGravity($scope, $scopeId)))
-            ->withQuality(Quality::fromString($this->getImageQuality($scope, $scopeId)))
-            ->withFetchFormat(FetchFormat::fromString($this->getFetchFormat($scope, $scopeId)))
-            ->withFreeform(Freeform::fromString($this->getDefaultGlobalFreeform($scope, $scopeId)))
-            ->withDpr(Dpr::fromString($this->getImageDpr($scope, $scopeId)));
+            ->withGravity(Gravity::fromString($this->getDefaultGravity()))
+            ->withQuality(Quality::fromString($this->getImageQuality()))
+            ->withFetchFormat(FetchFormat::fromString($this->getFetchFormat()))
+            ->withFreeform(Freeform::fromString($this->getDefaultGlobalFreeform()))
+            ->withDpr(Dpr::fromString($this->getImageDpr()));
     }
 
     /**
      * @return string
      */
-    private function getDefaultGlobalFreeform($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    private function getDefaultGlobalFreeform()
     {
-        return (string) $this->configReader->getValue(self::CONFIG_GLOBAL_FREEFORM, $scope, $scopeId);
+        return (string) $this->configReader->getValue(self::CONFIG_GLOBAL_FREEFORM);
     }
 
     /**
      * @return boolean
      */
-    public function getCdnSubdomainStatus($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getCdnSubdomainStatus()
     {
-        return $this->configReader->isSetFlag(self::CONFIG_CDN_SUBDOMAIN, $scope, $scopeId);
+        return $this->configReader->isSetFlag(self::CONFIG_CDN_SUBDOMAIN);
     }
 
     /**
@@ -142,7 +141,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.2', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.3', '2.0.0');
     }
 
     /**
@@ -156,19 +155,19 @@ class Configuration implements ConfigurationInterface
     /**
      * @return boolean
      */
-    public function isEnabled($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function isEnabled()
     {
-        return $this->hasEnvironmentVariable() && $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED, $scope, $scopeId);
+        return $this->hasEnvironmentVariable() && $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED);
     }
 
-    public function enable($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function enable()
     {
-        $this->configWriter->save(self::CONFIG_PATH_ENABLED, self::SCOPE_ID_ONE, $scope, $scopeId);
+        $this->configWriter->save(self::CONFIG_PATH_ENABLED, self::SCOPE_ID_ONE);
     }
 
-    public function disable($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function disable()
     {
-        $this->configWriter->save(self::CONFIG_PATH_ENABLED, self::SCOPE_ID_ZERO, $scope, $scopeId);
+        $this->configWriter->save(self::CONFIG_PATH_ENABLED, self::SCOPE_ID_ZERO);
     }
 
     /**
@@ -191,53 +190,53 @@ class Configuration implements ConfigurationInterface
     /**
      * @return string
      */
-    public function getDefaultGravity($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getDefaultGravity()
     {
-        return (string) $this->configReader->getValue(self::CONFIG_DEFAULT_GRAVITY, $scope, $scopeId);
+        return (string) $this->configReader->getValue(self::CONFIG_DEFAULT_GRAVITY);
     }
 
     /**
      * @return string
      */
-    public function getFetchFormat($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getFetchFormat()
     {
-        return $this->configReader->isSetFlag(self::CONFIG_DEFAULT_FETCH_FORMAT, $scope, $scopeId) ? FetchFormat::FETCH_FORMAT_AUTO : '';
+        return $this->configReader->isSetFlag(self::CONFIG_DEFAULT_FETCH_FORMAT) ? FetchFormat::FETCH_FORMAT_AUTO : '';
     }
 
     /**
      * @return string
      */
-    public function getImageQuality($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getImageQuality()
     {
-        return $this->configReader->getValue(self::CONFIG_DEFAULT_QUALITY, $scope, $scopeId);
+        return $this->configReader->getValue(self::CONFIG_DEFAULT_QUALITY);
     }
 
     /**
      * @return string
      */
-    public function getImageDpr($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getImageDpr()
     {
-        return $this->configReader->getValue(self::CONFIG_DEFAULT_DPR, $scope, $scopeId);
+        return $this->configReader->getValue(self::CONFIG_DEFAULT_DPR);
     }
 
     /**
      * @return bool
      */
-    public function hasEnvironmentVariable($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function hasEnvironmentVariable()
     {
-        return (bool)$this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, $scope, $scopeId);
+        return (bool)$this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE);
     }
 
     /**
      * @return CloudinaryEnvironmentVariable
      */
-    private function getEnvironmentVariable($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    private function getEnvironmentVariable()
     {
         if (is_null($this->environmentVariable)) {
             try {
                 $this->environmentVariable = CloudinaryEnvironmentVariable::fromString(
                     $this->decryptor->decrypt(
-                        $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, $scope, $scopeId)
+                        $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE)
                     )
                 );
             } catch (InvalidCredentials $invalidConfigException) {
@@ -250,76 +249,66 @@ class Configuration implements ConfigurationInterface
     /**
      * @return bool
      */
-    public function getRemoveVersionNumber($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getRemoveVersionNumber()
     {
-        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER, $scope, $scopeId);
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
     }
 
     /**
      * @return bool
      */
-    public function getUseRootPath($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getUseRootPath()
     {
-        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER, $scope, $scopeId);
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
     }
 
     /**
      * @method getUseSecureInFrontend
-     * @param  string $scope
-     * @param  integer|null $scopeId
      * @return string
      */
-    public function getUseSecureInFrontend($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getUseSecureInFrontend()
     {
-        return ($this->configReader->getValue(self::CONFIG_PATH_USE_SECURE_IN_FRONTEND, $scope, $scopeId)) ? true : false;
+        return ($this->configReader->getValue(self::CONFIG_PATH_USE_SECURE_IN_FRONTEND)) ? true : false;
     }
 
     /**
      * @method getSecureBaseUrl
      * @param  string $path
-     * @param  string $scope
-     * @param  integer|null $scopeId
      * @return string
      */
-    public function getSecureBaseUrl($path = "", $scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getSecureBaseUrl($path = "")
     {
-        $return = (string) $this->configReader->getValue(self::CONFIG_PATH_SECURE_BASE_URL, $scope, $scopeId);
+        $return = (string) $this->configReader->getValue(self::CONFIG_PATH_SECURE_BASE_URL);
         return rtrim($return, "/") . "/" . ltrim($path, "/");
     }
 
     /**
      * @method getUnsecureBaseUrl
      * @param  string $path
-     * @param  string $scope
-     * @param  integer|null $scopeId
      * @return string
      */
-    public function getUnsecureBaseUrl($path = "", $scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getUnsecureBaseUrl($path = "")
     {
-        $return = (string) $this->configReader->getValue(self::CONFIG_PATH_UNSECURE_BASE_URL, $scope, $scopeId);
+        $return = (string) $this->configReader->getValue(self::CONFIG_PATH_UNSECURE_BASE_URL);
         return rtrim($return, "/") . "/" . ltrim($path, "/");
     }
 
     /**
      * @method getBaseUrl
      * @param  string $path
-     * @param  string $scope
-     * @param  integer|null $scopeId
      * @return string
      */
-    public function getBaseUrl($path = "", $scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getBaseUrl($path = "")
     {
-        return ($this->getUseSecureInFrontend($scope, $scopeId)) ? $this->getSecureBaseUrl($path, $scope, $scopeId) : $this->getUnsecureBaseUrl($path, $scope, $scopeId);
+        return ($this->getUseSecureInFrontend()) ? $this->getSecureBaseUrl($path) : $this->getUnsecureBaseUrl($path);
     }
 
     /**
      * @method getMediaBaseUrl
-     * @param  string $scope
-     * @param  integer|null $scopeId
      * @return string
      */
-    public function getMediaBaseUrl($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getMediaBaseUrl()
     {
-        return $this->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA, $scope, $scopeId);
+        return $this->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
 }

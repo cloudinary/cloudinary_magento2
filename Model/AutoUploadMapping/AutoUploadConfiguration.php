@@ -5,7 +5,6 @@ namespace Cloudinary\Cloudinary\Model\AutoUploadMapping;
 use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Magento\Store\Model\ScopeInterface;
 
 class AutoUploadConfiguration implements AutoUploadConfigurationInterface
 {
@@ -39,41 +38,41 @@ class AutoUploadConfiguration implements AutoUploadConfigurationInterface
     /**
      * @return bool
      */
-    public function isActive($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function isActive()
     {
-        return $this->configReader->isSetFlag(self::STATE_PATH, $scope, $scopeId);
+        return $this->configReader->isSetFlag(self::STATE_PATH);
     }
 
     /**
      * @param bool $state
      */
-    public function setState($state, $scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function setState($state)
     {
-        $this->setFlag(self::STATE_PATH, $state, $scope, $scopeId);
+        $this->setFlag(self::STATE_PATH, $state);
     }
 
     /**
      * @return bool
      */
-    public function getRequestState($scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function getRequestState()
     {
-        return $this->configReader->isSetFlag(self::REQUEST_PATH, $scope, $scopeId);
+        return $this->configReader->isSetFlag(self::REQUEST_PATH);
     }
 
     /**
      * @param bool $state
      */
-    public function setRequestState($state, $scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    public function setRequestState($state)
     {
-        $this->setFlag(self::REQUEST_PATH, $state, $scope, $scopeId);
+        $this->setFlag(self::REQUEST_PATH, $state);
     }
 
     /**
      * @param string $key
      * @param bool $state
      */
-    private function setFlag($key, $state, $scope = ScopeInterface::SCOPE_STORE, $scopeId = null)
+    private function setFlag($key, $state)
     {
-        $this->configWriter->save($key, $state ? self::CONFIG_TRUE : self::CONFIG_FALSE, $scope, $scopeId);
+        $this->configWriter->save($key, $state ? self::CONFIG_TRUE : self::CONFIG_FALSE);
     }
 }
