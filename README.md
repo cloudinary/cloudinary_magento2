@@ -4,19 +4,6 @@ Magento 2 module for integration with Cloudinary.
 
 ---
 
-## ✓ Install via composer (recommended)
-Run the following command under your Magento 2 root dir:
-
-```
-composer require cloudinary/magento2-module-cloudinary
-php bin/magento setup:upgrade
-php bin/magento setup:di:compile
-php bin/magento setup:static-content:deploy
-php bin/magento cache:flush
-```
-
----
-
 https://www.cloudinary.com/
 
 Copyright © 2018 Cloudinary. All rights reserved.  
