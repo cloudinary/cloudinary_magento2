@@ -19,6 +19,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -26,11 +27,20 @@ class Configuration implements ConfigurationInterface
     const USER_PLATFORM_TEMPLATE = 'CloudinaryMagento/%s (Magento %s)';
     const CONFIG_PATH_ENVIRONMENT_VARIABLE = 'cloudinary/setup/cloudinary_environment_variable';
     const CONFIG_CDN_SUBDOMAIN = 'cloudinary/configuration/cloudinary_cdn_subdomain';
+    //= Transformations
     const CONFIG_DEFAULT_GRAVITY = 'cloudinary/transformations/cloudinary_gravity';
     const CONFIG_DEFAULT_QUALITY = 'cloudinary/transformations/cloudinary_image_quality';
     const CONFIG_DEFAULT_DPR = 'cloudinary/transformations/cloudinary_image_dpr';
     const CONFIG_DEFAULT_FETCH_FORMAT = 'cloudinary/transformations/cloudinary_fetch_format';
     const CONFIG_GLOBAL_FREEFORM = 'cloudinary/transformations/cloudinary_free_transform_global';
+    //= Advanced
+    const CONFIG_PATH_REMOVE_VERSION_NUMBER = 'cloudinary/advanced/remove_version_number';
+    const CONFIG_PATH_USE_ROOT_PATH = 'cloudinary/advanced/use_root_path';
+    //= Others
+    const CONFIG_PATH_SECURE_BASE_URL = "web/secure/base_url";
+    const CONFIG_PATH_UNSECURE_BASE_URL = "web/unsecure/base_url";
+    const CONFIG_PATH_USE_SECURE_IN_FRONTEND = "web/secure/use_in_frontend";
+
     const USE_FILENAME = true;
     const UNIQUE_FILENAME = false;
     const OVERWRITE = false;
@@ -63,23 +73,31 @@ class Configuration implements ConfigurationInterface
     private $autoUploadConfiguration;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * @param ScopeConfigInterface $configReader
      * @param WriterInterface $configWriter
      * @param EncryptorInterface $decryptor
      * @param AutoUploadConfigurationInterface $autoUploadConfiguration
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ScopeConfigInterface $configReader,
         WriterInterface $configWriter,
         EncryptorInterface $decryptor,
         AutoUploadConfigurationInterface $autoUploadConfiguration,
-        \Psr\Log\LoggerInterface $logger
+        \Psr\Log\LoggerInterface $logger,
+        StoreManagerInterface $storeManager
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
         $this->decryptor = $decryptor;
         $this->autoUploadConfiguration = $autoUploadConfiguration;
         $this->logger = $logger;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -132,7 +150,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.0', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.3', '2.0.0');
     }
 
     /**
@@ -235,5 +253,30 @@ class Configuration implements ConfigurationInterface
             }
         }
         return $this->environmentVariable;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRemoveVersionNumber()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseRootPath()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+    }
+
+    /**
+     * @method getMediaBaseUrl
+     * @return string
+     */
+    public function getMediaBaseUrl()
+    {
+        return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
 }

@@ -3,12 +3,9 @@
 namespace Cloudinary\Cloudinary\Core;
 
 use Cloudinary;
-use Cloudinary\Uploader;
 use Cloudinary\Cloudinary\Core\Exception\ApiError;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
-use Cloudinary\Cloudinary\Core\Security;
-use Cloudinary\Cloudinary\Core\Image\Transformation\Format;
-use Cloudinary\Cloudinary\Core\Image\Transformation\FetchFormat;
+use Cloudinary\Uploader;
 
 class CloudinaryImageProvider implements ImageProvider
 {
@@ -57,7 +54,8 @@ class CloudinaryImageProvider implements ImageProvider
      * @param ConfigurationInterface $configuration
      * @return CloudinaryImageProvider
      */
-    public static function fromConfiguration(ConfigurationInterface $configuration){
+    public static function fromConfiguration(ConfigurationInterface $configuration)
+    {
         return new CloudinaryImageProvider(
             $configuration,
             new ConfigurationBuilder($configuration),
@@ -94,10 +92,18 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public function retrieveTransformed(Image $image, Transformation $transformation)
     {
-        return Image::fromPath(
-            \cloudinary_url($image->getId(), ['transformation' => $transformation->build(), 'secure' => true]),
-            $image->getRelativePath()
-        );
+        $imagePath = \cloudinary_url($image->getId(), ['transformation' => $transformation->build(), 'secure' => true]);
+
+        if ($this->configuration->getUseRootPath()) {
+            $imagePath = str_replace(".com/{$this->configuration->getCloud()}/image/upload/", ".com/{$this->configuration->getCloud()}/", $imagePath);
+        }
+
+        if ($this->configuration->getRemoveVersionNumber()) {
+            $regex = '/\/v[0-9]+\/' . preg_quote(ltrim($image->getId(), '/'), '/') . '$/';
+            $imagePath = preg_replace($regex, '/' . ltrim($image->getId(), '/'), $imagePath);
+        }
+
+        return Image::fromPath($imagePath, $image->getRelativePath());
     }
 
     /**

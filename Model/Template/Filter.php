@@ -2,9 +2,9 @@
 
 namespace Cloudinary\Cloudinary\Model\Template;
 
-use Magento\Widget\Model\Template\Filter as WidgetFilter;
 use Cloudinary\Cloudinary\Core\Image\ImageFactory;
 use Cloudinary\Cloudinary\Core\UrlGenerator;
+use Magento\Widget\Model\Template\Filter as WidgetFilter;
 
 class Filter extends WidgetFilter
 {
@@ -92,7 +92,7 @@ class Filter extends WidgetFilter
 
         $image = $this->imageFactory->build(
             $params['url'],
-            function() use ($storeManager, $params) {
+            function () use ($storeManager, $params) {
                 return sprintf(
                     '%s%s',
                     $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA),
