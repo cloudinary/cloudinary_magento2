@@ -19,6 +19,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -72,23 +73,31 @@ class Configuration implements ConfigurationInterface
     private $autoUploadConfiguration;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * @param ScopeConfigInterface $configReader
      * @param WriterInterface $configWriter
      * @param EncryptorInterface $decryptor
      * @param AutoUploadConfigurationInterface $autoUploadConfiguration
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         ScopeConfigInterface $configReader,
         WriterInterface $configWriter,
         EncryptorInterface $decryptor,
         AutoUploadConfigurationInterface $autoUploadConfiguration,
-        \Psr\Log\LoggerInterface $logger
+        \Psr\Log\LoggerInterface $logger,
+        StoreManagerInterface $storeManager
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
         $this->decryptor = $decryptor;
         $this->autoUploadConfiguration = $autoUploadConfiguration;
         $this->logger = $logger;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -263,52 +272,11 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @method getUseSecureInFrontend
-     * @return string
-     */
-    public function getUseSecureInFrontend()
-    {
-        return ($this->configReader->getValue(self::CONFIG_PATH_USE_SECURE_IN_FRONTEND)) ? true : false;
-    }
-
-    /**
-     * @method getSecureBaseUrl
-     * @param  string $path
-     * @return string
-     */
-    public function getSecureBaseUrl($path = "")
-    {
-        $return = (string) $this->configReader->getValue(self::CONFIG_PATH_SECURE_BASE_URL);
-        return rtrim($return, "/") . "/" . ltrim($path, "/");
-    }
-
-    /**
-     * @method getUnsecureBaseUrl
-     * @param  string $path
-     * @return string
-     */
-    public function getUnsecureBaseUrl($path = "")
-    {
-        $return = (string) $this->configReader->getValue(self::CONFIG_PATH_UNSECURE_BASE_URL);
-        return rtrim($return, "/") . "/" . ltrim($path, "/");
-    }
-
-    /**
-     * @method getBaseUrl
-     * @param  string $path
-     * @return string
-     */
-    public function getBaseUrl($path = "")
-    {
-        return ($this->getUseSecureInFrontend()) ? $this->getSecureBaseUrl($path) : $this->getUnsecureBaseUrl($path);
-    }
-
-    /**
      * @method getMediaBaseUrl
      * @return string
      */
     public function getMediaBaseUrl()
     {
-        return $this->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+        return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
 }
