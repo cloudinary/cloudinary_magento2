@@ -2,9 +2,9 @@
 
 namespace Cloudinary\Cloudinary\Model\AutoUploadMapping;
 
+use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 
 class AutoUploadConfiguration implements AutoUploadConfigurationInterface
 {
