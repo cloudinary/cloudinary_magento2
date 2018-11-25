@@ -66,7 +66,7 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
                 'htmlId' => $this->getHtmlId(),
                 'youTubeApiKey' => $this->mediaHelper->getYouTubeApiKey(),
                 'videoSelector' => $this->videoSelector,
-                'cloudinaryPlaceholder' => $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_logo_for_white_bg.jpg')
+                'cloudinaryPlaceholder' => $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_vertical_logo_for_white_bg.svg')
             ]
         );
     }
