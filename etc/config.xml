@@ -11,6 +11,10 @@
             <configuration>
                 <cloudinary_cdn_subdomain>1</cloudinary_cdn_subdomain>
             </configuration>
+            <advanced>
+                <remove_version_number>0</remove_version_number>
+                <use_root_path>0</use_root_path>
+            </advanced>
         </cloudinary>
     </default>
 </config>
