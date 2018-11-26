@@ -39,7 +39,7 @@ class UpgradeData implements UpgradeDataInterface
     {
         $setup->startSetup();
 
-        if (version_compare($context->getVersion(), '0.6.3') < 0) {
+        if (version_compare($context->getVersion(), '1.6.3') < 0) {
             echo "- Reseting configurations for 'website' & 'store' scopes (only supports 'default' at the moment).\n";
             $this->_resourceConnection->getConnection()->delete(
                 $this->_resourceConnection->getTableName('core_config_data'),
