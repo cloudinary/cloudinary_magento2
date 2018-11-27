@@ -217,7 +217,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getImageQuality()
     {
-        return $this->configReader->getValue(self::CONFIG_DEFAULT_QUALITY);
+        return (string) $this->configReader->getValue(self::CONFIG_DEFAULT_QUALITY);
     }
 
     /**
