@@ -2,13 +2,13 @@
 
 namespace Cloudinary\Cloudinary\Core\Image;
 
+use Cloudinary\Cloudinary\Core\Image\Transformation\Crop;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dimensions;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dpr;
 use Cloudinary\Cloudinary\Core\Image\Transformation\FetchFormat;
+use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Gravity;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Quality;
-use Cloudinary\Cloudinary\Core\Image\Transformation\Crop;
-use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
 
 class Transformation
 {
@@ -87,7 +87,7 @@ class Transformation
             ['raw_transformation' => (string)$this->freeform],
             [
                 'fetch_format' => (string)$this->fetchFormat,
-                'quality' => (string)$this->quality,
+                'quality' => (string)$this->quality ?: null,
                 'crop' => (string)$this->crop,
                 'gravity' => (string)$this->gravity ?: null,
                 'width' => $this->dimensions ? $this->dimensions->getWidth() : null,
