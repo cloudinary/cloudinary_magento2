@@ -1,5 +1,5 @@
 {
-    "name": "cloudinary/magento2-module-cloudinary",
+    "name": "cloudinary/cloudinary-magento2",
     "description": "Cloudinary Magento 2 Integration.",
     "type": "magento2-module",
     "version": "1.6.3",
