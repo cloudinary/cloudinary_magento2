@@ -4,12 +4,11 @@ Magento 2 module for integration with Cloudinary.
 
 ---
 
-## ✓ Installation (using git & composer)
+## ✓ Install via composer
 Run the following command under your Magento 2 root dir:
 
 ```
-git clone https://github.com/cloudinary/cloudinary_magento2 app/code/Cloudinary/Cloudinary
-composer require cloudinary/cloudinary_php:1.8.0
+composer require cloudinary/cloudinary-magento2
 php bin/magento setup:upgrade
 php bin/magento setup:di:compile
 php bin/magento setup:static-content:deploy
