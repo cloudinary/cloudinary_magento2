@@ -103,6 +103,14 @@ class Configuration implements ConfigurationInterface
     /**
      * @return Cloud
      */
+    public function getStoreManager()
+    {
+        return $this->storeManager;
+    }
+
+    /**
+     * @return Cloud
+     */
     public function getCloud()
     {
         return $this->getEnvironmentVariable()->getCloud();
@@ -150,7 +158,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.3', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.4', '2.0.0');
     }
 
     /**
