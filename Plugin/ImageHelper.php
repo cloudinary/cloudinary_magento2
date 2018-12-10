@@ -2,16 +2,16 @@
 
 namespace Cloudinary\Cloudinary\Plugin;
 
-use Cloudinary\Cloudinary\Core\Image\Transformation;
-use Cloudinary\Cloudinary\Core\Image\ImageFactory;
-use Cloudinary\Cloudinary\Core\Image\Transformation\Dimensions;
-use Cloudinary\Cloudinary\Core\Image\Transformation\Crop;
-use Cloudinary\Cloudinary\Core\UrlGenerator;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Magento\Catalog\Api\Data\ProductInterface;
-use Magento\Catalog\Helper\Image as CatalogImageHelper;
+use Cloudinary\Cloudinary\Core\Image\ImageFactory;
+use Cloudinary\Cloudinary\Core\Image\Transformation;
+use Cloudinary\Cloudinary\Core\Image\Transformation\Crop;
+use Cloudinary\Cloudinary\Core\Image\Transformation\Dimensions;
+use Cloudinary\Cloudinary\Core\UrlGenerator;
 use Cloudinary\Cloudinary\Model\Transformation as TransformationModel;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Helper\Image as CatalogImageHelper;
 
 class ImageHelper
 {
@@ -158,7 +158,7 @@ class ImageHelper
         $transform = $this->configuration->getDefaultTransformation()->withDimensions($dimensions);
 
         if ($this->keepFrame) {
-            $transform->withCrop(Crop::fromString('pad'))
+            $transform->withCrop(Crop::fromString('lpad'))
                 ->withDimensions(Dimensions::squareMissingDimension($dimensions));
         } else {
             $transform->withCrop(Crop::fromString('fit'));
