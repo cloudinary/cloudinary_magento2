@@ -35,8 +35,9 @@
     <preference for="Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface"
                 type="Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration" />
 
-    <preference for="Magento\Widget\Model\Template\Filter"
-                type="Cloudinary\Cloudinary\Model\Template\Filter" />
+    <type name="Magento\Widget\Model\Template\Filter">
+        <plugin name="cloudinary_plugin_widget_model_template_filter" type="Cloudinary\Cloudinary\Plugin\Widget\Model\Template\Filter" />
+    </type>
 
     <type name="Magento\Catalog\Helper\Image">
         <plugin name="cloudinary_image_helper_plugin" type="Cloudinary\Cloudinary\Plugin\ImageHelper" />
