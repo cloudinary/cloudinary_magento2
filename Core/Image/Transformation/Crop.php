@@ -4,7 +4,7 @@ namespace Cloudinary\Cloudinary\Core\Image\Transformation;
 
 class Crop
 {
-    const PAD = 'pad';
+    const PAD = 'lpad';
     const FIT = 'fit';
 
     private $value;
