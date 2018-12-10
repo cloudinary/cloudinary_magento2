@@ -23,14 +23,14 @@ class Transformation
 
     public function __construct()
     {
-        $this->crop = 'pad';
+        $this->crop = 'lpad';
         $this->flags = [];
     }
 
     public function withGravity(Gravity $gravity)
     {
         $this->gravity = $gravity;
-        $this->crop = ((string)$gravity) ? 'crop' : 'pad';
+        $this->crop = ((string)$gravity) ? 'crop' : 'lpad';
         return $this;
     }
 
