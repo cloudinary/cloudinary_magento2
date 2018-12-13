@@ -40,6 +40,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_SECURE_BASE_URL = "web/secure/base_url";
     const CONFIG_PATH_UNSECURE_BASE_URL = "web/unsecure/base_url";
     const CONFIG_PATH_USE_SECURE_IN_FRONTEND = "web/secure/use_in_frontend";
+    const CONFIG_PATH_USE_SIGNED_URLS = 'cloudinary/advanced/use_signed_urls';
 
     const USE_FILENAME = true;
     const UNIQUE_FILENAME = false;
@@ -277,6 +278,14 @@ class Configuration implements ConfigurationInterface
     public function getUseRootPath()
     {
         return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseSignedUrls()
+    {
+        return (bool) Mage::getStoreConfig(self::CONFIG_PATH_USE_SIGNED_URLS);
     }
 
     /**
