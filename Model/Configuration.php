@@ -40,6 +40,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_SECURE_BASE_URL = "web/secure/base_url";
     const CONFIG_PATH_UNSECURE_BASE_URL = "web/unsecure/base_url";
     const CONFIG_PATH_USE_SECURE_IN_FRONTEND = "web/secure/use_in_frontend";
+    const CONFIG_PATH_USE_SIGNED_URLS = 'cloudinary/advanced/use_signed_urls';
 
     const USE_FILENAME = true;
     const UNIQUE_FILENAME = false;
@@ -158,7 +159,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.4', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.5', '2.0.0');
     }
 
     /**
@@ -277,6 +278,14 @@ class Configuration implements ConfigurationInterface
     public function getUseRootPath()
     {
         return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseSignedUrls()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_USE_SIGNED_URLS);
     }
 
     /**
