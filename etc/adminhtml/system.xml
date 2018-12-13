@@ -77,6 +77,11 @@
                     <comment>Remove "/image/upload/" from URLs</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="use_signed_urls" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Use signed URLs</label>
+                    <comment>A signed Cloudinary image delivery URL is a dynamic URL that has its signature validated before making it available for view</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
         </section>
     </system>
