@@ -285,7 +285,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUseSignedUrls()
     {
-        return (bool) Mage::getStoreConfig(self::CONFIG_PATH_USE_SIGNED_URLS);
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_USE_SIGNED_URLS);
     }
 
     /**
