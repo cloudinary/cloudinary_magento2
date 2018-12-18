@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Plugin;
 
-use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
+use Cloudinary\Cloudinary\Core\Image;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\File\Uploader;
 
@@ -41,11 +41,9 @@ class FileUploader
         $filepath = $this->absoluteFilePath($result);
 
         if ($this->isMediaFilePath($filepath) && !$this->isMediaTmpFilePath($filepath)) {
-
             $this->cloudinaryImageManager->uploadAndSynchronise(
                 Image::fromPath($filepath, $this->mediaRelativePath($filepath))
             );
-
         }
 
         return $result;
