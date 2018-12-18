@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Plugin;
 
-use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
+use Cloudinary\Cloudinary\Core\Image;
 use Magento\Cms\Model\Wysiwyg\Images\Storage;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem;

@@ -134,6 +134,9 @@ class ImageHelper
      */
     public function aroundGetUrl(CatalogImageHelper $helper, \Closure $originalMethod)
     {
+        if (!$this->configuration->isEnabled()) {
+            return $originalMethod();
+        }
         $imagePath = $this->imageFile ?: $this->product->getData($helper->getType());
 
         $image = $this->imageFactory->build(sprintf('catalog/product%s', $imagePath), $originalMethod);
