@@ -277,7 +277,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUseRootPath()
     {
-        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_USE_ROOT_PATH);
     }
 
     /**
