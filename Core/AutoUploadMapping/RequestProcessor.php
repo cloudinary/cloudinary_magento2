@@ -34,7 +34,7 @@ class RequestProcessor
      */
     public function handle($folder, $url, $force = false)
     {
-        if (($this->configuration->isActive() == $this->configuration->getRequestState()) && !$force) {
+        if ($this->configuration->isActive() == $this->configuration->getRequestState() && !$force) {
             return true;
         }
 
