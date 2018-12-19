@@ -74,16 +74,17 @@ class Filter
         if (!isset($params['url'])) {
             return $proceed($construction);
         }
+        $url = (preg_match('/^&quot;.+&quot;$/', $params['url'])) ? preg_replace('/(^&quot;)|(&quot;$)/', '', $params['url']) : $params['url'];
 
         $storeManager = $this->_storeManager;
 
         $image = $this->_imageFactory->build(
-            $params['url'],
+            $url,
             function () use ($storeManager, $params) {
                 return sprintf(
                     '%s%s',
                     $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA),
-                    $params['url']
+                    $url
                 );
             }
         );
