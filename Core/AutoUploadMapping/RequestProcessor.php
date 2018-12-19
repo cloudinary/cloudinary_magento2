@@ -29,11 +29,12 @@ class RequestProcessor
     /**
      * @param string $folder
      * @param string $url
+     * @param bool $force
      * @return bool
      */
-    public function handle($folder, $url)
+    public function handle($folder, $url, $force = false)
     {
-        if ($this->configuration->isActive() == $this->configuration->getRequestState()) {
+        if (($this->configuration->isActive() == $this->configuration->getRequestState()) && !$force) {
             return true;
         }
 
