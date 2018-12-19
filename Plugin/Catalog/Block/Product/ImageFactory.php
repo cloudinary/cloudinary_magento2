@@ -95,19 +95,23 @@ class ImageFactory
             return $imageBlock;
         }
 
-        if (strpos($imageBlock->getImageUrl(), $this->configuration->getMediaBaseUrl()) === 0) {
-            $imagePath = preg_replace('/^' . preg_quote($this->configuration->getMediaBaseUrl(), '/') . '/', '', $imageBlock->getImageUrl());
-            $imagePath = preg_replace('/\/cache\/[a-f0-9]{32}\//', '/', $imagePath);
-            $image = $this->cloudinaryImageFactory->build($imagePath, $proceed);
-            $generatedImageUrl = $this->urlGenerator->generateFor(
-                $image,
-                $this->transformationModel->addFreeformTransformationForImage(
-                    $this->createTransformation($imageBlock),
-                    $imagePath
-                )
-            );
-            $imageBlock->setOriginalImageUrl($imageBlock->setImageUrl());
-            $imageBlock->setImageUrl($generatedImageUrl);
+        try {
+            if (strpos($imageBlock->getImageUrl(), $this->configuration->getMediaBaseUrl()) === 0) {
+                $imagePath = preg_replace('/^' . preg_quote($this->configuration->getMediaBaseUrl(), '/') . '/', '', $imageBlock->getImageUrl());
+                $imagePath = preg_replace('/\/cache\/[a-f0-9]{32}\//', '/', $imagePath);
+                $image = $this->cloudinaryImageFactory->build($imagePath, $proceed);
+                $generatedImageUrl = $this->urlGenerator->generateFor(
+                    $image,
+                    $this->transformationModel->addFreeformTransformationForImage(
+                        $this->createTransformation($imageBlock),
+                        $imagePath
+                    )
+                );
+                $imageBlock->setOriginalImageUrl($imageBlock->setImageUrl());
+                $imageBlock->setImageUrl($generatedImageUrl);
+            }
+        } catch (\Exception $e) {
+            $imageBlock = $proceed($product, $imageId, $attributes);
         }
 
         return $imageBlock;
