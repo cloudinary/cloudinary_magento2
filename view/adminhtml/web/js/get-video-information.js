@@ -594,14 +594,7 @@ define([
                 context = (tmp.context && tmp.context.custom) ? tmp.context.custom : {};
 
                 tmp.derived = tmp.derived || [];
-                thumbnail = this.options.cloudinaryPlaceholder;
-                thumbnail_bytes = 0;
-                tmp.derived.forEach(function(derivedItem) {
-                    if (derivedItem.bytes && derivedItem.bytes > thumbnail_bytes) {
-                        thumbnail_bytes = derivedItem.bytes;
-                        thumbnail = (videoInfo.videoSrc.indexOf('https') === 0) ? derivedItem.secure_url : derivedItem.url;
-                    }
-                });
+                thumbnail = videoInfo.videoSrc.replace(/\.[^/.]+$/, "").replace(/\/([^\/]+)$/, '/so_auto/$1.jpg') || this.options.cloudinaryPlaceholder;
 
                 respData = {
                     duration: 'unknown',
