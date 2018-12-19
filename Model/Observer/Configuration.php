@@ -3,6 +3,8 @@
 namespace Cloudinary\Cloudinary\Model\Observer;
 
 use Cloudinary\Cloudinary\Core\AutoUploadMapping\RequestProcessor;
+use Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration;
+use Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -28,6 +30,11 @@ class Configuration implements ObserverInterface
     protected $configuration;
 
     /**
+     * @var AutoUploadConfiguration
+     */
+    protected $autoUploadConfiguration;
+
+    /**
      * @var TypeListInterface
      */
     protected $cacheTypeList;
@@ -38,17 +45,20 @@ class Configuration implements ObserverInterface
      * @param RequestProcessor $requestProcessor
      * @param ManagerInterface $messageManager
      * @param \Cloudinary\Cloudinary\Model\Configuration $configuration
+     * @param AutoUploadConfiguration $autoUploadConfiguration
      * @param TypeListInterface $cacheTypeList
      */
     public function __construct(
         RequestProcessor $requestProcessor,
         ManagerInterface $messageManager,
         \Cloudinary\Cloudinary\Model\Configuration $configuration,
+        AutoUploadConfiguration $autoUploadConfiguration,
         TypeListInterface $cacheTypeList
     ) {
         $this->requestProcessor = $requestProcessor;
         $this->messageManager = $messageManager;
         $this->configuration = $configuration;
+        $this->autoUploadConfiguration = $autoUploadConfiguration;
         $this->cacheTypeList = $cacheTypeList;
     }
 
@@ -64,6 +74,7 @@ class Configuration implements ObserverInterface
             \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE,
             \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
         ])) {
+            $this->autoUploadConfiguration->setState(AutoUploadConfigurationInterface::INACTIVE);
             $this->cleanConfigCache();
         }
 
