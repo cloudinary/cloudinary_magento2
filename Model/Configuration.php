@@ -159,7 +159,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.5', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.6.8', '2.0.0');
     }
 
     /**
@@ -277,7 +277,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUseRootPath()
     {
-        return (bool) $this->configReader->getValue(self::CONFIG_PATH_REMOVE_VERSION_NUMBER);
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_USE_ROOT_PATH);
     }
 
     /**

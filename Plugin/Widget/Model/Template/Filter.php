@@ -2,6 +2,7 @@
 
 namespace Cloudinary\Cloudinary\Plugin\Widget\Model\Template;
 
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image\ImageFactory;
 use Cloudinary\Cloudinary\Core\UrlGenerator;
 use Cloudinary\Cloudinary\Model\Template\Filter as CloudinaryWidgetFilter;
@@ -13,10 +14,6 @@ use Magento\Store\Model\StoreManagerInterface;
 class Filter
 {
     /**
-     * @var StoreManagerInterface
-     */
-    protected $_storeManager;
-    /**
      * @var ImageFactory
      */
     protected $_imageFactory;
@@ -27,12 +24,16 @@ class Filter
     protected $_urlGenerator;
 
     /**
+     * @var ConfigurationInterface
+     */
+    protected $_configuration;
+
+    /**
      * @var CloudinaryWidgetFilter
      */
     protected $_cloudinaryWidgetFilter;
 
     /**
-     * @param StoreManagerInterface $storeManager
      * @param ImageFactory $imageFactory
      * @param UrlGenerator $urlGenerator
      * @param CloudinaryWidgetFilter $cloudinaryWidgetFilter
@@ -41,11 +42,12 @@ class Filter
         StoreManagerInterface $storeManager,
         ImageFactory $imageFactory,
         UrlGenerator $urlGenerator,
+        ConfigurationInterface $configuration,
         CloudinaryWidgetFilter $cloudinaryWidgetFilter
     ) {
-        $this->_storeManager = $storeManager;
         $this->_imageFactory = $imageFactory;
         $this->_urlGenerator = $urlGenerator;
+        $this->_configuration = $configuration;
         $this->_cloudinaryWidgetFilter = $cloudinaryWidgetFilter;
     }
 
@@ -59,21 +61,19 @@ class Filter
      */
     public function aroundMediaDirective(\Magento\Widget\Model\Template\Filter $widgetFilter, callable $proceed, $construction)
     {
+        if (!$this->_configuration->isEnabled()) {
+            return $proceed($construction);
+        }
         $params = $this->_cloudinaryWidgetFilter->getParams($construction[2]);
         if (!isset($params['url'])) {
             return $proceed($construction);
         }
-
-        $storeManager = $this->_storeManager;
+        $url = (preg_match('/^&quot;.+&quot;$/', $params['url'])) ? preg_replace('/(^&quot;)|(&quot;$)/', '', $params['url']) : $params['url'];
 
         $image = $this->_imageFactory->build(
-            $params['url'],
-            function () use ($storeManager, $params) {
-                return sprintf(
-                    '%s%s',
-                    $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA),
-                    $params['url']
-                );
+            $url,
+            function () use ($proceed, $construction) {
+                return $proceed($construction);
             }
         );
 

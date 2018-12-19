@@ -57,25 +57,26 @@ class Configuration implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        $force = false;
         //Clear config cache if needed
         $this->changedPaths = (array) $observer->getEvent()->getChangedPaths();
-        if (in_array($this->changedPaths, [
+        if (count(array_intersect($this->changedPaths, [
             \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENABLED,
             \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE,
             \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
-        ])) {
+        ])) > 0) {
             $this->cleanConfigCache();
+            $force = true;
         }
 
-        if (!$this->requestProcessor->handle('media', $this->configuration->getMediaBaseUrl())) {
+        if (!$this->requestProcessor->handle('media', $this->configuration->getMediaBaseUrl(), $force)) {
             $this->messageManager->addErrorMessage(self::AUTO_UPLOAD_SETUP_FAIL_MESSAGE);
         }
     }
 
     protected function cleanConfigCache()
     {
-        $this->_cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-        $this->_cacheTypeList->cleanType(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER);
+        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
         return $this;
     }
 }

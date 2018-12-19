@@ -43,6 +43,10 @@
         <plugin name="cloudinary_image_helper_plugin" type="Cloudinary\Cloudinary\Plugin\ImageHelper" />
     </type>
 
+    <type name="Magento\Catalog\Block\Product\ImageFactory">
+        <plugin name="cloudinary_plugin_catalog_block_product_imagefactory" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\ImageFactory" />
+    </type>
+
     <type name="Magento\Catalog\Model\Product\Media\Config">
         <plugin name="cloudinary_product_media_config_plugin" type="Cloudinary\Cloudinary\Plugin\MediaConfig" />
     </type>
