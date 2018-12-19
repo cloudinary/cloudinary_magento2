@@ -86,7 +86,7 @@ class Configuration implements ObserverInterface
     protected function cleanConfigCache()
     {
         $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-        $this->cacheTypeList->cleanType(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER);
+        //$this->cacheTypeList->cleanType(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER);
         return $this;
     }
 }
