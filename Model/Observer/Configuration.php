@@ -2,9 +2,9 @@
 
 namespace Cloudinary\Cloudinary\Model\Observer;
 
+use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Cloudinary\Cloudinary\Core\AutoUploadMapping\RequestProcessor;
 use Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration;
-use Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -69,11 +69,11 @@ class Configuration implements ObserverInterface
     {
         //Clear config cache if needed
         $this->changedPaths = (array) $observer->getEvent()->getChangedPaths();
-        if (in_array($this->changedPaths, [
+        if (count(array_intersect($this->changedPaths, [
             \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENABLED,
             \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE,
             \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
-        ])) {
+        ])) > 0) {
             $this->autoUploadConfiguration->setState(AutoUploadConfigurationInterface::INACTIVE);
             $this->cleanConfigCache();
         }
@@ -85,8 +85,8 @@ class Configuration implements ObserverInterface
 
     protected function cleanConfigCache()
     {
-        $this->_cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-        $this->_cacheTypeList->cleanType(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER);
+        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+        $this->cacheTypeList->cleanType(\Magento\PageCache\Model\Cache\Type::TYPE_IDENTIFIER);
         return $this;
     }
 }
