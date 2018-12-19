@@ -39,9 +39,11 @@ class MediaConfig
     {
         $image = $this->imageFactory->build(
             $mediaConfig->getBaseMediaPath() . $file,
-            function() use ($originalMethod, $file) { return $originalMethod($file); }
+            function () use ($originalMethod, $file) {
+                return $originalMethod($file);
+            }
         );
 
-        return $this->urlGenerator->generateFor($image); 
+        return $this->urlGenerator->generateFor($image);
     }
 }

@@ -99,7 +99,11 @@ class CloudinaryImageProvider implements ImageProvider
         ]);
 
         if ($this->configuration->getUseRootPath()) {
-            $imagePath = str_replace(".com/{$this->configuration->getCloud()}/image/upload/", ".com/{$this->configuration->getCloud()}/", $imagePath);
+            if (strpos($imagePath, "cloudinary.com/{$this->configuration->getCloud()}/image/upload/") !== false) {
+                $imagePath = str_replace("cloudinary.com/{$this->configuration->getCloud()}/image/upload/", "cloudinary.com/{$this->configuration->getCloud()}/", $imagePath);
+            } elseif (strpos($imagePath, "cloudinary.com/image/upload/") !== false) {
+                $imagePath = str_replace("cloudinary.com/image/upload/", "cloudinary.com/", $imagePath);
+            }
         }
 
         if ($this->configuration->getRemoveVersionNumber()) {
