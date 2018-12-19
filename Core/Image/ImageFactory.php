@@ -3,7 +3,6 @@
 namespace Cloudinary\Cloudinary\Core\Image;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Cloudinary\Cloudinary\Core\Image\SynchronizationCheck;
 use Cloudinary\Cloudinary\Core\Image;
 
 class ImageFactory

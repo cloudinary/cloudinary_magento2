@@ -14,10 +14,6 @@ use Magento\Store\Model\StoreManagerInterface;
 class Filter
 {
     /**
-     * @var StoreManagerInterface
-     */
-    protected $_storeManager;
-    /**
      * @var ImageFactory
      */
     protected $_imageFactory;
@@ -38,7 +34,6 @@ class Filter
     protected $_cloudinaryWidgetFilter;
 
     /**
-     * @param StoreManagerInterface $storeManager
      * @param ImageFactory $imageFactory
      * @param UrlGenerator $urlGenerator
      * @param CloudinaryWidgetFilter $cloudinaryWidgetFilter
@@ -50,7 +45,6 @@ class Filter
         ConfigurationInterface $configuration,
         CloudinaryWidgetFilter $cloudinaryWidgetFilter
     ) {
-        $this->_storeManager = $storeManager;
         $this->_imageFactory = $imageFactory;
         $this->_urlGenerator = $urlGenerator;
         $this->_configuration = $configuration;
@@ -76,16 +70,10 @@ class Filter
         }
         $url = (preg_match('/^&quot;.+&quot;$/', $params['url'])) ? preg_replace('/(^&quot;)|(&quot;$)/', '', $params['url']) : $params['url'];
 
-        $storeManager = $this->_storeManager;
-
         $image = $this->_imageFactory->build(
             $url,
-            function () use ($storeManager, $params) {
-                return sprintf(
-                    '%s%s',
-                    $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA),
-                    $url
-                );
+            function () use ($proceed, $construction) {
+                return $proceed($construction);
             }
         );
 
