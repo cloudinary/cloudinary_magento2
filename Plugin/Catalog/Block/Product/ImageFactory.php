@@ -99,7 +99,12 @@ class ImageFactory
             if (strpos($imageBlock->getImageUrl(), $this->configuration->getMediaBaseUrl()) === 0) {
                 $imagePath = preg_replace('/^' . preg_quote($this->configuration->getMediaBaseUrl(), '/') . '/', '', $imageBlock->getImageUrl());
                 $imagePath = preg_replace('/\/cache\/[a-f0-9]{32}\//', '/', $imagePath);
-                $image = $this->cloudinaryImageFactory->build($imagePath, $proceed);
+                $image = $this->cloudinaryImageFactory->build(
+                    $imagePath,
+                    function () use ($imageBlock) {
+                        return $imageBlock->getImageUrl();
+                    }
+                );
                 $generatedImageUrl = $this->urlGenerator->generateFor(
                     $image,
                     $this->transformationModel->addFreeformTransformationForImage(
