@@ -60,7 +60,7 @@
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Dpr</source_model>
                 </field>
                 <field id="cloudinary_free_transform_global" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Global custom transform</label>
+                    <label>Global custom transformation</label>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>
                     <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\Form\Field\Free</frontend_model>
                 </field>
