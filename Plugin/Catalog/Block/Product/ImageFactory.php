@@ -17,18 +17,23 @@ use Magento\Catalog\Block\Product\Image as ImageBlock;
 use Magento\Catalog\Block\Product\ImageFactory as CatalogImageFactory;
 use Magento\Catalog\Helper\Image as CatalogImageHelper;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Image\ParamsBuilder;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\ConfigInterface;
 
 class ImageFactory
 {
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
     /**
      * @var ConfigInterface
      */
     private $presentationConfig;
 
     /**
-     * @var ParamsBuilder
+     * @var \Magento\Catalog\Model\Product\Image\ParamsBuilder
      */
     private $imageParamsBuilder;
 
@@ -73,23 +78,23 @@ class ImageFactory
     private $transformationModel;
 
     /**
+     * @param ObjectManagerInterface $objectManager
      * @param ConfigInterface $presentationConfig
-     * @param ParamsBuilder $imageParamsBuilder
      * @param CloudinaryImageFactory $cloudinaryImageFactory
      * @param UrlGenerator $urlGenerator
      * @param ConfigurationInterface $configuration
      * @param TransformationFactory $transformationFactory
      */
     public function __construct(
+        ObjectManagerInterface $objectManager,
         ConfigInterface $presentationConfig,
-        ParamsBuilder $imageParamsBuilder,
         CloudinaryImageFactory $cloudinaryImageFactory,
         UrlGenerator $urlGenerator,
         ConfigurationInterface $configuration,
         TransformationFactory $transformationFactory
     ) {
+        $this->objectManager = $objectManager;
         $this->presentationConfig = $presentationConfig;
-        $this->imageParamsBuilder = $imageParamsBuilder;
         $this->cloudinaryImageFactory = $cloudinaryImageFactory;
         $this->urlGenerator = $urlGenerator;
         $this->configuration = $configuration;
@@ -111,7 +116,15 @@ class ImageFactory
     public function aroundCreate(CatalogImageFactory $catalogImageFactory, callable $proceed, Product $product, string $imageId, array $attributes = null): ImageBlock
     {
         $imageBlock = $proceed($product, $imageId, $attributes);
+
         if (!$this->configuration->isEnabled()) {
+            return $imageBlock;
+        }
+
+        if (class_exists('\Magento\Catalog\Model\Product\Image\ParamsBuilder')) {
+            $this->imageParamsBuilder = $this->objectManager->get('\Magento\Catalog\Model\Product\Image\ParamsBuilder');
+        } else {
+            //Skip on Magento versions prior to 2.3
             return $imageBlock;
         }
 
