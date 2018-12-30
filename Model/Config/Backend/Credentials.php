@@ -9,6 +9,7 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Exception\InvalidCredentials;
 use Magento\Config\Model\Config\Backend\Encrypted;
 use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Encryption\EncryptorInterface;
@@ -40,6 +41,13 @@ class Credentials extends Encrypted
     private $api;
 
     /**
+     * Application config
+     *
+     * @var ScopeConfigInterface
+     */
+    protected $appConfig;
+
+    /**
      * @param Context $context
      * @param Registry $registry
      * @param ScopeConfigInterface $config
@@ -50,6 +58,7 @@ class Credentials extends Encrypted
      * @param AbstractDb $resourceCollection
      * @param ConfigurationBuilder $configurationBuilder
      * @param Api $api
+     * @param ReinitableConfigInterface $appConfig
      * @param array $data
      */
     public function __construct(
@@ -63,11 +72,13 @@ class Credentials extends Encrypted
         AbstractDb $resourceCollection = null,
         ConfigurationBuilder $configurationBuilder,
         Api $api,
+        ReinitableConfigInterface $appConfig,
         array $data = []
     ) {
         $this->configuration = $configuration;
         $this->configurationBuilder = $configurationBuilder;
         $this->api = $api;
+        $this->appConfig = $appConfig;
 
         parent::__construct(
             $context,
@@ -87,7 +98,13 @@ class Credentials extends Encrypted
 
         parent::beforeSave();
 
-        if ($rawValue) {
+        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+        $this->appConfig->reinit();
+
+        if ($rawValue || $this->configuration->isEnabled(false)) {
+            if (!$rawValue) {
+                throw new ValidatorException(__(self::CREDENTIALS_CHECK_MISSING));
+            }
             if ($this->isSaveAllowed()) {
                 $this->validate($this->getCredentialsFromEnvironmentVariable($rawValue));
             } else {
