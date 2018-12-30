@@ -121,11 +121,10 @@ class Credentials extends Encrypted
             $credentials = [
                 "cloud_name" => Cloudinary::config_get('cloud_name'),
                 "api_key" => Cloudinary::config_get('api_key'),
-                "api_secret" => Cloudinary::config_get('api_secret'),
-                "private_cdn" => Cloudinary::config_get('private_cdn')
+                "api_secret" => Cloudinary::config_get('api_secret')
             ];
-            if (Cloudinary::config_get('secure_distribution')) {
-                $credentials["secure_distribution"] = Cloudinary::config_get('secure_distribution');
+            if (Cloudinary::config_get('private_cdn')) {
+                $credentials["private_cdn"] = Cloudinary::config_get('private_cdn');
             }
             return $credentials;
         } catch (\Exception $e) {
