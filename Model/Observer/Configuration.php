@@ -57,7 +57,6 @@ class Configuration implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $force = false;
         //Clear config cache if needed
         $this->changedPaths = (array) $observer->getEvent()->getChangedPaths();
         if (count(array_intersect($this->changedPaths, [
@@ -66,10 +65,9 @@ class Configuration implements ObserverInterface
             \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
         ])) > 0) {
             $this->cleanConfigCache();
-            $force = true;
         }
 
-        if (!$this->requestProcessor->handle('media', $this->configuration->getMediaBaseUrl(), $force)) {
+        if (!$this->requestProcessor->handle('media', $this->configuration->getMediaBaseUrl(), true)) {
             $this->messageManager->addErrorMessage(self::AUTO_UPLOAD_SETUP_FAIL_MESSAGE);
         }
     }
