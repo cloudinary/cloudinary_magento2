@@ -8,7 +8,6 @@ use Cloudinary\Cloudinary\Core\Credentials;
 
 class CloudinaryEnvironmentVariable implements EnvironmentVariable
 {
-
     private $environmentVariable;
 
     private function __construct($environmentVariable)
@@ -16,7 +15,7 @@ class CloudinaryEnvironmentVariable implements EnvironmentVariable
         $this->environmentVariable = (string)$environmentVariable;
         try {
             Cloudinary::config_from_url(str_replace('CLOUDINARY_URL=', '', $environmentVariable));
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             throw new \Cloudinary\Cloudinary\Core\Exception\InvalidCredentials('Cloudinary config creation from environment variable failed');
         }
     }
@@ -43,5 +42,4 @@ class CloudinaryEnvironmentVariable implements EnvironmentVariable
     {
         return $this->environmentVariable;
     }
-
 }
