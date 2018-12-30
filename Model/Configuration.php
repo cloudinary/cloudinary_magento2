@@ -159,7 +159,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.7.2', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.7.3', '2.0.0');
     }
 
     /**
@@ -248,7 +248,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return CloudinaryEnvironmentVariable
      */
-    private function getEnvironmentVariable()
+    public function getEnvironmentVariable()
     {
         if (is_null($this->environmentVariable)) {
             try {
