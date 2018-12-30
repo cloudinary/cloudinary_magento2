@@ -14,19 +14,24 @@ use Cloudinary\Cloudinary\Model\Transformation as TransformationModel;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Helper\Image as CatalogImageHelper;
-use Magento\Catalog\Model\Product\Image\ParamsBuilder;
 use Magento\Catalog\Model\Product\Image\UrlBuilder as CatalogUrlBuilder;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\View\ConfigInterface;
 
 class UrlBuilder
 {
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
     /**
      * @var ConfigInterface
      */
     private $presentationConfig;
 
     /**
-     * @var ParamsBuilder
+     * @var \Magento\Catalog\Model\Product\Image\ParamsBuilder
      */
     private $imageParamsBuilder;
 
@@ -71,23 +76,23 @@ class UrlBuilder
     private $transformationModel;
 
     /**
+     * @param ObjectManagerInterface $objectManager
      * @param ConfigInterface $presentationConfig
-     * @param ParamsBuilder $imageParamsBuilder
      * @param CloudinaryImageFactory $cloudinaryImageFactory
      * @param UrlGenerator $urlGenerator
      * @param ConfigurationInterface $configuration
      * @param TransformationFactory $transformationFactory
      */
     public function __construct(
+        ObjectManagerInterface $objectManager,
         ConfigInterface $presentationConfig,
-        ParamsBuilder $imageParamsBuilder,
         CloudinaryImageFactory $cloudinaryImageFactory,
         UrlGenerator $urlGenerator,
         ConfigurationInterface $configuration,
         TransformationFactory $transformationFactory
     ) {
+        $this->objectManager = $objectManager;
         $this->presentationConfig = $presentationConfig;
-        $this->imageParamsBuilder = $imageParamsBuilder;
         $this->cloudinaryImageFactory = $cloudinaryImageFactory;
         $this->urlGenerator = $urlGenerator;
         $this->configuration = $configuration;
@@ -109,7 +114,15 @@ class UrlBuilder
     public function aroundGetUrl(CatalogUrlBuilder $catalogUrlBuilder, callable $proceed, string $baseFilePath, string $imageDisplayArea): string
     {
         $url = $proceed($baseFilePath, $imageDisplayArea);
+
         if (!$this->configuration->isEnabled()) {
+            return $url;
+        }
+
+        if (class_exists('\Magento\Catalog\Model\Product\Image\ParamsBuilder')) {
+            $this->imageParamsBuilder = $this->objectManager->get('\Magento\Catalog\Model\Product\Image\ParamsBuilder');
+        } else {
+            //Skip on Magento versions prior to 2.3
             return $url;
         }
 
