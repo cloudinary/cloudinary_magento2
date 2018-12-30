@@ -4,6 +4,8 @@ namespace Cloudinary\Cloudinary\Model\Observer;
 
 use Cloudinary\Cloudinary\Core\AutoUploadMapping\RequestProcessor;
 use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\App\Config\ReinitableConfigInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Message\ManagerInterface;
@@ -28,6 +30,13 @@ class Configuration implements ObserverInterface
     protected $configuration;
 
     /**
+     * Application config
+     *
+     * @var ScopeConfigInterface
+     */
+    protected $appConfig;
+
+    /**
      * @var TypeListInterface
      */
     protected $cacheTypeList;
@@ -39,17 +48,20 @@ class Configuration implements ObserverInterface
      * @param ManagerInterface $messageManager
      * @param \Cloudinary\Cloudinary\Model\Configuration $configuration
      * @param TypeListInterface $cacheTypeList
+     * @param ReinitableConfigInterface $config
      */
     public function __construct(
         RequestProcessor $requestProcessor,
         ManagerInterface $messageManager,
         \Cloudinary\Cloudinary\Model\Configuration $configuration,
-        TypeListInterface $cacheTypeList
+        TypeListInterface $cacheTypeList,
+        ReinitableConfigInterface $config
     ) {
         $this->requestProcessor = $requestProcessor;
         $this->messageManager = $messageManager;
         $this->configuration = $configuration;
         $this->cacheTypeList = $cacheTypeList;
+        $this->appConfig = $config;
     }
 
     /**
@@ -65,6 +77,11 @@ class Configuration implements ObserverInterface
             \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
         ])) > 0) {
             $this->cleanConfigCache();
+            $this->appConfig->reinit();
+        }
+
+        if (!$this->configuration->isEnabled()) {
+            return $this;
         }
 
         if (!$this->requestProcessor->handle('media', $this->configuration->getMediaBaseUrl(), true)) {

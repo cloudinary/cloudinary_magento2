@@ -102,7 +102,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return Cloud
+     * @return StoreManagerInterface
      */
     public function getStoreManager()
     {
