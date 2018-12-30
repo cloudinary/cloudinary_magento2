@@ -50,6 +50,8 @@ class Credentials extends Encrypted
      * @param ConfigurationInterface $configuration
      * @param AbstractResource $resource
      * @param AbstractDb $resourceCollection
+     * @param ConfigurationBuilder $configurationBuilder
+     * @param Api $api
      * @param array $data
      */
     public function __construct(
@@ -87,14 +89,12 @@ class Credentials extends Encrypted
 
         parent::beforeSave();
 
-        if (!$rawValue) {
-            throw new ValidatorException(__(self::CREDENTIALS_CHECK_MISSING));
-        }
-
-        if ($this->isSaveAllowed()) {
-            $this->validate($this->getCredentialsFromEnvironmentVariable($rawValue));
-        } else {
-            $this->validate($this->getCredentialsFromConfig());
+        if ($rawValue) {
+            if ($this->isSaveAllowed()) {
+                $this->validate($this->getCredentialsFromEnvironmentVariable($rawValue));
+            } else {
+                $this->validate($this->getCredentialsFromConfig());
+            }
         }
     }
 
