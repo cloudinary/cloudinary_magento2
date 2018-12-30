@@ -248,7 +248,7 @@ class Configuration implements ConfigurationInterface
     /**
      * @return CloudinaryEnvironmentVariable
      */
-    private function getEnvironmentVariable()
+    public function getEnvironmentVariable()
     {
         if (is_null($this->environmentVariable)) {
             try {

@@ -6,9 +6,7 @@ use Cloudinary;
 use Cloudinary\Api;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Cloudinary\Cloudinary\Core\Credentials as CredentialsValue;
 use Cloudinary\Cloudinary\Core\Exception\InvalidCredentials;
-use Cloudinary\Cloudinary\Core\Security\CloudinaryEnvironmentVariable;
 use Magento\Config\Model\Config\Backend\Encrypted;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -99,12 +97,12 @@ class Credentials extends Encrypted
     }
 
     /**
-     * @param CredentialsValue $credentials
+     * @param array $credentials
      * @throws ValidatorException
      */
-    private function validate(CredentialsValue $credentials)
+    private function validate(array $credentials)
     {
-        $this->_authorise();
+        $this->_authorise($credentials);
         $pingValidation = $this->api->ping();
         if (!(isset($pingValidation["status"]) && $pingValidation["status"] === "ok")) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_UNSURE));
@@ -114,25 +112,35 @@ class Credentials extends Encrypted
     /**
      * @param string $environmentVariable
      * @throws ValidatorException
-     * @return CredentialsValue
+     * @return array
      */
     private function getCredentialsFromEnvironmentVariable($environmentVariable)
     {
         try {
-            return CloudinaryEnvironmentVariable::fromString($environmentVariable)->getCredentials();
-        } catch (InvalidCredentials $e) {
+            Cloudinary::config_from_url(str_replace('CLOUDINARY_URL=', '', $environmentVariable));
+            $credentials = [
+                "cloud_name" => Cloudinary::config_get('cloud_name'),
+                "api_key" => Cloudinary::config_get('api_key'),
+                "api_secret" => Cloudinary::config_get('api_secret'),
+                "private_cdn" => Cloudinary::config_get('private_cdn')
+            ];
+            if (Cloudinary::config_get('secure_distribution')) {
+                $credentials["secure_distribution"] = Cloudinary::config_get('secure_distribution');
+            }
+            return $credentials;
+        } catch (\Exception $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));
         }
     }
 
     /**
      * @throws ValidatorException
-     * @return CredentialsValue
+     * @return array
      */
     private function getCredentialsFromConfig()
     {
         try {
-            return $this->configuration->getCredentials();
+            return $this->getCredentialsFromEnvironmentVariable($this->configuration->getEnvironmentVariable()->__toString());
         } catch (InvalidCredentials $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));
         }
@@ -146,9 +154,12 @@ class Credentials extends Encrypted
         return $this->getDataByPath(self::CLOUDINARY_ENABLED_PATH) === '1';
     }
 
-    private function _authorise()
+    /**
+     * @param array $credentials
+     */
+    private function _authorise(array $credentials)
     {
-        Cloudinary::config($this->configurationBuilder->build());
+        Cloudinary::config($credentials);
         Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
     }
 }
