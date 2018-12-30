@@ -13,6 +13,5 @@ class CredentialValidator
 
         $request = new ValidateRemoteUrlRequest($signedValidationUrl);
         return $request->validate();
-
     }
 }

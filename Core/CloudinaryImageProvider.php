@@ -25,26 +25,18 @@ class CloudinaryImageProvider implements ImageProvider
     private $configurationBuilder;
 
     /**
-     * @var CredentialValidator
-     */
-    private $credentialValidator;
-
-    /**
      * @param ConfigurationInterface $configuration
      * @param ConfigurationBuilder $configurationBuilder
      * @param UploadResponseValidator $uploadResponseValidator
-     * @param CredentialValidator $credentialValidator
      */
     public function __construct(
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
-        UploadResponseValidator $uploadResponseValidator,
-        CredentialValidator $credentialValidator
+        UploadResponseValidator $uploadResponseValidator
     ) {
         $this->configuration = $configuration;
         $this->uploadResponseValidator = $uploadResponseValidator;
         $this->configurationBuilder = $configurationBuilder;
-        $this->credentialValidator = $credentialValidator;
         if ($configuration->isEnabled()) {
             $this->authorise();
         }
@@ -59,8 +51,7 @@ class CloudinaryImageProvider implements ImageProvider
         return new CloudinaryImageProvider(
             $configuration,
             new ConfigurationBuilder($configuration),
-            new UploadResponseValidator(),
-            new CredentialValidator()
+            new UploadResponseValidator()
         );
     }
 
@@ -139,7 +130,16 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public function validateCredentials()
     {
-        return $this->credentialValidator->validate($this->configuration->getCredentials());
+        try {
+            $pingValidation = $this->api->ping();
+            if (!(isset($pingValidation["status"]) && $pingValidation["status"] === "ok")) {
+                return false;
+                //throw new ValidatorException(__(self::CREDENTIALS_CHECK_UNSURE));
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     private function authorise()
