@@ -173,9 +173,9 @@ class Configuration implements ConfigurationInterface
     /**
      * @return boolean
      */
-    public function isEnabled()
+    public function isEnabled($checkEnvVar = true)
     {
-        return $this->hasEnvironmentVariable() && $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED);
+        return ($this->hasEnvironmentVariable() || !$checkEnvVar) && $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED);
     }
 
     public function enable()
