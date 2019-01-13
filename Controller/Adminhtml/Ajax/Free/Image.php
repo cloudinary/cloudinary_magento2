@@ -31,9 +31,9 @@ class Image extends Action
     private $configuration;
 
     /**
-     * @param Context $context
-     * @param JsonFactory $resultJsonFactory
-     * @param FreeBackendModel $model
+     * @param Context                $context
+     * @param JsonFactory            $resultJsonFactory
+     * @param FreeBackendModel       $model
      * @param ConfigurationInterface $configuration
      */
     public function __construct(
@@ -71,7 +71,7 @@ class Image extends Action
     }
 
     /**
-     * @param string $freeTransform
+     * @param  string $freeTransform
      * @return Transformation
      */
     private function defaultTransformWithFreeTransform($freeTransform)

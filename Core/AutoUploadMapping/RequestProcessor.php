@@ -16,7 +16,7 @@ class RequestProcessor
 
     /**
      * @param AutoUploadConfigurationInterface $configuration
-     * @param ApiClient $apiClient
+     * @param ApiClient                        $apiClient
      */
     public function __construct(
         AutoUploadConfigurationInterface $configuration,
@@ -27,9 +27,9 @@ class RequestProcessor
     }
 
     /**
-     * @param string $folder
-     * @param string $url
-     * @param bool $force
+     * @param  string $folder
+     * @param  string $url
+     * @param  bool   $force
      * @return bool
      */
     public function handle($folder, $url, $force = false)
@@ -48,8 +48,8 @@ class RequestProcessor
     }
 
     /**
-     * @param string $folder
-     * @param string $url
+     * @param  string $folder
+     * @param  string $url
      * @return bool
      */
     private function handleActiveRequest($folder, $url)

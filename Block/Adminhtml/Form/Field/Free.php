@@ -21,10 +21,10 @@ class Free extends Field
     private $model;
 
     /**
-     * @param Context $context
+     * @param Context                $context
      * @param ConfigurationInterface $configuration
-     * @param FreeBackendModel $model
-     * @param array $data
+     * @param FreeBackendModel       $model
+     * @param array                  $data
      */
     public function __construct(
         Context $context,
@@ -48,7 +48,7 @@ class Free extends Field
     }
 
     /**
-     * @param AbstractElement $element
+     * @param  AbstractElement $element
      * @return string
      */
     protected function _getElementHtml(AbstractElement $element)

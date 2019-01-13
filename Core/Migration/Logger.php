@@ -4,11 +4,11 @@ namespace Cloudinary\Cloudinary\Core\Migration;
 
 interface Logger
 {
-    public function warning($message, array $context = array());
+    public function warning($message, array $context = []);
 
-    public function notice($message, array $context = array());
+    public function notice($message, array $context = []);
 
-    public function error($message, array $context = array());
+    public function error($message, array $context = []);
 
     public function debugLog($message);
 }

@@ -40,16 +40,16 @@ class Free extends \Magento\Framework\App\Config\Value
     private $zendClient;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param ScopeConfigInterface $config
-     * @param TypeListInterface $cacheTypeList
-     * @param ConfigurationInterface $configuration,
+     * @param Context                 $context
+     * @param Registry                $registry
+     * @param ScopeConfigInterface    $config
+     * @param TypeListInterface       $cacheTypeList
+     * @param ConfigurationInterface  $configuration,
      * @param CloudinaryImageProvider $cloudinaryImageProvider
-     * @param ZendClient $zendClient
-     * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
-     * @param array $data
+     * @param ZendClient              $zendClient
+     * @param AbstractResource        $resource
+     * @param AbstractDb              $resourceCollection
+     * @param array                   $data
      */
     public function __construct(
         Context $context,
@@ -86,7 +86,7 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @throws ValidatorException
      */
     public function validate($url)
@@ -105,7 +105,7 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param Zend_Http_Response $response
+     * @param  Zend_Http_Response $response
      * @return Phrase
      */
     public function formatError(Zend_Http_Response $response)
@@ -117,7 +117,7 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return Zend_Http_Response
      */
     public function httpRequest($url)
@@ -134,7 +134,7 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param Transformation $transformation
+     * @param  Transformation $transformation
      * @return string
      */
     public function sampleImageUrl(Transformation $transformation)
@@ -146,8 +146,8 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param String $filename
-     * @param Transformation $transformation
+     * @param  String         $filename
+     * @param  Transformation $transformation
      * @return string
      */
     public function namedImageUrl($filename, Transformation $transformation)

@@ -56,8 +56,8 @@ class ImageHelper
     private $transformationModel;
 
     /**
-     * @param ImageFactory $imageFactory
-     * @param UrlGenerator $urlGenerator
+     * @param ImageFactory           $imageFactory
+     * @param UrlGenerator           $urlGenerator
      * @param ConfigurationInterface $configuration
      */
     public function __construct(
@@ -75,10 +75,10 @@ class ImageHelper
     }
 
     /**
-     * @param  CatalogImageHelper $helper
-     * @param  ProductInterface   $product
-     * @param  string             $imageId
-     * @param  array              $attributes
+     * @param CatalogImageHelper $helper
+     * @param ProductInterface   $product
+     * @param string             $imageId
+     * @param array              $attributes
      *
      * @return array
      */
@@ -92,8 +92,8 @@ class ImageHelper
     }
 
     /**
-     * @param  CatalogImageHelper $helper
-     * @param  string             $file
+     * @param CatalogImageHelper $helper
+     * @param string             $file
      *
      * @return string[]
      */
@@ -104,9 +104,9 @@ class ImageHelper
     }
 
     /**
-     * @param  CatalogImageHelper $helper
-     * @param  int                $width
-     * @param  int                $height
+     * @param CatalogImageHelper $helper
+     * @param int                $width
+     * @param int                $height
      *
      * @return array
      */
@@ -119,7 +119,7 @@ class ImageHelper
 
     /**
      * @param CatalogImageHelper $helper
-     * @param bool $flag
+     * @param bool               $flag
      */
     public function beforeKeepFrame(CatalogImageHelper $helper, $flag)
     {
@@ -127,8 +127,8 @@ class ImageHelper
     }
 
     /**
-     * @param  CatalogImageHelper $helper
-     * @param  \Closure           $originalMethod
+     * @param CatalogImageHelper $helper
+     * @param \Closure           $originalMethod
      *
      * @return string
      */
@@ -151,7 +151,7 @@ class ImageHelper
     }
 
     /**
-     * @param CatalogImageHelper $helper
+     * @param  CatalogImageHelper $helper
      * @return Transformation
      */
     private function createTransformation(CatalogImageHelper $helper)

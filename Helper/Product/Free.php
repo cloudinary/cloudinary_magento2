@@ -20,7 +20,7 @@ class Free
     private $configuration;
 
     /**
-     * @param FreeModel $freeModel
+     * @param FreeModel              $freeModel
      * @param ConfigurationInterface $configuration
      */
     public function __construct(FreeModel $freeModel, ConfigurationInterface $configuration)
@@ -43,8 +43,8 @@ class Free
     }
 
     /**
-     * @param string $id
-     * @param array $images
+     * @param  string $id
+     * @param  array  $images
      * @return string
      */
     public function getImageNameForId($id, array $images)
@@ -53,7 +53,7 @@ class Free
     }
 
     /**
-     * @param Product $product
+     * @param  Product $product
      * @return array
      */
     public function getMediaGalleryImages(Product $product)
@@ -68,8 +68,8 @@ class Free
     }
 
     /**
-     * @param array|null $data
-     * @param array|null $isUpdated
+     * @param  array|null $data
+     * @param  array|null $isUpdated
      * @return array
      */
     public function filterUpdated($data, $isUpdated)
@@ -80,7 +80,7 @@ class Free
 
         return array_filter(
             $data,
-            function($id) use ($isUpdated) {
+            function ($id) use ($isUpdated) {
                 return $isUpdated[$id] === '1';
             },
             ARRAY_FILTER_USE_KEY

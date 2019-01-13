@@ -4,7 +4,6 @@ namespace Cloudinary\Cloudinary\Core;
 
 class ValidateRemoteUrlRequest
 {
-
     private $curlHandler;
 
     public function __construct($url)

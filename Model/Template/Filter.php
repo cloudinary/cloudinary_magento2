@@ -9,7 +9,7 @@ class Filter extends WidgetFilter
     /**
      * Return associative array of parameters *exposing $this->getParameters().
      *
-     * @param string $value raw parameters
+     * @param  string $value raw parameters
      * @return array
      */
     public function getParams($value)

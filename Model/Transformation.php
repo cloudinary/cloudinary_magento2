@@ -17,12 +17,12 @@ class Transformation extends AbstractModel
     private $configuration;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param Configuration $configuration
+     * @param Context          $context
+     * @param Registry         $registry
+     * @param Configuration    $configuration
      * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
-     * @param array $data
+     * @param AbstractDb       $resourceCollection
+     * @param array            $data
      */
     public function __construct(
         Context $context,
@@ -42,7 +42,7 @@ class Transformation extends AbstractModel
     }
 
     /**
-     * @param string $imageName
+     * @param  string $imageName
      * @return $this
      */
     public function setImageName($imageName)
@@ -59,7 +59,7 @@ class Transformation extends AbstractModel
     }
 
     /**
-     * @param string $transformation
+     * @param  string $transformation
      * @return $this
      */
     public function setFreeTransformation($transformation)
@@ -76,7 +76,7 @@ class Transformation extends AbstractModel
     }
 
     /**
-     * @param string $imageFile
+     * @param  string $imageFile
      * @return ImageTransformation
      */
     public function transformationForImage($imageFile)
@@ -88,8 +88,8 @@ class Transformation extends AbstractModel
     }
 
     /**
-     * @param ImageTransformation $transformation
-     * @param string $imageFile
+     * @param  ImageTransformation $transformation
+     * @param  string              $imageFile
      * @return ImageTransformation
      */
     public function addFreeformTransformationForImage(ImageTransformation $transformation, $imageFile)

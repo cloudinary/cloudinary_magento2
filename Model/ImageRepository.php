@@ -10,6 +10,7 @@ use Magento\Framework\Filesystem\Directory\ReadInterface;
 
 /**
  * Class ImageRepository
+ *
  * @package Cloudinary\Cloudinary\Model
  */
 class ImageRepository
@@ -27,7 +28,7 @@ class ImageRepository
     private $synchronizationChecker;
 
     /**
-     * @param Filesystem  $filesystem
+     * @param Filesystem $filesystem
      */
     public function __construct(Filesystem $filesystem, SynchronizationCheck $synchronizationChecker)
     {
@@ -54,7 +55,7 @@ class ImageRepository
     }
 
     /**
-     * @param $directory
+     * @param  $directory
      * @return \RecursiveIteratorIterator
      */
     private function getRecursiveIterator($directory)
@@ -66,7 +67,7 @@ class ImageRepository
     }
 
     /**
-     * @param $item
+     * @param  $item
      * @return bool
      */
     private function isValidImageFile($item)

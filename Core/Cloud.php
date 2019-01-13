@@ -4,9 +4,7 @@ namespace Cloudinary\Cloudinary\Core;
 
 class Cloud
 {
-
     private $cloudName;
-
 
     private function __construct($cloudName)
     {

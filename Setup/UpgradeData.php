@@ -2,34 +2,42 @@
 
 namespace Cloudinary\Cloudinary\Setup;
 
-use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\UpgradeDataInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Upgrade Data script
+ *
  * @codeCoverageIgnore
  */
 class UpgradeData implements UpgradeDataInterface
 {
-
     /**
      * @param ResourceConnection
      */
-    protected $_resourceConnection;
+    protected $resourceConnection;
+
+    /**
+     * @param ConsoleOutput
+     */
+    protected $output;
 
     /**
      * Init
+     *
      * @method __construct
-     * @param  EavSetupFactory    $eavSetupFactory
      * @param  ResourceConnection $resourceConnection
+     * @param  ConsoleOutput      $output
      */
     public function __construct(
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        ConsoleOutput $output
     ) {
-        $this->_resourceConnection = $resourceConnection;
+        $this->resourceConnection = $resourceConnection;
+        $this->output = $output;
     }
 
     /**
@@ -41,10 +49,10 @@ class UpgradeData implements UpgradeDataInterface
 
         if (version_compare($context->getVersion(), '1.6.3') < 0) {
             if ($context->getVersion()) {
-                echo "- Reseting configurations for 'website' & 'store' scopes (only supports 'default' at the moment).\n";
+                $this->output->writeln("<comment>Reseting configurations for 'website' & 'store' scopes (only supports 'default' at the moment)</comment>");
             }
-            $this->_resourceConnection->getConnection()->delete(
-                $this->_resourceConnection->getTableName('core_config_data'),
+            $this->resourceConnection->getConnection()->delete(
+                $this->resourceConnection->getTableName('core_config_data'),
                 "path LIKE 'cloudinary/%' AND scope != 'default'"
             );
         }

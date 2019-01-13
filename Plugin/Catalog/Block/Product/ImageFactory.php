@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cloudinary\Cloudinary\Plugin\Catalog\Block\Product;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
@@ -79,11 +77,11 @@ class ImageFactory
 
     /**
      * @param ObjectManagerInterface $objectManager
-     * @param ConfigInterface $presentationConfig
+     * @param ConfigInterface        $presentationConfig
      * @param CloudinaryImageFactory $cloudinaryImageFactory
-     * @param UrlGenerator $urlGenerator
+     * @param UrlGenerator           $urlGenerator
      * @param ConfigurationInterface $configuration
-     * @param TransformationFactory $transformationFactory
+     * @param TransformationFactory  $transformationFactory
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -106,14 +104,15 @@ class ImageFactory
 
     /**
      * Create image block from product
-     * @param CatalogImageFactory $catalogImageFactory
-     * @param callable $proceed
-     * @param Product $product
-     * @param string $imageId
-     * @param array|null $attributes
+     *
+     * @param  CatalogImageFactory $catalogImageFactory
+     * @param  callable            $proceed
+     * @param  Product             $product
+     * @param  string              $imageId
+     * @param  array|null          $attributes
      * @return ImageBlock
      */
-    public function aroundCreate(CatalogImageFactory $catalogImageFactory, callable $proceed, Product $product, string $imageId, array $attributes = null): ImageBlock
+    public function aroundCreate(CatalogImageFactory $catalogImageFactory, callable $proceed, Product $product, string $imageId, array $attributes = null)
     {
         $imageBlock = $proceed($product, $imageId, $attributes);
 
@@ -165,7 +164,7 @@ class ImageFactory
     }
 
     /**
-     * @param array $imageMiscParams
+     * @param  array $imageMiscParams
      * @return Transformation
      */
     private function createTransformation(array $imageMiscParams)
