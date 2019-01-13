@@ -21,8 +21,8 @@ class ValidateProductTransform
     }
 
     /**
-     * @param Product $product
-     * @param mixed $result
+     * @param  Product $product
+     * @param  mixed   $result
      * @return mixed
      */
     public function afterBeforeSave(Product $product, $result)

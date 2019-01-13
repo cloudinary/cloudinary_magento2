@@ -18,13 +18,13 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
     protected $_cloudinaryConfigurationBuilder;
 
     /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Data\FormFactory $formFactory
-     * @param \Magento\ProductVideo\Helper\Media $mediaHelper
-     * @param \Magento\Framework\Json\EncoderInterface $jsonEncoder
+     * @param \Magento\Backend\Block\Template\Context          $context
+     * @param \Magento\Framework\Registry                      $registry
+     * @param \Magento\Framework\Data\FormFactory              $formFactory
+     * @param \Magento\ProductVideo\Helper\Media               $mediaHelper
+     * @param \Magento\Framework\Json\EncoderInterface         $jsonEncoder
      * @param \Cloudinary\Cloudinary\Core\ConfigurationBuilder $cloudinaryConfigurationBuilder
-     * @param array $data
+     * @param array                                            $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,

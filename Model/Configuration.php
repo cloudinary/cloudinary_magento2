@@ -79,11 +79,11 @@ class Configuration implements ConfigurationInterface
     private $storeManager;
 
     /**
-     * @param ScopeConfigInterface $configReader
-     * @param WriterInterface $configWriter
-     * @param EncryptorInterface $decryptor
+     * @param ScopeConfigInterface             $configReader
+     * @param WriterInterface                  $configWriter
+     * @param EncryptorInterface               $decryptor
      * @param AutoUploadConfigurationInterface $autoUploadConfiguration
-     * @param StoreManagerInterface $storeManager
+     * @param StoreManagerInterface            $storeManager
      */
     public function __construct(
         ScopeConfigInterface $configReader,
@@ -159,7 +159,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.7.3', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.7.4', '2.0.0');
     }
 
     /**
@@ -197,7 +197,7 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param string $file
+     * @param  string $file
      * @return string
      */
     public function getMigratedPath($file)

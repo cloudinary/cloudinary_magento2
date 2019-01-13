@@ -10,6 +10,7 @@ use Magento\Catalog\Model\Product;
 
 /**
  * Class ProductImageFinder
+ *
  * @package Cloudinary\Cloudinary\Model
  */
 class ProductImageFinder
@@ -48,16 +49,18 @@ class ProductImageFinder
     }
 
     /**
-     * @param Product $product
+     * @param Product     $product
      * @param ImageFilter $filter
      *
      * @return \Cloudinary\Cloudinary\Core\Image[]
      */
     private function find(Product $product, ImageFilter $filter)
     {
-        return array_map($this->imageCreator, array_filter(
-            $product->getMediaGallery('images') ?: [],
-            $filter
-        ));
+        return array_map(
+            $this->imageCreator, array_filter(
+                $product->getMediaGallery('images') ?: [],
+                $filter
+            )
+        );
     }
 }

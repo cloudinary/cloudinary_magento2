@@ -2,8 +2,6 @@
 
 namespace Cloudinary\Cloudinary\Core;
 
-use Cloudinary\Cloudinary\Core\Cloud;
-use Cloudinary\Cloudinary\Core\Credentials;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
 
 interface ConfigurationInterface
@@ -49,7 +47,7 @@ interface ConfigurationInterface
     public function getFormatsToPreserve();
 
     /**
-     * @param  string $file
+     * @param string $file
      *
      * @return string
      */

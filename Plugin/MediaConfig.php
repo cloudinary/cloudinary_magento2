@@ -29,9 +29,9 @@ class MediaConfig
     }
 
     /**
-     * @param  CatalogMediaConfig $mediaConfig
-     * @param  \Closure           $originalMethod
-     * @param  string             $file
+     * @param CatalogMediaConfig $mediaConfig
+     * @param \Closure           $originalMethod
+     * @param string             $file
      *
      * @return string
      */

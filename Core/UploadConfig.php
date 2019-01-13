@@ -8,7 +8,6 @@
 
 namespace Cloudinary\Cloudinary\Core;
 
-
 class UploadConfig
 {
     /**
@@ -68,6 +67,6 @@ class UploadConfig
             "use_filename" => $this->useFilename,
             "unique_filename" => $this->uniqueFilename,
             "overwrite" => $this->overwrite,
-        ] ;
+        ];
     }
 }

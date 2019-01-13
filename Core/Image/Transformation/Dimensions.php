@@ -33,7 +33,7 @@ class Dimensions
     {
         if (!$dimensions->getWidth()) {
             return Dimensions::square($dimensions->getHeight());
-        } else if (!$dimensions->getHeight()) {
+        } elseif (!$dimensions->getHeight()) {
             return Dimensions::square($dimensions->getWidth());
         }
         return $dimensions;

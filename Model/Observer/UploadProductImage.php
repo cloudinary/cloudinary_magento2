@@ -20,7 +20,7 @@ class UploadProductImage implements ObserverInterface
     private $cloudinaryImageManager;
 
     /**
-     * @param ProductImageFinder $productImageFinder
+     * @param ProductImageFinder     $productImageFinder
      * @param CloudinaryImageManager $cloudinaryImageManager
      */
     public function __construct(
@@ -32,7 +32,7 @@ class UploadProductImage implements ObserverInterface
     }
 
     /**
-     * @param  Observer $observer
+     * @param Observer $observer
      */
     public function execute(Observer $observer)
     {

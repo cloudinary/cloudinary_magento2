@@ -60,8 +60,8 @@ class ResetAll extends Command
     }
 
     /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
      *
      * @return void
      */
@@ -101,7 +101,7 @@ class ResetAll extends Command
         $output->writeln(sprintf(self::WARNING_FORMAT, self::PRE_ACTION_WARNING2));
 
         array_map(
-            function($line) use ($output) {
+            function ($line) use ($output) {
                 $output->writeln(sprintf('<comment>%s</comment>', $line));
             },
             self::PRE_ACTION_MESSAGES
@@ -109,9 +109,9 @@ class ResetAll extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param QuestionHelper $helper
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @param  QuestionHelper  $helper
      * @return bool
      */
     private function confirmActionStart(InputInterface $input, OutputInterface $output, QuestionHelper $helper)
@@ -122,9 +122,9 @@ class ResetAll extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param QuestionHelper $helper
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @param  QuestionHelper  $helper
      * @return string
      */
     private function readAdminName(InputInterface $input, OutputInterface $output, QuestionHelper $helper)
@@ -135,7 +135,7 @@ class ResetAll extends Command
     }
 
     /**
-     * @param string $username
+     * @param  string $username
      * @return User
      */
     private function getAdminUser($username)
@@ -144,9 +144,9 @@ class ResetAll extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param QuestionHelper $helper
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @param  QuestionHelper  $helper
      * @return string
      */
     private function readAdminPassword(InputInterface $input, OutputInterface $output, QuestionHelper $helper)
@@ -158,8 +158,8 @@ class ResetAll extends Command
     }
 
     /**
-     * @param User $user
-     * @param string $password
+     * @param  User   $user
+     * @param  string $password
      * @return bool
      */
     private function authenticate(User $user, $password)

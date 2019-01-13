@@ -44,9 +44,9 @@ class BatchUploader
     private $autoUploadConfiguration;
 
     /**
-     * @param ImageRepository $imageRepository
-     * @param Configuration $configuration
-     * @param MigrationTask $migrationTask
+     * @param ImageRepository        $imageRepository
+     * @param Configuration          $configuration
+     * @param MigrationTask          $migrationTask
      * @param CloudinaryImageManager $cloudinaryImageManager
      */
     public function __construct(
@@ -66,7 +66,7 @@ class BatchUploader
     /**
      * Find unsynchronised images and upload them to cloudinary
      *
-     * @param OutputInterface|null $output
+     * @param  OutputInterface|null $output
      * @return bool
      * @throws \Exception
      */
@@ -101,7 +101,7 @@ class BatchUploader
 
     /**
      * @param OutputInterface $output
-     * @param string $message
+     * @param string          $message
      */
     private function displayMessage(OutputInterface $output, $message)
     {
@@ -111,7 +111,7 @@ class BatchUploader
     }
 
     /**
-     * @param Image $image
+     * @param Image           $image
      * @param OutputInterface $output
      */
     private function uploadAndSynchronise(Image $image, OutputInterface $output)
@@ -124,7 +124,7 @@ class BatchUploader
     }
 
     /**
-     * @param OutputInterface $output
+     * @param  OutputInterface $output
      * @return bool
      */
     private function validateAutoUploadMapping(OutputInterface $output)
@@ -139,7 +139,7 @@ class BatchUploader
     }
 
     /**
-     * @param OutputInterface $output
+     * @param  OutputInterface $output
      * @return bool
      */
     private function validateMigrationLock(OutputInterface $output)

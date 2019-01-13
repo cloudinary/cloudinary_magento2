@@ -20,7 +20,7 @@ class SynchronisationChecker implements SynchronizationCheck
 
     /**
      * @param SynchronisationRepositoryInterface $synchronisationRepository
-     * @param AutoUploadConfigurationInterface $autoUploadConfiguration
+     * @param AutoUploadConfigurationInterface   $autoUploadConfiguration
      */
     public function __construct(
         SynchronisationRepositoryInterface $synchronisationRepository,
@@ -31,7 +31,7 @@ class SynchronisationChecker implements SynchronizationCheck
     }
 
     /**
-     * @param $imageName
+     * @param  $imageName
      * @return bool
      */
     public function isSynchronized($imageName)

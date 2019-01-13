@@ -11,6 +11,7 @@ class Freeform
 
     /**
      * Freeform constructor.
+     *
      * @param string $urlParameters
      */
     public function __construct($urlParameters)
@@ -19,7 +20,7 @@ class Freeform
     }
 
     /**
-     * @param string $value
+     * @param  string $value
      * @return Freeform
      */
     public static function fromString($value)

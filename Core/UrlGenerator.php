@@ -2,7 +2,6 @@
 
 namespace Cloudinary\Cloudinary\Core;
 
-use Cloudinary\Cloudinary\Core\ImageInterface;
 use Cloudinary\Cloudinary\Core\Image\LocalImage;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dimensions;
@@ -21,7 +20,7 @@ class UrlGenerator
 
     /**
      * @param ConfigurationInterface $configuration
-     * @param ImageProvider $imageProvider
+     * @param ImageProvider          $imageProvider
      */
     public function __construct(ConfigurationInterface $configuration, ImageProvider $imageProvider)
     {
@@ -48,7 +47,7 @@ class UrlGenerator
     }
 
     /**
-     * @param Image $image
+     * @param Image      $image
      * @param Dimensions $dimensions
      *
      * @return string

@@ -23,7 +23,7 @@ class FileRemover
 
     /**
      * @param CloudinaryImageManager $cloudinaryImageManager
-     * @param Filesystem $filesystem
+     * @param Filesystem             $filesystem
      */
     public function __construct(
         CloudinaryImageManager $cloudinaryImageManager,
@@ -36,7 +36,7 @@ class FileRemover
     /**
      * Delete file (and its thumbnail if exists) from storage
      *
-     * @param string $target File path to be deleted
+     * @param  string $target File path to be deleted
      * @return $this
      */
     public function beforeDeleteFile(Storage $storage, $target)
