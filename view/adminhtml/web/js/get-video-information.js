@@ -9,7 +9,7 @@ define(
         'jquery/ui',
         'mage/translate'
     ],
-    function ($, alert) {
+    function($, alert) {
         'use strict';
 
         var videoRegister = {
@@ -21,7 +21,7 @@ define(
              * @param   {String} api
              * @returns {bool}
              */
-            isRegistered: function (api) {
+            isRegistered: function(api) {
                 return this._register[api] !== undefined;
             },
 
@@ -31,7 +31,7 @@ define(
              * @param   {String} api
              * @returns {bool}
              */
-            isLoaded: function (api) {
+            isLoaded: function(api) {
                 return this._register[api] !== undefined && this._register[api] === true;
             },
 
@@ -41,7 +41,7 @@ define(
              * @param {String} api
              * @param {bool} loaded
              */
-            register: function (api, loaded) {
+            register: function(api, loaded) {
                 loaded = loaded || false;
                 this._register[api] = loaded;
             }
@@ -53,22 +53,22 @@ define(
                 /**
                  * @private
                  */
-                _create: function () {
+                _create: function() {
                     switch (this.element.data('type')) {
-                    case 'youtube':
-                        this.element.videoYoutube();
-                        this._player = this.element.data('mageVideoYoutube');
+                        case 'youtube':
+                            this.element.videoYoutube();
+                            this._player = this.element.data('mageVideoYoutube');
                             break;
 
-                    case 'vimeo':
-                        this.element.videoVimeo();
-                        this._player = this.element.data('mageVideoVimeo');
+                        case 'vimeo':
+                            this.element.videoVimeo();
+                            this._player = this.element.data('mageVideoVimeo');
                             break;
-                    case 'cloudinary':
-                        this.element.videoCloudinary();
-                        this._player = this.element.data('mageVideoCloudinary');
+                        case 'cloudinary':
+                            this.element.videoCloudinary();
+                            this._player = this.element.data('mageVideoCloudinary');
                             break;
-                    default:
+                        default:
                             throw {
                                 name: $.mage.__('Video Error'),
                                 message: $.mage.__('Unknown video type'),
@@ -76,10 +76,10 @@ define(
                                 /**
                                  * Return string
                                  */
-                                toString: function () {
+                                toString: function() {
                                     return this.name + ': ' + this.message;
                                 }
-                        };
+                            };
                     }
                 },
 
@@ -88,7 +88,7 @@ define(
                  *
                  * @private
                  */
-                _initialize: function () {
+                _initialize: function() {
                     this._params = this.element.data('params') || {};
                     this._code = this.element.data('code');
                     this._width = this.element.data('width');
@@ -110,35 +110,35 @@ define(
                 /**
                  * Abstract play command
                  */
-                play: function () {
+                play: function() {
                     this._player.play();
                 },
 
                 /**
                  * Abstract pause command
                  */
-                pause: function () {
+                pause: function() {
                     this._player.pause();
                 },
 
                 /**
                  * Abstract stop command
                  */
-                stop: function () {
+                stop: function() {
                     this._player.stop();
                 },
 
                 /**
                  * Abstract playing command
                  */
-                playing: function () {
+                playing: function() {
                     return this._player.playing();
                 },
 
                 /**
                  * Abstract destroying command
                  */
-                destroy: function () {
+                destroy: function() {
                     this._player.destroy();
                 },
 
@@ -147,7 +147,7 @@ define(
                  *
                  * @private
                  */
-                _calculateRatio: function () {
+                _calculateRatio: function() {
                     if (!this._responsive) {
                         return;
                     }
@@ -164,7 +164,7 @@ define(
                  *
                  * @private
                  */
-                _create: function () {
+                _create: function() {
                     var self = this;
 
                     this._initialize();
@@ -179,7 +179,7 @@ define(
                              *
                              * @private
                              */
-                            'youtubeapiready': function () {
+                            'youtubeapiready': function() {
                                 var host = 'https://www.youtube.com';
 
                                 if (self.useYoutubeNocookie) {
@@ -207,21 +207,20 @@ define(
                                             /**
                                              * @private
                                              */
-                                            'onReady': function onPlayerReady()
-                                            {
+                                            'onReady': function onPlayerReady() {
                                                 self._player.getDuration();
                                             },
 
                                             /**
                                              * State change flag init
                                              */
-                                            onStateChange: function (data) {
+                                            onStateChange: function(data) {
                                                 switch (window.parseInt(data.data, 10)) {
-                                                case 1:
-                                                    self._playing = true;
+                                                    case 1:
+                                                        self._playing = true;
                                                         break;
-                                                default:
-                                                    self._playing = false;
+                                                    default:
+                                                        self._playing = false;
                                                         break;
                                                 }
 
@@ -243,7 +242,7 @@ define(
                  *
                  * @private
                  */
-                _loadApi: function () {
+                _loadApi: function() {
                     var element,
                         scriptTag;
 
@@ -266,7 +265,7 @@ define(
                     /**
                      * Trigger youtube api ready event
                      */
-                    window.onYouTubeIframeAPIReady = function () {
+                    window.onYouTubeIframeAPIReady = function() {
                         $(window).trigger('youtubeapiready');
                         videoRegister.register('youtube', true);
                     };
@@ -275,7 +274,7 @@ define(
                 /**
                  * Play command for Youtube
                  */
-                play: function () {
+                play: function() {
                     this._player.playVideo();
                     this._playing = true;
                 },
@@ -283,7 +282,7 @@ define(
                 /**
                  * Pause command for Youtube
                  */
-                pause: function () {
+                pause: function() {
                     this._player.pauseVideo();
                     this._playing = false;
                 },
@@ -291,7 +290,7 @@ define(
                 /**
                  * Stop command for Youtube
                  */
-                stop: function () {
+                stop: function() {
                     this._player.stopVideo();
                     this._playing = false;
                 },
@@ -299,7 +298,7 @@ define(
                 /**
                  * Playing command for Youtube
                  */
-                playing: function () {
+                playing: function() {
                     return this._playing;
                 },
 
@@ -308,7 +307,7 @@ define(
                  *
                  * @private
                  */
-                destroy: function () {
+                destroy: function() {
                     this.stop();
                     this._player.destroy();
                 }
@@ -323,7 +322,7 @@ define(
                  *
                  * @private
                  */
-                _create: function () {
+                _create: function() {
                     var timestamp,
                         src,
                         additionalParams;
@@ -361,7 +360,7 @@ define(
                  *
                  * @private
                  */
-                _create: function () {
+                _create: function() {
                     this._initialize();
 
                     this.element.append(
@@ -374,13 +373,13 @@ define(
                         .attr('src', this._videoSrc.replace(/(^\w+:|^)/, ''))
                         .on(
                             "loadstart",
-                            function () {
+                            function() {
                                 $('body').loader('show');
                             }
                         )
                         .on(
                             "load",
-                            function () {
+                            function() {
                                 $('body').loader('hide');
                             }
                         )
@@ -439,12 +438,12 @@ define(
                 /**
                  * @private
                  */
-                _init: function () {
+                _init: function() {
                     this.element.on(this._START_UPDATE_INFORMATION_TRIGGER, $.proxy(this._onRequestHandler, this));
                     this.element.on(this._ERROR_UPDATE_INFORMATION_TRIGGER, $.proxy(this._onVideoInvalid, this));
                     this.element.on(
                         this._FINISH_UPDATE_INFORMATION_TRIGGER, $.proxy(
-                            function () {
+                            function() {
                                 this._currentVideoUrl = null;
                             }, this
                         )
@@ -455,7 +454,7 @@ define(
                 /**
                  * @private
                  */
-                _onUrlValidateHandler: function (event, callback, forceVideo) {
+                _onUrlValidateHandler: function(event, callback, forceVideo) {
                     var url = this.element.val(),
                         videoInfo;
 
@@ -471,7 +470,7 @@ define(
                 /**
                  * @private
                  */
-                _onRequestHandler: function () {
+                _onRequestHandler: function() {
                     var url = this.element.val(),
                         self = this,
                         videoInfo,
@@ -508,8 +507,7 @@ define(
                      * @param   {Object} data
                      * @private
                      */
-                    function _onYouTubeLoaded(data)
-                    {
+                    function _onYouTubeLoaded(data) {
                         var tmp,
                             uploadedFormatted,
                             respData,
@@ -520,7 +518,7 @@ define(
                          *
                          * @returns {String}
                          */
-                        createErrorMessage = function () {
+                        createErrorMessage = function() {
                             var error = data.error,
                                 errors = error.errors,
                                 i,
@@ -580,8 +578,7 @@ define(
                     /**
                      * @private
                      */
-                    function _onVimeoLoaded(data)
-                    {
+                    function _onVimeoLoaded(data) {
                         var tmp,
                             respData;
 
@@ -610,23 +607,31 @@ define(
                     /**
                      * @private
                      */
-                    function _onCloudinaryLoaded(data)
-                    {
+                    function _onCloudinaryLoaded(data) {
                         var tmp,
                             respData,
                             context,
                             thumbnail,
                             thumbnail_bytes;
 
+                        try {
+                            data = JSON.parse(data);
+                        } catch (e) {
+                            this._onRequestError($.mage.__('Video not found'));
+                            return null;
+                        }
+
                         if (data.length < 1) {
                             this._onRequestError($.mage.__('Video not found'));
                             return null;
                         }
+
                         if (data.error) {
                             this._onRequestError($.mage.__('Video not found'));
                             console.error(data.message);
                             return null;
                         }
+
                         tmp = data.data;
 
                         context = (tmp.context && tmp.context.custom) ? tmp.context.custom : {};
@@ -665,69 +670,63 @@ define(
                             },
                             $.proxy(_onYouTubeLoaded, self)
                         ).fail(
-                            function () {
+                            function() {
                                 self._onRequestError('Video not found');
                             }
                         );
                     } else if (type === 'vimeo') {
-                        $.ajax(
-                            {
-                                url: 'https://www.vimeo.com/api/v2/video/' + id + '.json',
-                                dataType: 'jsonp',
-                                data: {
-                                    format: 'json'
-                                },
-                                timeout: 5000,
-                                success: $.proxy(_onVimeoLoaded, self),
+                        $.ajax({
+                            url: 'https://www.vimeo.com/api/v2/video/' + id + '.json',
+                            dataType: 'jsonp',
+                            data: {
+                                format: 'json'
+                            },
+                            timeout: 5000,
+                            success: $.proxy(_onVimeoLoaded, self),
 
-                                /**
-                                 * @private
-                                 */
-                                error: function () {
-                                    self._onRequestError($.mage.__('Video not found'));
-                                }
+                            /**
+                             * @private
+                             */
+                            error: function() {
+                                self._onRequestError($.mage.__('Video not found'));
                             }
-                        );
+                        });
                     } else if (type === 'cloudinary') {
-                        $.ajax(
-                            {
-                                method: "GET",
-                                url: '/rest/V1/cloudinary/resources/video',
-                                dataType: 'json',
-                                data: {
-                                    id: videoInfo.id
-                                },
-                                timeout: 5000,
-                                success: $.proxy(_onCloudinaryLoaded, self),
+                        $.ajax({
+                            method: "GET",
+                            url: '/rest/V1/cloudinary/resources/video',
+                            dataType: 'json',
+                            data: {
+                                id: videoInfo.id
+                            },
+                            timeout: 5000,
+                            success: $.proxy(_onCloudinaryLoaded, self),
 
-                                /**
-                                 * @private
-                                 */
-                                error: function () {
-                                    self._onRequestError($.mage.__('Video not found'));
-                                }
+                            /**
+                             * @private
+                             */
+                            error: function() {
+                                self._onRequestError($.mage.__('Video not found'));
                             }
-                        );
+                        });
                     }
                 },
 
                 /**
                  * @private
                  */
-                _onVideoInvalid: function (event, data) {
+                _onVideoInvalid: function(event, data) {
                     this._videoInformation = null;
                     this.element.val('');
-                    alert(
-                        {
-                            content: 'Error: "' + data + '"'
-                        }
-                    );
+                    alert({
+                        content: 'Error: "' + data + '"'
+                    });
                 },
 
                 /**
                  * @private
                  */
-                _onRequestError: function (error) {
+                _onRequestError: function(error) {
                     this.element.trigger(this._ERROR_UPDATE_INFORMATION_TRIGGER, error);
                     this.element.trigger(this._FINISH_UPDATE_INFORMATION_TRIGGER, false);
                     this._currentVideoUrl = null;
@@ -736,7 +735,7 @@ define(
                 /**
                  * @private
                  */
-                _formatYoutubeDuration: function (duration) {
+                _formatYoutubeDuration: function(duration) {
                     var match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/),
                         hours = parseInt(match[1], 10) || 0,
                         minutes = parseInt(match[2], 10) || 0,
@@ -748,14 +747,14 @@ define(
                 /**
                  * @private
                  */
-                _formatVimeoDuration: function (seconds) {
+                _formatVimeoDuration: function(seconds) {
                     return (new Date(seconds * 1000)).toUTCString().match(/(\d\d:\d\d:\d\d)/)[0];
                 },
 
                 /**
                  * @private
                  */
-                _parseHref: function (href) {
+                _parseHref: function(href) {
                     var a = document.createElement('a');
 
                     a.href = href;
@@ -766,7 +765,7 @@ define(
                 /**
                  * @private
                  */
-                _baseName: function (str) {
+                _baseName: function(str) {
                     var base = new String(str).substring(str.lastIndexOf('/') + 1);
                     if (base.lastIndexOf(".") != -1) {
                         base = base.substring(0, base.lastIndexOf("."));
@@ -777,7 +776,7 @@ define(
                 /**
                  * @private
                  */
-                _fileExtension: function (str) {
+                _fileExtension: function(str) {
                     var re = /(?:\.([^.]+))?$/;
                     return re.exec(str)[1];
                 },
@@ -785,7 +784,7 @@ define(
                 /**
                  * @private
                  */
-                _validateURL: function (href, forceVideo) {
+                _validateURL: function(href, forceVideo) {
                     var id,
                         type,
                         ampersandPosition,

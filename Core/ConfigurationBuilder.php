@@ -25,6 +25,7 @@ class ConfigurationBuilder
         if ($this->configuration->getCdnSubdomainStatus()) {
             $config['cdn_subdomain'] = true;
         }
+
         return $config;
     }
 }

@@ -6,6 +6,8 @@ use Cloudinary;
 use Cloudinary\Api;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Magento\Framework\App\Request\Http;
+use Magento\Framework\Json\EncoderInterface;
 
 class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagementInterface
 {
@@ -28,26 +30,36 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     private $_api;
 
     /**
-     * @var \Magento\Framework\App\Request\Http
+     * @var Http
      */
     private $_request;
+
+    /**
+     * @var EncoderInterface
+     */
+    private $_jsonEncoder;
 
     /**
      * ApiClient constructor.
      *
      * @param ConfigurationInterface $configuration
      * @param ConfigurationBuilder   $configurationBuilder
+     * @param Api                    $api
+     * @param Http                   $request
+     * @param EncoderInterface       $jsonEncoder
      */
     public function __construct(
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
         Api $api,
-        \Magento\Framework\App\Request\Http $request
+        Http $request,
+        EncoderInterface $jsonEncoder
     ) {
         $this->_configuration = $configuration;
         $this->_configurationBuilder = $configurationBuilder;
         $this->_api = $api;
         $this->_request = $request;
+        $this->_jsonEncoder = $jsonEncoder;
         if ($this->_configuration->isEnabled()) {
             $this->_authorise();
         }
@@ -57,13 +69,6 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         Cloudinary::config($this->_configurationBuilder->build());
         Cloudinary::$USER_PLATFORM = $this->_configuration->getUserPlatform();
-    }
-
-    public function _sendJsonResponse($response)
-    {
-        header('Content-Type: application/json');
-        echo json_encode($response);
-        die;
     }
 
     /**
@@ -76,18 +81,19 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         try {
             $this->_resourceData = $this->_api->resource(
-                $this->_request->getParam("id"), [
+                $this->_request->getParam("id"),
+                [
                 "resource_type" => $this->_resourceType
                 ]
             );
-            $this->_sendJsonResponse(
+            return $this->_jsonEncoder->encode(
                 [
                 "error" => 0,
                 "data" => $this->_resourceData
                 ]
             );
         } catch (\Exception $e) {
-            $this->_sendJsonResponse(
+            return $this->_jsonEncoder->encode(
                 [
                 "error" => 1,
                 "message" => $e->getMessage()
@@ -102,7 +108,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     public function getImage()
     {
         $this->_resourceType = "image";
-        $this->_getResourceData();
+        return $this->_getResourceData();
     }
 
     /**
@@ -111,6 +117,6 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     public function getVideo()
     {
         $this->_resourceType = "video";
-        $this->_getResourceData();
+        return $this->_getResourceData();
     }
 }

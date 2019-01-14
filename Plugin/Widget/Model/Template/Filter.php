@@ -64,10 +64,12 @@ class Filter
         if (!$this->_configuration->isEnabled()) {
             return $proceed($construction);
         }
+
         $params = $this->_cloudinaryWidgetFilter->getParams($construction[2]);
         if (!isset($params['url'])) {
             return $proceed($construction);
         }
+
         $url = (preg_match('/^&quot;.+&quot;$/', $params['url'])) ? preg_replace('/(^&quot;)|(&quot;$)/', '', $params['url']) : $params['url'];
 
         $image = $this->_imageFactory->build(
