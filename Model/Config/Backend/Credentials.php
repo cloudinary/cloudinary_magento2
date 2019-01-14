@@ -105,6 +105,7 @@ class Credentials extends Encrypted
             if (!$rawValue) {
                 throw new ValidatorException(__(self::CREDENTIALS_CHECK_MISSING));
             }
+
             if ($this->isSaveAllowed()) {
                 $this->validate($this->getCredentialsFromEnvironmentVariable($rawValue));
             } else {
@@ -143,6 +144,7 @@ class Credentials extends Encrypted
             if (Cloudinary::config_get('private_cdn')) {
                 $credentials["private_cdn"] = Cloudinary::config_get('private_cdn');
             }
+
             return $credentials;
         } catch (\Exception $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));

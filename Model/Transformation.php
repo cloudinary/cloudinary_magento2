@@ -98,6 +98,7 @@ class Transformation extends AbstractModel
         if (($this->getImageName() === $imageFile) && $this->hasFreeTransformation()) {
             $transformation->withFreeform(Freeform::fromString($this->getFreeTransformation()));
         }
+
         return $transformation;
     }
 

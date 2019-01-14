@@ -16,8 +16,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
 
-class SynchronisationRepository
-    implements SynchronisationRepositoryInterface, SynchroniseAssetsRepositoryInterface
+class SynchronisationRepository implements SynchronisationRepositoryInterface, SynchroniseAssetsRepositoryInterface
 {
     /**
      * @var CollectionFactory
