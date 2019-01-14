@@ -33,7 +33,7 @@ class UploadImages extends Command
 
     /**
      * Configure the command
-     * 
+     *
      * @return void
      */
     protected function configure()

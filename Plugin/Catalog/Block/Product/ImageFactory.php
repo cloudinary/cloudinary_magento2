@@ -177,6 +177,7 @@ class ImageFactory
         if (isset($imageMiscParams['keep_frame'])) {
             $this->keepFrame = ($imageMiscParams['keep_frame'] === 'frame') ? true : false;
         }
+
         if ($this->keepFrame) {
             $transform->withCrop(Crop::fromString('lpad'))
                 ->withDimensions(Dimensions::squareMissingDimension($dimensions));

@@ -49,6 +49,7 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
                 $this->_cloudinaryConfig['api_url'] = "https://api.cloudinary.com/v1_1/{$this->_cloudinaryConfig['cloud_name']}/";
             }
         }
+
         return $this->_cloudinaryConfig;
     }
 
@@ -85,11 +86,13 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
         } else {
             $result .= __(', YouTube');
         }
+
         if (!$this->getCloudinaryConfig()) {
             $messages .= __('<br>*To add Cloudinary video, please <a href="%1">enter your Cloudinary Account Credentials</a> first.', $this->getCloudinaryConfigUrl());
         } else {
             $result .= __(', Cloudinary');
         }
+
         return $result . $messages;
     }
 

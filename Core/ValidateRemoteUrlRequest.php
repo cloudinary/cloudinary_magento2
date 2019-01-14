@@ -19,6 +19,7 @@ class ValidateRemoteUrlRequest
         if ($result->responseCode == 200 && is_null($result->error)) {
             return true;
         }
+
         return false;
     }
 

@@ -51,6 +51,7 @@ class UpgradeData implements UpgradeDataInterface
             if ($context->getVersion()) {
                 $this->output->writeln("<comment>Reseting configurations for 'website' & 'store' scopes (only supports 'default' at the moment)</comment>");
             }
+
             $this->resourceConnection->getConnection()->delete(
                 $this->resourceConnection->getTableName('core_config_data'),
                 "path LIKE 'cloudinary/%' AND scope != 'default'"
