@@ -78,7 +78,7 @@ class SynchronisationRepository
      *
      * @api
      *
-     * @param SearchCriteriaInterface $searchCriteria
+     * @param  SearchCriteriaInterface $searchCriteria
      * @return SearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria)
@@ -99,7 +99,7 @@ class SynchronisationRepository
     }
 
     /**
-     * @param  string $imagePath
+     * @param string $imagePath
      *
      * @return SearchResultsInterface
      */
@@ -111,7 +111,7 @@ class SynchronisationRepository
     }
 
     /**
-     * @param  string      $imagePath
+     * @param string $imagePath
      */
     public function saveAsSynchronized($imagePath)
     {
@@ -135,7 +135,7 @@ class SynchronisationRepository
     /**
      * Create image name filter
      *
-     * @param string $imagePath
+     * @param  string $imagePath
      * @return \Magento\Framework\Api\Filter
      */
     private function createImagePathFilter($imagePath)
@@ -148,8 +148,8 @@ class SynchronisationRepository
     }
 
     /**
-     * @param SearchCriteriaInterface $searchCriteria
-     * @param SynchronisationCollection     $collection
+     * @param SearchCriteriaInterface   $searchCriteria
+     * @param SynchronisationCollection $collection
      */
     private function setFilters(SearchCriteriaInterface $searchCriteria, $collection)
     {

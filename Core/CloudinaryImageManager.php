@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class CloudinaryImageManager
+ *
  * @package Cloudinary\Cloudinary\Core
  */
 class CloudinaryImageManager
@@ -29,7 +30,7 @@ class CloudinaryImageManager
     /**
      * CloudinaryImageManager constructor.
      *
-     * @param ImageProvider $cloudinaryImageProvider
+     * @param ImageProvider                        $cloudinaryImageProvider
      * @param SynchroniseAssetsRepositoryInterface $synchronisationRepository
      */
     public function __construct(
@@ -41,8 +42,8 @@ class CloudinaryImageManager
     }
 
     /**
-     * @param Image $image
-     * @param OutputInterface|null $output
+     * @param  Image                $image
+     * @param  OutputInterface|null $output
      * @throws \Exception
      */
     public function uploadAndSynchronise(Image $image, OutputInterface $output = null, $retryAttempt = 0)
@@ -78,7 +79,7 @@ class CloudinaryImageManager
 
     /**
      * @param OutputInterface|null $output
-     * @param string $message
+     * @param string               $message
      */
     private function report(OutputInterface $output = null, $message = '')
     {

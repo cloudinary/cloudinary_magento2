@@ -48,7 +48,7 @@ class Product extends AbstractModifier
     protected $cloudinaryImageProvider;
 
     /**
-     * @param LocatorInterface $locator
+     * @param LocatorInterface      $locator
      * @param TransformationFactory $transformationFactory
      */
     public function __construct(
@@ -154,13 +154,13 @@ class Product extends AbstractModifier
     }
 
     /**
-     * @param [Entry]
+     * @param  [Entry]
      * @return [Entry]
      */
     private function extractData(array $images)
     {
         return array_map(
-            function($media) {
+            function ($media) {
                 return $media->getData();
             },
             $images
@@ -168,21 +168,21 @@ class Product extends AbstractModifier
     }
 
     /**
-     * @param [Entry]
+     * @param  [Entry]
      * @return [Entry]
      */
     private function filterNonImageTypes(array $images)
     {
         return array_filter(
             $images,
-            function($image) {
+            function ($image) {
                 return $image->getMediaType() === 'image';
             }
         );
     }
 
     /**
-     * @param [Entry]
+     * @param  [Entry]
      * @return [Entry]
      */
     private function injectFreeTransformations(array $images)
@@ -197,7 +197,7 @@ class Product extends AbstractModifier
     }
 
     /**
-     * @param [Entry]
+     * @param  [Entry]
      * @return [Entry]
      */
     private function injectImageUrls(array $images)
@@ -218,7 +218,7 @@ class Product extends AbstractModifier
     }
 
     /**
-     * @param string $freeTransform
+     * @param  string $freeTransform
      * @return Transformation
      */
     private function defaultTransformWithFreeTransform($freeTransform)

@@ -25,8 +25,8 @@ class CloudinaryImageProvider implements ImageProvider
     private $configurationBuilder;
 
     /**
-     * @param ConfigurationInterface $configuration
-     * @param ConfigurationBuilder $configurationBuilder
+     * @param ConfigurationInterface  $configuration
+     * @param ConfigurationBuilder    $configurationBuilder
      * @param UploadResponseValidator $uploadResponseValidator
      */
     public function __construct(
@@ -43,7 +43,7 @@ class CloudinaryImageProvider implements ImageProvider
     }
 
     /**
-     * @param ConfigurationInterface $configuration
+     * @param  ConfigurationInterface $configuration
      * @return CloudinaryImageProvider
      */
     public static function fromConfiguration(ConfigurationInterface $configuration)
@@ -56,7 +56,7 @@ class CloudinaryImageProvider implements ImageProvider
     }
 
     /**
-     * @param Image $image
+     * @param  Image $image
      * @return mixed
      */
     public function upload(Image $image)
@@ -77,17 +77,19 @@ class CloudinaryImageProvider implements ImageProvider
     }
 
     /**
-     * @param Image $image
-     * @param Transformation $transformation
+     * @param  Image          $image
+     * @param  Transformation $transformation
      * @return Image
      */
     public function retrieveTransformed(Image $image, Transformation $transformation)
     {
-        $imagePath = \cloudinary_url($image->getId(), [
+        $imagePath = \cloudinary_url(
+            $image->getId(), [
             'transformation' => $transformation->build(),
             'secure' => true,
             'sign_url' => $this->configuration->getUseSignedUrls()
-        ]);
+            ]
+        );
 
         if ($this->configuration->getUseRootPath()) {
             if (strpos($imagePath, "cloudinary.com/{$this->configuration->getCloud()}/image/upload/") !== false) {
@@ -106,7 +108,7 @@ class CloudinaryImageProvider implements ImageProvider
     }
 
     /**
-     * @param Image $image
+     * @param  Image $image
      * @return Image
      */
     public function retrieve(Image $image)
@@ -115,7 +117,7 @@ class CloudinaryImageProvider implements ImageProvider
     }
 
     /**
-     * @param Image $image
+     * @param  Image $image
      * @return bool
      */
     public function delete(Image $image)

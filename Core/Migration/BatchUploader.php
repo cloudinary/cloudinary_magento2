@@ -57,11 +57,12 @@ class BatchUploader
 
     /**
      * BatchUploader constructor.
+     *
      * @param ImageProvider $imageProvider
-     * @param Task $migrationTask
-     * @param Logger $logger
-     * @param string $baseMediaPath
-     * @param callable $exceptionCallback
+     * @param Task          $migrationTask
+     * @param Logger        $logger
+     * @param string        $baseMediaPath
+     * @param callable      $exceptionCallback
      */
     public function __construct(
         ImageProvider $imageProvider,
@@ -84,7 +85,6 @@ class BatchUploader
     {
         $this->countMigrated = 0;
         foreach ($images as $image) {
-
             if ($this->migrationTask->hasBeenStopped()) {
                 break;
             }
@@ -94,7 +94,7 @@ class BatchUploader
     }
 
     /**
-     * @param Synchronizable $image
+     * @param  Synchronizable $image
      * @return string
      */
     private function getAbsolutePath(Synchronizable $image)
@@ -104,7 +104,7 @@ class BatchUploader
 
     /**
      * @param Synchronizable $image
-     * @param int $retryAttempt
+     * @param int            $retryAttempt
      */
     private function uploadImage(Synchronizable $image, $retryAttempt = 0)
     {
@@ -149,8 +149,8 @@ class BatchUploader
     }
 
     /**
-     * @param $retryMessage
-     * @param \Exception $e
+     * @param  $retryMessage
+     * @param  \Exception   $e
      * @return \Exception
      */
     private function addRetryMessage($retryMessage, \Exception $e)
@@ -164,8 +164,8 @@ class BatchUploader
     }
 
     /**
-     * @param \Exception $e
-     * @param $message
+     * @param  \Exception $e
+     * @param  $message
      * @return string
      */
     private function buildUploadErrorMessage(\Exception $e, $message)

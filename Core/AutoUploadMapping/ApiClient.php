@@ -31,8 +31,9 @@ class ApiClient
 
     /**
      * ApiClient constructor.
+     *
      * @param ConfigurationInterface $configuration
-     * @param ConfigurationBuilder $configurationBuilder
+     * @param ConfigurationBuilder   $configurationBuilder
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -48,7 +49,7 @@ class ApiClient
     }
 
     /**
-     * @param ConfigurationInterface $configuration
+     * @param  ConfigurationInterface $configuration
      * @return ApiClient
      */
     public static function fromConfiguration(ConfigurationInterface $configuration)
@@ -61,14 +62,13 @@ class ApiClient
     }
 
     /**
-     * @param string $folder
-     * @param string $url
+     * @param  string $folder
+     * @param  string $url
      * @return bool
      */
     public function prepareMapping($folder, $url)
     {
         try {
-
             $existingMappings = $this->parseFetchMappingsResponse($this->api->upload_mappings());
 
             if ($this->hasMapping($existingMappings, $folder)) {
@@ -80,7 +80,6 @@ class ApiClient
             }
 
             return true;
-
         } catch (\Exception $e) {
             $this->errors[] = $e;
             return false;
@@ -88,7 +87,7 @@ class ApiClient
     }
 
     /**
-     * @param Response $response
+     * @param  Response $response
      * @return array
      * @throws \Exception
      */
@@ -102,23 +101,23 @@ class ApiClient
     }
 
     /**
-     * @param array $mappings
-     * @param string $folder
+     * @param  array  $mappings
+     * @param  string $folder
      * @return array
      */
     private function filterMappings(array $mappings, $folder)
     {
         return array_filter(
             $mappings,
-            function(array $mapping) use ($folder) {
+            function (array $mapping) use ($folder) {
                 return $mapping[self::FOLDER_KEY] == $folder;
             }
         );
     }
 
     /**
-     * @param array $mappings
-     * @param string $folder
+     * @param  array  $mappings
+     * @param  string $folder
      * @return bool
      */
     private function hasMapping(array $mappings, $folder)
@@ -127,9 +126,9 @@ class ApiClient
     }
 
     /**
-     * @param array $existingMappings
-     * @param string $folder
-     * @param string $url
+     * @param  array  $existingMappings
+     * @param  string $folder
+     * @param  string $url
      * @return bool
      */
     private function mappingMatches(array $existingMappings, $folder, $url)
@@ -137,7 +136,7 @@ class ApiClient
         return count(
             array_filter(
                 $this->filterMappings($existingMappings, $folder),
-                function(array $mapping) use ($url) {
+                function (array $mapping) use ($url) {
                     return $mapping[self::URL_KEY] == $url;
                 }
             )

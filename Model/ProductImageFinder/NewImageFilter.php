@@ -3,12 +3,13 @@ namespace Cloudinary\Cloudinary\Model\ProductImageFinder;
 
 /**
  * Class NewImageFinder
+ *
  * @package Cloudinary\Cloudinary\Model\ProductImageFinder
  */
 class NewImageFilter implements ImageFilter
 {
     /**
-     * @param $imageData
+     * @param  $imageData
      * @return bool
      */
     public function __invoke($imageData)

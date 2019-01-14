@@ -21,7 +21,7 @@ class FileUploader
 
     /**
      * @param CloudinaryImageManager $cloudinaryImageManager
-     * @param DirectoryList $directoryList
+     * @param DirectoryList          $directoryList
      */
     public function __construct(
         CloudinaryImageManager $cloudinaryImageManager,
@@ -32,8 +32,8 @@ class FileUploader
     }
 
     /**
-     * @param Uploader $uploader
-     * @param array $result
+     * @param  Uploader $uploader
+     * @param  array    $result
      * @return array
      */
     public function afterSave(Uploader $uploader, $result)
@@ -50,7 +50,7 @@ class FileUploader
     }
 
     /**
-     * @param string $filepath
+     * @param  string $filepath
      * @return bool
      */
     protected function isMediaFilePath($filepath)
@@ -59,7 +59,7 @@ class FileUploader
     }
 
     /**
-     * @param string $filepath
+     * @param  string $filepath
      * @return string
      */
     protected function isMediaTmpFilePath($filepath)
@@ -68,7 +68,7 @@ class FileUploader
     }
 
     /**
-     * @param array $result
+     * @param  array $result
      * @return string
      */
     protected function absoluteFilePath(array $result)
@@ -77,7 +77,7 @@ class FileUploader
     }
 
     /**
-     * @param string $filepath
+     * @param  string $filepath
      * @return string
      */
     protected function mediaRelativePath($filepath)
