@@ -85,6 +85,7 @@ class BatchUploader
                     $this->displayMessage($output, self::MESSAGE_UPLOAD_INTERRUPTED);
                     return false;
                 }
+
                 $this->uploadAndSynchronise($image, $output);
             }
 
@@ -92,7 +93,6 @@ class BatchUploader
             $this->displayMessage($output, sprintf(self::MESSAGE_UPLOAD_COMPLETE, count($images)));
 
             return true;
-
         } catch (\Exception $e) {
             $this->migrationTask->stop();
             throw $e;

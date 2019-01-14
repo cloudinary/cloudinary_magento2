@@ -261,6 +261,7 @@ class Configuration implements ConfigurationInterface
                 $this->logger->critical($invalidConfigException);
             }
         }
+
         return $this->environmentVariable;
     }
 

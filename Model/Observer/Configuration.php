@@ -73,7 +73,8 @@ class Configuration implements ObserverInterface
         $this->changedPaths = (array) $observer->getEvent()->getChangedPaths();
         if (count(
             array_intersect(
-                $this->changedPaths, [
+                $this->changedPaths,
+                [
                 \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENABLED,
                 \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE,
                 \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH

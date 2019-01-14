@@ -88,8 +88,10 @@ class BatchUploader
             if ($this->migrationTask->hasBeenStopped()) {
                 break;
             }
+
             $this->uploadImage($image);
         }
+
         $this->logger->notice(sprintf(self::MESSAGE_STATUS, $this->countMigrated, $this->countFailed));
     }
 
@@ -160,6 +162,7 @@ class BatchUploader
         } else {
             $e = new \Exception($e->getMessage() . $retryMessage);
         }
+
         return $e;
     }
 

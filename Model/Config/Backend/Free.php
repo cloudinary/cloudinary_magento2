@@ -73,13 +73,11 @@ class Free extends \Magento\Framework\App\Config\Value
     public function beforeSave()
     {
         if ($this->hasAccountConfigured() && $this->getValue()) {
-
             $transform = $this->configuration
                 ->getDefaultTransformation()
                 ->withFreeform(Freeform::fromString($this->getValue()));
 
             $this->validate($this->sampleImageUrl($transform));
-
         }
 
         parent::beforeSave();

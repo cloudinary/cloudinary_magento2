@@ -84,7 +84,8 @@ class CloudinaryImageProvider implements ImageProvider
     public function retrieveTransformed(Image $image, Transformation $transformation)
     {
         $imagePath = \cloudinary_url(
-            $image->getId(), [
+            $image->getId(),
+            [
             'transformation' => $transformation->build(),
             'secure' => true,
             'sign_url' => $this->configuration->getUseSignedUrls()
@@ -141,6 +142,7 @@ class CloudinaryImageProvider implements ImageProvider
         } catch (\Exception $e) {
             return false;
         }
+
         return true;
     }
 
