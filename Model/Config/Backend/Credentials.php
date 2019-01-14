@@ -48,18 +48,18 @@ class Credentials extends Encrypted
     protected $appConfig;
 
     /**
-     * @param Context $context
-     * @param Registry $registry
-     * @param ScopeConfigInterface $config
-     * @param TypeListInterface $cacheTypeList
-     * @param EncryptorInterface $encryptor
-     * @param ConfigurationInterface $configuration
-     * @param AbstractResource $resource
-     * @param AbstractDb $resourceCollection
-     * @param ConfigurationBuilder $configurationBuilder
-     * @param Api $api
+     * @param Context                   $context
+     * @param Registry                  $registry
+     * @param ScopeConfigInterface      $config
+     * @param TypeListInterface         $cacheTypeList
+     * @param EncryptorInterface        $encryptor
+     * @param ConfigurationInterface    $configuration
+     * @param AbstractResource          $resource
+     * @param AbstractDb                $resourceCollection
+     * @param ConfigurationBuilder      $configurationBuilder
+     * @param Api                       $api
      * @param ReinitableConfigInterface $appConfig
-     * @param array $data
+     * @param array                     $data
      */
     public function __construct(
         Context $context,
@@ -114,7 +114,7 @@ class Credentials extends Encrypted
     }
 
     /**
-     * @param array $credentials
+     * @param  array $credentials
      * @throws ValidatorException
      */
     private function validate(array $credentials)
@@ -127,7 +127,7 @@ class Credentials extends Encrypted
     }
 
     /**
-     * @param string $environmentVariable
+     * @param  string $environmentVariable
      * @throws ValidatorException
      * @return array
      */

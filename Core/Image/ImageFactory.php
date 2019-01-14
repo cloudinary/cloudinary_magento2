@@ -19,8 +19,9 @@ class ImageFactory
 
     /**
      * ImageFactory constructor.
+     *
      * @param ConfigurationInterface $configuration
-     * @param SynchronizationCheck $synchronizationChecker
+     * @param SynchronizationCheck   $synchronizationChecker
      */
     public function __construct(ConfigurationInterface $configuration, SynchronizationCheck $synchronizationChecker)
     {
@@ -29,7 +30,7 @@ class ImageFactory
     }
 
     /**
-     * @param $imagePath
+     * @param  $imagePath
      * @return Image
      */
     public function build($imagePath, callable $localPathGenerator)

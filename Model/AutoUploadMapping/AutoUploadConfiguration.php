@@ -69,7 +69,7 @@ class AutoUploadConfiguration implements AutoUploadConfigurationInterface
 
     /**
      * @param string $key
-     * @param bool $state
+     * @param bool   $state
      */
     private function setFlag($key, $state)
     {

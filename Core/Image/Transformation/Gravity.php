@@ -26,5 +26,3 @@ class Gravity
         return new Gravity(null);
     }
 }
-
-

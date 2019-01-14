@@ -8,13 +8,13 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 interface SynchronisationRepositoryInterface
 {
     /**
-     * @param SearchCriteriaInterface $searchCriteria
+     * @param  SearchCriteriaInterface $searchCriteria
      * @return SearchResultsInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
-     * @param  string $imagePath
+     * @param string $imagePath
      *
      * @return SearchResultsInterface
      */

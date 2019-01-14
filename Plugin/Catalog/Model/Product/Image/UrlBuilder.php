@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cloudinary\Cloudinary\Plugin\Catalog\Model\Product\Image;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
@@ -77,11 +75,11 @@ class UrlBuilder
 
     /**
      * @param ObjectManagerInterface $objectManager
-     * @param ConfigInterface $presentationConfig
+     * @param ConfigInterface        $presentationConfig
      * @param CloudinaryImageFactory $cloudinaryImageFactory
-     * @param UrlGenerator $urlGenerator
+     * @param UrlGenerator           $urlGenerator
      * @param ConfigurationInterface $configuration
-     * @param TransformationFactory $transformationFactory
+     * @param TransformationFactory  $transformationFactory
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -105,13 +103,13 @@ class UrlBuilder
     /**
      * Build image url using base path and params
      *
-     * @param CatalogUrlBuilder $catalogUrlBuilder
-     * @param callable $proceed
-     * @param string $baseFilePath
-     * @param string $imageDisplayArea
+     * @param  CatalogUrlBuilder $catalogUrlBuilder
+     * @param  callable          $proceed
+     * @param  string            $baseFilePath
+     * @param  string            $imageDisplayArea
      * @return string
      */
-    public function aroundGetUrl(CatalogUrlBuilder $catalogUrlBuilder, callable $proceed, string $baseFilePath, string $imageDisplayArea): string
+    public function aroundGetUrl(CatalogUrlBuilder $catalogUrlBuilder, callable $proceed, string $baseFilePath, string $imageDisplayArea)
     {
         $url = $proceed($baseFilePath, $imageDisplayArea);
 
@@ -163,7 +161,7 @@ class UrlBuilder
     }
 
     /**
-     * @param array $imageMiscParams
+     * @param  array $imageMiscParams
      * @return Transformation
      */
     private function createTransformation(array $imageMiscParams)

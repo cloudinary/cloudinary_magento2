@@ -44,11 +44,11 @@ class Configuration implements ObserverInterface
     protected $changedPaths = [];
 
     /**
-     * @param RequestProcessor $requestProcessor
-     * @param ManagerInterface $messageManager
+     * @param RequestProcessor                           $requestProcessor
+     * @param ManagerInterface                           $messageManager
      * @param \Cloudinary\Cloudinary\Model\Configuration $configuration
-     * @param TypeListInterface $cacheTypeList
-     * @param ReinitableConfigInterface $config
+     * @param TypeListInterface                          $cacheTypeList
+     * @param ReinitableConfigInterface                  $config
      */
     public function __construct(
         RequestProcessor $requestProcessor,
@@ -71,11 +71,16 @@ class Configuration implements ObserverInterface
     {
         //Clear config cache if needed
         $this->changedPaths = (array) $observer->getEvent()->getChangedPaths();
-        if (count(array_intersect($this->changedPaths, [
-            \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENABLED,
-            \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE,
-            \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
-        ])) > 0) {
+        if (count(
+            array_intersect(
+                $this->changedPaths, [
+                \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENABLED,
+                \Cloudinary\Cloudinary\Model\Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE,
+                \Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration::REQUEST_PATH
+                ]
+            )
+        ) > 0
+        ) {
             $this->cleanConfigCache();
             $this->appConfig->reinit();
         }

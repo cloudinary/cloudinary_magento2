@@ -20,7 +20,7 @@ class SaveProductTransform implements ObserverInterface
     private $transformationFactory;
 
     /**
-     * @param Helper $helper
+     * @param Helper                $helper
      * @param TransformationFactory $transformationFactory
      */
     public function __construct(Helper $helper, TransformationFactory $transformationFactory)
@@ -30,7 +30,7 @@ class SaveProductTransform implements ObserverInterface
     }
 
     /**
-     * @param  Observer $observer
+     * @param Observer $observer
      */
     public function execute(Observer $observer)
     {

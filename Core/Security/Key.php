@@ -4,7 +4,6 @@ namespace Cloudinary\Cloudinary\Core\Security;
 
 class Key
 {
-
     private $key;
 
     private function __construct($key)
@@ -21,5 +20,4 @@ class Key
     {
         return $this->key;
     }
-
 }

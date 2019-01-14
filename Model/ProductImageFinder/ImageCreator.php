@@ -10,6 +10,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 /**
  * Class ImageCreator
+ *
  * @package Cloudinary\Cloudinary\Model\ProductImageFinder
  */
 class ImageCreator
@@ -27,7 +28,7 @@ class ImageCreator
     /**
      * ImageCreator constructor.
      *
-     * @param Filesystem $filesystem
+     * @param Filesystem  $filesystem
      * @param MediaConfig $mediaConfig
      */
     public function __construct(Filesystem $filesystem, MediaConfig $mediaConfig)

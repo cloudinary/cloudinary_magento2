@@ -34,8 +34,8 @@ class Filter
     protected $_cloudinaryWidgetFilter;
 
     /**
-     * @param ImageFactory $imageFactory
-     * @param UrlGenerator $urlGenerator
+     * @param ImageFactory           $imageFactory
+     * @param UrlGenerator           $urlGenerator
      * @param CloudinaryWidgetFilter $cloudinaryWidgetFilter
      */
     public function __construct(
@@ -54,9 +54,9 @@ class Filter
     /**
      * Around retrieve media file URL directive
      *
-     * @param \Magento\Widget\Model\Template\Filter $widgetFilter
-     * @param callable $proceed
-     * @param string[] $construction
+     * @param  \Magento\Widget\Model\Template\Filter $widgetFilter
+     * @param  callable                              $proceed
+     * @param  string[]                              $construction
      * @return string
      */
     public function aroundMediaDirective(\Magento\Widget\Model\Template\Filter $widgetFilter, callable $proceed, $construction)

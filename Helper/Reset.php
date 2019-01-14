@@ -25,8 +25,8 @@ class Reset
 
     /**
      * @param ResourceConnection $connection
-     * @param Synchronisation $synchronisation
-     * @param Transformation $transformation
+     * @param Synchronisation    $synchronisation
+     * @param Transformation     $transformation
      */
     public function __construct(
         ResourceConnection $connection,

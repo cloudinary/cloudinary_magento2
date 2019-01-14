@@ -6,12 +6,11 @@ use Cloudinary\Cloudinary\Core\Credentials;
 
 class SignedConsoleUrl
 {
-
     private $signedConsoleUrl;
 
     private function __construct(ConsoleUrl $url, Credentials $credentials)
     {
-        $params = array("timestamp" => time(), "mode" => "check");
+        $params = ["timestamp" => time(), "mode" => "check"];
         $params["signature"] = (string)ApiSignature::fromSecretAndParams($credentials->getSecret(), $params);
         $params["api_key"] = (string)$credentials->getKey();
         $query = http_build_query($params);

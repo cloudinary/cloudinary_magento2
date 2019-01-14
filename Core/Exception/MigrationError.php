@@ -7,6 +7,7 @@ use Exception;
 
 /**
  * Class MigrationError
+ *
  * @package Cloudinary\Cloudinary\Core\Exception
  */
 class MigrationError extends Exception
@@ -35,8 +36,8 @@ class MigrationError extends Exception
     }
 
     /**
-     * @param Image $image
-     * @param string $message
+     * @param  Image  $image
+     * @param  string $message
      * @throws MigrationError
      */
     public static function throwWith(Image $image, $message = '')

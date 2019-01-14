@@ -4,7 +4,6 @@ namespace Cloudinary\Cloudinary\Core\Security;
 
 class ConsoleUrl
 {
-
     private $consoleUrl;
 
     const CLOUDINARY_CONSOLE_BASE_URL = 'https://cloudinary.com/console/';

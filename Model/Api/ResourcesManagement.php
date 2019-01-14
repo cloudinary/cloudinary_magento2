@@ -34,8 +34,9 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
 
     /**
      * ApiClient constructor.
+     *
      * @param ConfigurationInterface $configuration
-     * @param ConfigurationBuilder $configurationBuilder
+     * @param ConfigurationBuilder   $configurationBuilder
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -67,24 +68,31 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
 
     /**
      * Get details of a single resource
+     *
      * @method _getResourceData
      * @return string (json encoded data)
      */
     protected function _getResourceData()
     {
         try {
-            $this->_resourceData = $this->_api->resource($this->_request->getParam("id"), [
+            $this->_resourceData = $this->_api->resource(
+                $this->_request->getParam("id"), [
                 "resource_type" => $this->_resourceType
-            ]);
-            $this->_sendJsonResponse([
+                ]
+            );
+            $this->_sendJsonResponse(
+                [
                 "error" => 0,
                 "data" => $this->_resourceData
-            ]);
+                ]
+            );
         } catch (\Exception $e) {
-            $this->_sendJsonResponse([
+            $this->_sendJsonResponse(
+                [
                 "error" => 1,
                 "message" => $e->getMessage()
-            ]);
+                ]
+            );
         }
     }
 

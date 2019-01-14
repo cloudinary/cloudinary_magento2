@@ -4,7 +4,6 @@ namespace Cloudinary\Cloudinary\Core\Security;
 
 class Secret
 {
-
     private $secret;
 
     private function __construct($secret)
