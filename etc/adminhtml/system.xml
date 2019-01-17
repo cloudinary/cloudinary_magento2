@@ -23,6 +23,10 @@
                     <comment><![CDATA[Set the credentials of your Cloudinary account. Copy the "Environment variable" string from the dashboard of Cloudinary's Management Console.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name]]></comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
                 </field>
+                <field id="cloudinary_automatic_login_user" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Automatic login</label>
+                    <comment>To always automatically log in to the Media Library with a predefined user account, enter the relevant email address. Leave blank to prompt each account user to log in when the Media Library opens.</comment>
+                </field>
             </group>
             <group id="configuration" translate="label" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Cloudinary Configuration</label>

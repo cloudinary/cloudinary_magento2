@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <htmlContent name="gallery">
+        <block name="gallery" class="Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery">
+            <block class="Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form\Gallery\Content" as="content"></block>
+        </block>
+    </htmlContent>
+</form>

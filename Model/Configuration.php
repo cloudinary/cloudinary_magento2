@@ -26,6 +26,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_ENABLED = 'cloudinary/cloud/cloudinary_enabled';
     const USER_PLATFORM_TEMPLATE = 'CloudinaryMagento/%s (Magento %s)';
     const CONFIG_PATH_ENVIRONMENT_VARIABLE = 'cloudinary/setup/cloudinary_environment_variable';
+    const CONFIG_PATH_AUTOMATIC_LOGIN_USER = 'cloudinary/setup/cloudinary_automatic_login_user';
     const CONFIG_CDN_SUBDOMAIN = 'cloudinary/configuration/cloudinary_cdn_subdomain';
     //= Transformations
     const CONFIG_DEFAULT_GRAVITY = 'cloudinary/transformations/cloudinary_gravity';
@@ -123,6 +124,14 @@ class Configuration implements ConfigurationInterface
     public function getCredentials()
     {
         return $this->getEnvironmentVariable()->getCredentials();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAutomaticLoginUser()
+    {
+        return (string) $this->configReader->getValue(self::CONFIG_PATH_AUTOMATIC_LOGIN_USER);
     }
 
     /**
