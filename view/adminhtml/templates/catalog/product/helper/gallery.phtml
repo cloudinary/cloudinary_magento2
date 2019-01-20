@@ -24,12 +24,12 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
         </button>
         <?php if ($cloudinaryMLwidgetOprions): ?>
             <button id="gallery_top_add_from_cloudinary_button"
-                    title="<?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?>"
-                    data-role="add-from-cloudinary-button"
-                    type="button"
-                    class="action-secondary add-from-cloudinary-button"
-                    data-ui-id="widget-button-2">
-                <span><?= $block->escapeHtml(__('Add From Cloudinary')) ?></span>
+                title="<?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?>"
+                data-role="add-from-cloudinary-button"
+                type="button"
+                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                class="action-secondary add-from-cloudinary-button">
+                <span><?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?></span>
             </button>
         <?php endif; ?>
     </div>
@@ -43,10 +43,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
 
 <div id="<?= $block->getHtmlId() ?>"
      class="gallery"
-     data-mage-init='{
-         "openVideoModal":{}
-         <?php echo ($cloudinaryMLwidgetOprions) ? ', "cloudinaryMediaLibraryModal":' . $cloudinaryMLwidgetOprions : '' ?>
-     }'
+     data-mage-init='{"openVideoModal":{}}'
      data-parent-component="<?= $block->escapeHtml($block->getData('config/parentComponent')) ?>"
      data-images="<?= $block->escapeHtmlAttr($block->getImagesJson()) ?>"
      data-types="<?= $block->escapeHtml(
@@ -55,11 +52,11 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
 >
 
     <?php if ($cloudinaryMLwidgetOprions): ?>
-        <div id="gallery_inner_add_from_cloudinary_button" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button">
+        <div id="gallery_inner_add_from_cloudinary_button" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
                     <?= $block->escapeHtml(
-                        __('Add From Cloudinary')
+                        __('Add Image(s) From Cloudinary')
                     ); ?>
                 </p>
             </div>

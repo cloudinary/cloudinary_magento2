@@ -64,8 +64,11 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
         }
         return $this->_jsonEncoder->encode(
             [
-                //'uploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/product_gallery/upload'),
-                'cloudinaryMLoptions' => $cloudinaryMLoptions,
+            'htmlId' => $this->getHtmlId(),
+            'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/product_gallery/upload'),
+            'triggerSelector' => '#media_gallery_content .image.image-placeholder > .uploader',
+            'triggerEvent' => 'addItem',
+            'cloudinaryMLoptions' => $cloudinaryMLoptions,
             ]
         );
     }

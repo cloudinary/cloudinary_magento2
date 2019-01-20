@@ -26,12 +26,14 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
     <div class="main-col">
         <div id="error-message" data-action="show-error"></div>
         <?php if ($cloudinaryMLwidgetOprions): ?>
-            <div>
-                [Cloudinary Button]
-                <pre>
-                    <?php print_r(json_decode($cloudinaryMLwidgetOprions)); ?>
-                </pre>
-            </div><br>
+            <button id="media_gallery_add_from_cloudinary_button"
+                title="<?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?>"
+                data-role="add-from-cloudinary-button"
+                type="button"
+                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                class="add-from-cloudinary-button cloudinary-blue-button-with-logo">
+                <span><?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?></span>
+            </button>
         <?php endif; ?>
         <div id="contents-uploader" class="contents-uploader"><?= $block->getChildHtml('wysiwyg_images.uploader') ?></div>
         <div id="contents"></div>
