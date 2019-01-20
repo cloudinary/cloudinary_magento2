@@ -1,21 +1,17 @@
 <?php
-/**
- *
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
+
 namespace Cloudinary\Cloudinary\Controller\Adminhtml\Product\Gallery;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
 use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
-use Magento\Framework\HTTP\Client\Curl;
 
 class Upload extends \Magento\Catalog\Controller\Adminhtml\Product\Gallery\Upload implements HttpPostActionInterface
 {
     /**
-     * @var Curl
+     * @var MediaLibraryHelper
      */
-    protected $curl;
+    protected $mediaLibraryHelper;
 
     /**
      * @var ConfigurationInterface
@@ -25,18 +21,15 @@ class Upload extends \Magento\Catalog\Controller\Adminhtml\Product\Gallery\Uploa
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Controller\Result\RawFactory $resultRawFactory
-     * @param Curl $curl
-     * @param ConfigurationInterface $configuration
+     * @param MediaLibraryHelper $mediaLibraryHelper
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\RawFactory $resultRawFactory,
-        Curl $curl,
-        ConfigurationInterface $configuration
+        MediaLibraryHelper $mediaLibraryHelper
     ) {
         parent::__construct($context, $resultRawFactory);
-        $this->curl = $curl;
-        $this->configuration = $configuration;
+        $this->mediaLibraryHelper = $mediaLibraryHelper;
     }
 
     /**
@@ -45,23 +38,7 @@ class Upload extends \Magento\Catalog\Controller\Adminhtml\Product\Gallery\Uploa
     public function execute()
     {
         try {
-            if ($this->configuration->isEnabled()) {
-                $asset = $this->getRequest()->getPostValue("asset");
-                $this->curl->get($asset['url']);
-                $asset['image'] = $this->curl->getBody();
-                $this->getRequest()->setPostValue("asset", $asset);
-
-                $tmpfile = tmpfile();
-                fwrite($tmpfile, $asset['image']);
-
-                $_FILES['image'] = [
-                    "name" => basename($asset['url']),
-                    "type" => "{$asset['resource_type']}/{$asset['format']}",
-                    "tmp_name" => stream_get_meta_data($tmpfile)['uri'],
-                    "error" => 0,
-                    "size" => $asset['bytes'],
-                ];
-            }
+            $tmpfile = $this->mediaLibraryHelper->convertRequestAssetUrlToImage();
         } catch (\Exception $e) {
             $response = $this->resultRawFactory->create();
             $response->setHeader('Content-type', 'text/plain');

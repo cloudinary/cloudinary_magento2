@@ -25,3 +25,42 @@
     -webkit-filter: grayscale(100%);
     filter: grayscale(100%);
 }
+.cloudinary-blue-button-with-logo{
+    background: #0E2F5A;
+    border: 1px solid #0E2F5A;
+    color: #fff;
+    margin: 0 20px 0 20px;
+    position: relative;
+    padding: 8px 14px 8px 50px;
+    -webkit-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.5);
+    box-shadow: 1px 1px 6px 0px rgba(0,0,0,0.5);
+
+    &:before{
+        background-image: url('Cloudinary_Cloudinary::images/cloudinary_icon_for_dark_bg.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        display: block;
+        vertical-align: middle;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 14px;
+        width: 30px;
+        height: 34px;
+    }
+
+    &:hover{
+        background: #0E2F5A;
+        color: #fff;
+        -webkit-box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.7);
+        -moz-box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.7);
+        box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.7);
+    }
+}
+.media-gallery-modal{
+    .cloudinary-blue-button-with-logo{
+        margin: 0 20px 30px 20px;
+    }
+}

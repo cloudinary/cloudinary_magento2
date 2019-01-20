@@ -13,12 +13,22 @@ define([
 
     $.widget('mage.cloudinaryMediaLibraryModal', {
 
+        options: {
+            buttonSelector: null,
+            triggerSelector: null, // #media_gallery_content .image.image-placeholder > .uploader' / '.media-gallery-modal'
+            triggerEvent: null // 'addItem' / 'fileuploaddone'
+        },
+
         /**
          * Bind events
          * @private
          */
         _bind: function() {
-            $('.add-from-cloudinary-button[data-role="add-from-cloudinary-button"]').on('click', this.openMediaLibrary.bind(this));
+            if ($(this.options.buttonSelector).length) {
+                $(this.options.buttonSelector).on('click', this.openMediaLibrary.bind(this));
+            } else {
+                this.element.on('click', this.openMediaLibrary.bind(this));
+            }
         },
 
         /**
@@ -56,10 +66,12 @@ define([
          */
         cloudinaryInsertHandler: function(data) {
             //console.log("Inserted assets:", JSON.stringify(data.assets, null, 2));
+            var widget = this;
+
             data.assets.forEach(asset => {
-                if (asset.resource_type === 'image') {
+                if (asset.resource_type === 'image' && widget.options.imageUploaderUrl) {
                     $.ajax({
-                        url: this.options.uploaderUrl,
+                        url: widget.options.imageUploaderUrl,
                         data: {
                             asset: asset,
                             form_key: window.FORM_KEY
@@ -69,9 +81,11 @@ define([
                         async: false,
                         showLoader: true
                     }).done(
-                        function(response) {
-                            //console.log(response);
-                            $("#media_gallery_content .image.image-placeholder > .uploader").last().trigger('addItem', response);
+                        function(file) {
+                            file.fileId = Math.random().toString(36).substr(2, 9);
+                            if (widget.options.triggerSelector && widget.options.triggerEvent) {
+                                $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
+                            }
                         }
                     ).fail(
                         function(response) {

@@ -47,11 +47,25 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
             return null;
         }
         return $this->_jsonEncoder->encode(
-                [
-                    'htmlId' => $this->getHtmlId(),
-                    'uploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/product_gallery/upload'),
-                    'cloudinaryMLoptions' => $cloudinaryMLoptions,
-                ]
-            );
+            [
+            'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]),
+            'triggerSelector' => '.media-gallery-modal',
+            'triggerEvent' => 'fileuploaddone',
+            'cloudinaryMLoptions' => $cloudinaryMLoptions,
+            ]
+        );
+    }
+
+    /**
+     * Return current media type based on request or data
+     *
+     * @return string
+     */
+    protected function _getMediaType()
+    {
+        if ($this->hasData('media_type')) {
+            return $this->_getData('media_type');
+        }
+        return $this->getRequest()->getParam('type');
     }
 }
