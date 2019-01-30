@@ -67,4 +67,12 @@
         <plugin name="cloudinary_validate_product_transform" type="Cloudinary\Cloudinary\Plugin\ValidateProductTransform" />
     </type>
 
+    <type name="Magento\Ui\Component\Form\Element\DataType\Media">
+        <plugin name="cloudinary_form_element_media_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media" />
+    </type>
+
+    <type name="Magento\Ui\Component\Form\Element\DataType\Media\Image">
+        <plugin name="cloudinary_form_element_media_image_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media\Image" />
+    </type>
+
 </config>

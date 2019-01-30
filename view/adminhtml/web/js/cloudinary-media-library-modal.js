@@ -16,7 +16,10 @@ define([
         options: {
             buttonSelector: null,
             triggerSelector: null, // #media_gallery_content .image.image-placeholder > .uploader' / '.media-gallery-modal'
-            triggerEvent: null // 'addItem' / 'fileuploaddone'
+            triggerEvent: null, // 'addItem' / 'fileuploaddone'
+            callbackHandler: null,
+            callbackHandlerMethod: null,
+            imageParamName: 'image'
         },
 
         /**
@@ -40,7 +43,7 @@ define([
 
             var widget = this;
 
-            if (typeof window.cloudinary_ml === "undefined") {
+            if (typeof this.cloudinary_ml === "undefined") {
                 this.cloudinary_ml = window.cloudinary_ml = cloudinary.createMediaLibrary(
                     this.options.cloudinaryMLoptions, {
                         insertHandler: function(data) {
@@ -48,8 +51,6 @@ define([
                         }
                     }
                 );
-            } else {
-                this.cloudinary_ml = window.cloudinary_ml;
             }
 
         },
@@ -74,6 +75,7 @@ define([
                         url: widget.options.imageUploaderUrl,
                         data: {
                             asset: asset,
+                            param_name: widget.options.imageParamName,
                             form_key: window.FORM_KEY
                         },
                         method: 'POST',
@@ -86,6 +88,11 @@ define([
                             if (widget.options.triggerSelector && widget.options.triggerEvent) {
                                 $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
                             }
+                            if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
+                                widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
+                            }
+                            console.log(file);
+                            console.log(widget.options);
                         }
                     ).fail(
                         function(response) {
