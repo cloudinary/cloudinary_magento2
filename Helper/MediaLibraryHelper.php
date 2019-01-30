@@ -118,7 +118,7 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
             fwrite($tmpfile, $asset['image']);
             chmod(stream_get_meta_data($tmpfile)['uri'], 0644);
 
-            $_FILES['image'] = [
+            $_FILES[$this->getRequest()->getParam('param_name', 'image')] = [
                 "name" => basename($asset['url']),
                 "type" => "{$asset['resource_type']}/{$asset['format']}",
                 "tmp_name" => stream_get_meta_data($tmpfile)['uri'],
