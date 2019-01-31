@@ -16,6 +16,7 @@ class Media
      * @var array|null
      */
     protected $mediaLibraryHelper;
+
     /**
      * @var State
      */

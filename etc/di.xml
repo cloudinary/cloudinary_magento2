@@ -4,6 +4,7 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
+                <item name="cloudinary_download_images" xsi:type="object">Cloudinary\Cloudinary\Command\DownloadImages</item>
                 <item name="cloudinary_upload_images" xsi:type="object">Cloudinary\Cloudinary\Command\UploadImages</item>
                 <item name="cloudinary_upload_stop" xsi:type="object">Cloudinary\Cloudinary\Command\StopMigration</item>
                 <item name="cloudinary_reset" xsi:type="object">Cloudinary\Cloudinary\Command\ResetAll</item>
