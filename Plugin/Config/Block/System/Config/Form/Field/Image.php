@@ -1,4 +1,8 @@
 <?php
+/**
+ * CLOUDINARY-74: Implementation of Cloudinary-ML in System configuration (still in progress)
+ * Magento will ignore this file until we'll enable this plugin by uncommenting the relevant line on app/code/Cloudinary/Cloudinary/etc/adminhtml/di.xml
+ */
 
 namespace Cloudinary\Cloudinary\Plugin\Config\Block\System\Config\Form\Field;
 
@@ -53,6 +57,7 @@ class Image
      */
     public function afterGetElementHtml(\Magento\Config\Block\System\Config\Form\Field\Image $block, $html)
     {
+        // TODO: Add JS logics & handlers for after image insert
         if (($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions())) {
             $html .= '<button id="media_gallery_add_from_cloudinary_button"
                 title="' . $this->escaper->escapeHtml(__('Add Image(s) From Cloudinary')) . '"
