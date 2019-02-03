@@ -16,15 +16,16 @@
                 <label data-bind="event: {change: addFileFromMediaGallery, click: openMediaBrowserDialog}" class="file-uploader-button action-default" attr="id: mediaGalleryUid, disabled: disabled" data-force_static_path="1" translate="'Select from Gallery'" />
 
                 <!-- Cloudinary Media Library Button -->
-                <button id="image_uploader_add_from_cloudinary_button" data-role="add-from-cloudinary-button" type="button" class="add-from-cloudinary-button cloudinary-blue-button-with-logo sm-top-bottom-margin" data-bind="
+                <button data-role="add-from-cloudinary-button" type="button" class="add-from-cloudinary-button cloudinary-blue-button-with-logo sm-top-bottom-margin" data-bind="
                         attr: {
-                            title: $t('Add Image(s) From Cloudinary')
+                            title: $t('Add from Cloudinary'),
+                            id: 'image_uploader_add_from_cloudinary_button_' + uid
                         },
                         mageInit: {
                             cloudinaryMediaLibraryModal: $data.cloudinaryMLoptions
                         }
                     ">
-                    <span translate="'Add Image(s) From Cloudinary'" />
+                    <span translate="'Add from Cloudinary'" />
                 </button>
                 <!--/ Cloudinary Media Library Button -->
 
@@ -49,12 +50,29 @@
 
             <each args="data: value, as: '$file'" render="$parent.getPreviewTmpl($file)" />
 
+            <!-- Cloudinary Media Library Button -->
+            <div if="!hasData()" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-bind="
+                    attr: {
+                        title: $t('Add from Cloudinary'),
+                        id: 'image_uploader_add_from_cloudinary_placheholder_button_' + uid,
+                    },
+                    mageInit: {
+                        cloudinaryMediaLibraryModal: $data.cloudinaryMLoptions
+                    }
+                ">
+                <div class="product-image-wrapper">
+                    <p class="image-placeholder-text" translate="'Add from Cloudinary'" />
+                </div>
+            </div>
+            <!--/ Cloudinary Media Library Button -->
+
             <div if="!hasData()" class="image image-placeholder" click="triggerImageUpload">
                 <div class="file-uploader-summary product-image-wrapper">
                     <div class="file-uploader-spinner image-uploader-spinner" />
                     <p class="image-placeholder-text" translate="'Browse to find or drag image here'" />
                 </div>
             </div>
+
         </div>
         <render args="$data.service.template" if="$data.hasService()" />
     </div>

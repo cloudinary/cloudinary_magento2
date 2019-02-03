@@ -70,37 +70,87 @@ define([
             var widget = this;
 
             data.assets.forEach(asset => {
-                if (asset.resource_type === 'image' && widget.options.imageUploaderUrl) {
-                    $.ajax({
-                        url: widget.options.imageUploaderUrl,
-                        data: {
-                            asset: asset,
-                            param_name: widget.options.imageParamName,
-                            form_key: window.FORM_KEY
-                        },
-                        method: 'POST',
-                        dataType: 'json',
-                        async: false,
-                        showLoader: true
-                    }).done(
-                        function(file) {
-                            file.fileId = Math.random().toString(36).substr(2, 9);
-                            if (widget.options.triggerSelector && widget.options.triggerEvent) {
-                                $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
-                            }
-                            if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
-                                widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
-                            }
-                            console.log(file);
-                            console.log(widget.options);
+                switch (asset.resource_type) {
+                    case 'image':
+                        if (widget.options.imageUploaderUrl) {
+                            $.ajax({
+                                url: widget.options.imageUploaderUrl,
+                                data: {
+                                    asset: asset,
+                                    remote_image: asset.secure_url,
+                                    param_name: widget.options.imageParamName,
+                                    form_key: window.FORM_KEY
+                                },
+                                method: 'POST',
+                                dataType: 'json',
+                                async: false,
+                                showLoader: true
+                            }).done(
+                                function(file) {
+                                    var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
+                                    file.fileId = Math.random().toString(36).substr(2, 9);
+                                    file.label = context.alt || context.caption || "";
+                                    if (widget.options.triggerSelector && widget.options.triggerEvent) {
+                                        $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
+                                    }
+                                    if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
+                                        widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
+                                    }
+                                }
+                            ).fail(
+                                function(response) {
+                                    alert($.mage.__('An error occured during image insert!'));
+                                    //console.log(response);
+                                }
+                            );
                         }
-                    ).fail(
-                        function(response) {
-                            alert($.mage.__('An error occured during image insert!'));
-                            //console.log(response);
+
+                        break;
+
+                    case 'video':
+                        if (widget.options.videoUploaderUrl) {
+                            asset.video_url = (location.protocol === 'https:') ? asset.secure_url : asset.url;
+                            asset.thumbnail = asset.video_url.replace(/\.[^/.]+$/, "").replace(/\/([^\/]+)$/, '/so_auto/$1.jpg');
+                            $.ajax({
+                                url: widget.options.videoUploaderUrl,
+                                data: {
+                                    asset: asset,
+                                    remote_image: asset.thumbnail,
+                                    form_key: window.FORM_KEY
+                                },
+                                method: 'POST',
+                                dataType: 'json',
+                                async: false,
+                                showLoader: true
+                            }).done(
+                                function(file) {
+                                    var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
+                                    file.fileId = Math.random().toString(36).substr(2, 9);
+                                    file.video_provider = 'cloudinary';
+                                    file.media_type = "external-video";
+                                    file.video_url = asset.video_url;
+                                    file.video_title = context.caption || context.alt || "";
+                                    file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
+
+                                    if (widget.options.triggerSelector && widget.options.triggerEvent) {
+                                        $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
+                                        $(widget.options.triggerSelector).last().find('img[src="' + file.url + '"]').addClass('video-item');
+                                    }
+                                    if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
+                                        widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
+                                    }
+                                }
+                            ).fail(
+                                function(response) {
+                                    alert($.mage.__('An error occured during video insert!'));
+                                    //console.log(response);
+                                }
+                            );
                         }
-                    );
+
+                        break;
                 }
+
             });
         }
     });

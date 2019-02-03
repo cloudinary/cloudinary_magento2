@@ -39,11 +39,13 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
     /**
      * Get Cloudinary media library widget options
      *
+     * @param string|null $resourceType Resource Types: "image"/"video" or null for "all".
+     * @param bool $refresh Refresh options
      * @return string
      */
-    public function getCloudinaryMediaLibraryWidgetOptions($refresh = false)
+    public function getCloudinaryMediaLibraryWidgetOptions($resourceType = "image", $refresh = false)
     {
-        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($refresh))) {
+        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($resourceType, $refresh))) {
             return null;
         }
         return $this->_jsonEncoder->encode(

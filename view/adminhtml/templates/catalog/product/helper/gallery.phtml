@@ -23,13 +23,13 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
             <span><?= $block->escapeHtml(__('Add Video')) ?></span>
         </button>
         <?php if ($cloudinaryMLwidgetOprions): ?>
-            <button id="gallery_top_add_from_cloudinary_button"
-                title="<?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?>"
+            <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                title="<?= $block->escapeHtml(__('Add from Cloudinary')) ?>"
                 data-role="add-from-cloudinary-button"
                 type="button"
                 data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
                 class="action-secondary add-from-cloudinary-button cloudinary-blue-button-with-logo">
-                <span><?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?></span>
+                <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
             </button>
         <?php endif; ?>
     </div>
@@ -52,11 +52,11 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
 >
 
     <?php if ($cloudinaryMLwidgetOprions): ?>
-        <div id="gallery_inner_add_from_cloudinary_button" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
+        <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
                     <?= $block->escapeHtml(
-                        __('Add Image(s) From Cloudinary')
+                        __('Add from Cloudinary')
                     ); ?>
                 </p>
             </div>

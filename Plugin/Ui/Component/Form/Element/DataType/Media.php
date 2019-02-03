@@ -43,7 +43,7 @@ class Media
      */
     public function afterPrepare(\Magento\Ui\Component\Form\Element\DataType\Media $component, $result = null)
     {
-        if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions())) {
+        if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions("image"))) {
             if (($imageUploaderUrl = $component->getData('config/uploaderConfig/url'))) {
                 $imageUploaderUrl = explode("/", $imageUploaderUrl);
                 if (isset($imageUploaderUrl[0])) {
@@ -58,7 +58,7 @@ class Media
                         'template' => 'Cloudinary_Cloudinary/form/element/uploader/uploader',
                         'component' => 'Cloudinary_Cloudinary/js/form/element/file-uploader',
                         'cloudinaryMLoptions' => [
-                            'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/design_config_fileUploader/save', ['_secure' => true]),
+                            'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/product_gallery/retrieveImage', ['_secure' => true]),
                             'cloudinaryMLoptions' => $cloudinaryMLoptions,
                         ]
                     ]
