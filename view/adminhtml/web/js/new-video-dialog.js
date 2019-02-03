@@ -449,13 +449,7 @@ define(
                  * @private
                  */
                 _setImage: function(file, imageData) {
-                    console.log("--------------------------");
-                    console.log(file);
-                    console.log(imageData);
                     file = this.__prepareFilename(file);
-                    console.log(file);
-                    console.log(this._gallery);
-                    console.log(this.element);
                     this._images[file] = imageData;
                     this._gallery.trigger('addItem', imageData);
                     this.element.trigger('setImage', imageData);
@@ -587,11 +581,7 @@ define(
                             files: file,
                             url: url
                         };
-                    console.log(file);
-                    console.log(oldFile);
-                    console.log(callback);
-                    console.log(url);
-                    console.log(data);
+
                     this._blockActionButtons(true, true);
                     this._uploadFile(
                         data, $.proxy(
@@ -613,7 +603,7 @@ define(
                  */
                 _onImageLoaded: function(result, file, oldFile, callback) {
                     var data = JSON.parse(result);
-                    console.log(data);
+
                     if (this.element.find('#video_url').parent().find('.image-upload-error').length > 0) {
                         this.element.find('.image-upload-error').remove();
                     }
@@ -626,19 +616,16 @@ define(
 
                         return;
                     }
-                    console.log(this._videoFormSelector);
                     $.each(
                         this.element.find(this._videoFormSelector).serializeArray(),
                         function(i, field) {
                             data[field.name] = field.value;
                         }
                     );
-
                     data.disabled = this.element.find(this._videoDisableinputSelector).attr('checked') ? 1 : 0;
                     data['media_type'] = 'external-video';
                     data.oldFile = oldFile;
-                    console.log(data);
-                    console.log(oldFile);
+
                     oldFile ?
                         this._replaceImage(oldFile, data.file, data) :
                         this._setImage(data.file, data);
@@ -651,15 +638,10 @@ define(
                  * @private
                  */
                 _uploadFile: function(data, callback) {
-                    console.log(data);
-                    console.log(callback);
-                    console.log(this._videoPreviewInputSelector);
                     var fu = this.element.find(this._videoPreviewInputSelector),
                         tmpInput = document.createElement('input'),
                         fileUploader = null;
-                    console.log(fu);
-                    console.log(tmpInput);
-                    console.log(fileUploader);
+
                     $(tmpInput).attr({
                         'name': fu.attr('name'),
                         'value': fu.val(),
@@ -668,17 +650,8 @@ define(
                     }).css('display', 'none');
                     fu.parent().append(tmpInput);
                     fileUploader = $(tmpInput).fileupload();
-                    console.log({
-                        'name': fu.attr('name'),
-                        'value': fu.val(),
-                        'type': 'file',
-                        'data-ui-ud': fu.attr('data-ui-ud')
-                    });
-                    console.log(fu.parent());
-                    console.log(fileUploader);
                     fileUploader.fileupload('send', data).success(
                         function(result, textStatus, jqXHR) {
-                            console.log(result);
                             tmpInput.remove();
                             callback.call(null, result, textStatus, jqXHR);
                         }
@@ -894,14 +867,10 @@ define(
                  * @private
                  */
                 _onCreate: function() {
-                    console.log("Save!");
                     var nvs = this.element.find(this._videoPreviewInputSelector),
                         file = nvs.get(0),
                         reqClass = 'required-entry _required';
 
-                    console.log(nvs);
-                    console.log(file);
-                    console.log(reqClass);
                     if (file && file.files && file.files.length) {
                         file = file.files[0];
                     } else {
@@ -921,10 +890,8 @@ define(
                                 }
 
                                 if (this._tempPreviewImageData) {
-                                    console.log(this._tempPreviewImageData);
                                     this._onImageLoaded(this._tempPreviewImageData, null, null, $.proxy(this.close, this));
                                 } else {
-                                    console.log(918);
                                     this._uploadImage(
                                         file, null, $.proxy(
                                             function() {

@@ -55,13 +55,13 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
     /**
      * Get Cloudinary media library widget options
      *
-     * @param string|null $resourceType Resource Types: "image"/"video" or null for "all".
+     * @param bool $multiple Allow multiple
      * @param bool $refresh Refresh options
      * @return string
      */
-    public function getCloudinaryMediaLibraryWidgetOptions($resourceType = null, $refresh = false)
+    public function getCloudinaryMediaLibraryWidgetOptions($multiple = true, $refresh = false)
     {
-        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($resourceType, $refresh))) {
+        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($multiple, $refresh))) {
             return null;
         }
         return $this->_jsonEncoder->encode(
@@ -72,6 +72,7 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
             'triggerSelector' => '#media_gallery_content',
             'triggerEvent' => 'addItem',
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
+            'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions(null),
             ]
         );
     }

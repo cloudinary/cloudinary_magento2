@@ -43,7 +43,7 @@ class Media
      */
     public function afterPrepare(\Magento\Ui\Component\Form\Element\DataType\Media $component, $result = null)
     {
-        if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions("image"))) {
+        if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions(false))) {
             $component->setData(array_replace_recursive(
                 $component->getData(),
                 [
@@ -53,6 +53,7 @@ class Media
                         'cloudinaryMLoptions' => [
                             'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/ajax/retrieveImage', ['_secure' => true]),
                             'cloudinaryMLoptions' => $cloudinaryMLoptions,
+                            'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
                         ]
                     ]
                 ]

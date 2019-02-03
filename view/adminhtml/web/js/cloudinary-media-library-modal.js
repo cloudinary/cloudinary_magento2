@@ -20,6 +20,8 @@ define([
             callbackHandler: null,
             callbackHandlerMethod: null,
             imageParamName: 'image',
+            cloudinaryMLoptions: {}, // Options for Cloudinary-ML createMediaLibrary()
+            cloudinaryMLshowOptions: {}, // Options for Cloudinary-ML show()
             cldMLid: 0
         },
 
@@ -45,6 +47,7 @@ define([
             var widget = this;
             window.cloudinary_ml = window.cloudinary_ml || [];
             this.options.cldMLid = this.options.cldMLid || 0;
+            console.log(this.options.cloudinaryMLoptions);
             if (typeof window.cloudinary_ml[this.options.cldMLid] === "undefined") {
                 this.cloudinary_ml = window.cloudinary_ml[this.options.cldMLid] = cloudinary.createMediaLibrary(
                     this.options.cloudinaryMLoptions, {
@@ -63,7 +66,8 @@ define([
          * Fired on trigger "openMediaLibrary"
          */
         openMediaLibrary: function() {
-            this.cloudinary_ml.show();
+            console.log(this.options.cloudinaryMLshowOptions);
+            this.cloudinary_ml.show(this.options.cloudinaryMLshowOptions);
         },
 
         /**
