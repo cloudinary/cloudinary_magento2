@@ -58,12 +58,12 @@ class Image
     public function afterGetElementHtml(\Magento\Config\Block\System\Config\Form\Field\Image $block, $html)
     {
         // TODO: Add JS logics & handlers for after image insert
-        if (($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions("image"))) {
+        if (($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions(false))) {
             $html .= '<button id="media_gallery_add_from_cloudinary_button"
                 title="' . $this->escaper->escapeHtml(__('Add from Cloudinary')) . '"
                 data-role="add-from-cloudinary-button"
                 type="button"
-                data-mage-init=\'{"cloudinaryMediaLibraryModal": ' . $this->jsonEncoder->encode(['cloudinaryMLoptions' => $cloudinaryMLoptions]) . '}\'
+                data-mage-init=\'{"cloudinaryMediaLibraryModal": ' . $this->jsonEncoder->encode(['cloudinaryMLoptions' => $cloudinaryMLoptions, 'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image")]) . '}\'
                 class="add-from-cloudinary-button cloudinary-blue-button-with-logo small-ver sm-top-bottom-margin">
                 <span>' . $this->escaper->escapeHtml(__('Add from Cloudinary')) . '</span>
             </button>';

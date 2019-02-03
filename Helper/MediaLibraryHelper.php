@@ -73,11 +73,11 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
 
     /**
      * @method getCloudinaryMLOptions
-     * @param string|null $resourceType Resource Types: "image"/"video" or null for "all".
+     * @param bool $multiple Allow multiple
      * @param bool $refresh Refresh options
      * @return array
      */
-    public function getCloudinaryMLOptions($resourceType = null, $refresh = false)
+    public function getCloudinaryMLOptions($multiple = false, $refresh = true)
     {
         if ((is_null($this->cloudinaryMLoptions) || $refresh) && $this->configuration->isEnabled()) {
             $this->cloudinaryMLoptions = [];
@@ -94,14 +94,8 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                     'cloud_name' => $this->credentials["cloud_name"],
                     'api_key' => $this->credentials["api_key"],
                     'cms_type' => 'magento',
-                    'multiple' => true,
                     //'default_transformations' => [['quality' => 'auto'],['format' => 'auto']],
                 ];
-                if (in_array($resourceType, ["image","video"])) {
-                    $this->cloudinaryMLoptions["folder"] = [
-                            "resource_type" => $resourceType
-                    ];
-                }
                 if (($this->credentials["username"] = $this->configuration->getAutomaticLoginUser())) {
                     $this->cloudinaryMLoptions["timestamp"] = $this->timestamp;
                     $this->cloudinaryMLoptions["username"] = $this->credentials["username"];
@@ -113,8 +107,29 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 }
             }
         }
+        if ($this->cloudinaryMLoptions) {
+            $this->cloudinaryMLoptions['multiple'] = $multiple;
+        }
 
         return $this->cloudinaryMLoptions;
+    }
+
+    /**
+     * @method getCloudinaryMLshowOptions
+     * @param  string|null $resourceType
+     * @param  string $path
+     * @return [type]
+     */
+    public function getCloudinaryMLshowOptions($resourceType = null, $path = "")
+    {
+        $options = [];
+        if ($resourceType || $resourceType) {
+            $options["folder"] = [
+                "path" => $path,
+                "resource_type" => $resourceType,
+            ];
+        }
+        return $options;
     }
 
     public function convertRequestAssetUrlToImage()

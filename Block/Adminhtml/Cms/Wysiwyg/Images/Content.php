@@ -39,22 +39,23 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
     /**
      * Get Cloudinary media library widget options
      *
-     * @param string|null $resourceType Resource Types: "image"/"video" or null for "all".
+     * @param bool $multiple Allow multiple
      * @param bool $refresh Refresh options
      * @return string
      */
-    public function getCloudinaryMediaLibraryWidgetOptions($resourceType = "image", $refresh = false)
+    public function getCloudinaryMediaLibraryWidgetOptions($multiple = false, $refresh = false)
     {
-        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($resourceType, $refresh))) {
+        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($multiple, $refresh))) {
             return null;
         }
         return $this->_jsonEncoder->encode(
             [
-            'cldMLid' => 'wysiwyg',
+            'cldMLid' => 'wysiwyg_media_gallery',
             'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]),
             'triggerSelector' => '.media-gallery-modal',
             'triggerEvent' => 'fileuploaddone',
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
+            'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
             ]
         );
     }
