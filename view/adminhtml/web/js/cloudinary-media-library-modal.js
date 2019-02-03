@@ -19,7 +19,8 @@ define([
             triggerEvent: null, // 'addItem' / 'fileuploaddone'
             callbackHandler: null,
             callbackHandlerMethod: null,
-            imageParamName: 'image'
+            imageParamName: 'image',
+            cldMLid: 0
         },
 
         /**
@@ -42,15 +43,18 @@ define([
             this._bind();
 
             var widget = this;
-
-            if (typeof this.cloudinary_ml === "undefined") {
-                this.cloudinary_ml = window.cloudinary_ml = cloudinary.createMediaLibrary(
+            window.cloudinary_ml = window.cloudinary_ml || [];
+            this.options.cldMLid = this.options.cldMLid || 0;
+            if (typeof window.cloudinary_ml[this.options.cldMLid] === "undefined") {
+                this.cloudinary_ml = window.cloudinary_ml[this.options.cldMLid] = cloudinary.createMediaLibrary(
                     this.options.cloudinaryMLoptions, {
                         insertHandler: function(data) {
                             return widget.cloudinaryInsertHandler(data);
                         }
                     }
                 );
+            } else {
+                this.cloudinary_ml = window.cloudinary_ml[this.options.cldMLid];
             }
 
         },
@@ -70,87 +74,55 @@ define([
             var widget = this;
 
             data.assets.forEach(asset => {
-                switch (asset.resource_type) {
-                    case 'image':
-                        if (widget.options.imageUploaderUrl) {
-                            $.ajax({
-                                url: widget.options.imageUploaderUrl,
-                                data: {
-                                    asset: asset,
-                                    remote_image: asset.secure_url,
-                                    param_name: widget.options.imageParamName,
-                                    form_key: window.FORM_KEY
-                                },
-                                method: 'POST',
-                                dataType: 'json',
-                                async: false,
-                                showLoader: true
-                            }).done(
-                                function(file) {
-                                    var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
-                                    file.fileId = Math.random().toString(36).substr(2, 9);
-                                    file.label = context.alt || context.caption || "";
-                                    if (widget.options.triggerSelector && widget.options.triggerEvent) {
-                                        $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
-                                    }
-                                    if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
-                                        widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
-                                    }
+                if (widget.options.imageUploaderUrl) {
+                    //asset.asset_url = (location.protocol === 'https:') ? asset.secure_url : asset.url;
+                    asset.asset_url = asset.asset_image_url = asset.secure_url;
+                    if (asset.resource_type === "video") {
+                        asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(/\/([^\/]+)$/, '/so_auto/$1.jpg');
+                    }
+                    $.ajax({
+                        url: widget.options.imageUploaderUrl,
+                        data: {
+                            asset: asset,
+                            remote_image: asset.asset_image_url,
+                            param_name: widget.options.imageParamName,
+                            form_key: window.FORM_KEY
+                        },
+                        method: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        showLoader: true
+                    }).done(
+                        function(file) {
+                            var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
+                            file.fileId = Math.random().toString(36).substr(2, 9);
+                            if (asset.resource_type === "video") {
+                                file.video_provider = 'cloudinary';
+                                file.media_type = "external-video";
+                                file.video_url = asset.asset_url;
+                                file.video_title = context.caption || context.alt || "";
+                                file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
+                            } else {
+                                asset.label = context.alt || context.caption || "";
+                            }
+
+                            if (widget.options.triggerSelector && widget.options.triggerEvent) {
+                                $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
+                                if (asset.resource_type === "video") {
+                                    $(widget.options.triggerSelector).last().find('img[src="' + file.url + '"]').addClass('video-item');
                                 }
-                            ).fail(
-                                function(response) {
-                                    alert($.mage.__('An error occured during image insert!'));
-                                    //console.log(response);
-                                }
-                            );
+                            }
+                            if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
+                                widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
+                            }
                         }
-
-                        break;
-
-                    case 'video':
-                        if (widget.options.videoUploaderUrl) {
-                            asset.video_url = (location.protocol === 'https:') ? asset.secure_url : asset.url;
-                            asset.thumbnail = asset.video_url.replace(/\.[^/.]+$/, "").replace(/\/([^\/]+)$/, '/so_auto/$1.jpg');
-                            $.ajax({
-                                url: widget.options.videoUploaderUrl,
-                                data: {
-                                    asset: asset,
-                                    remote_image: asset.thumbnail,
-                                    form_key: window.FORM_KEY
-                                },
-                                method: 'POST',
-                                dataType: 'json',
-                                async: false,
-                                showLoader: true
-                            }).done(
-                                function(file) {
-                                    var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
-                                    file.fileId = Math.random().toString(36).substr(2, 9);
-                                    file.video_provider = 'cloudinary';
-                                    file.media_type = "external-video";
-                                    file.video_url = asset.video_url;
-                                    file.video_title = context.caption || context.alt || "";
-                                    file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
-
-                                    if (widget.options.triggerSelector && widget.options.triggerEvent) {
-                                        $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
-                                        $(widget.options.triggerSelector).last().find('img[src="' + file.url + '"]').addClass('video-item');
-                                    }
-                                    if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
-                                        widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
-                                    }
-                                }
-                            ).fail(
-                                function(response) {
-                                    alert($.mage.__('An error occured during video insert!'));
-                                    //console.log(response);
-                                }
-                            );
+                    ).fail(
+                        function(response) {
+                            alert($.mage.__('An error occured during ' + asset.resource_type + ' insert!'));
+                            //console.log(response);
                         }
-
-                        break;
+                    );
                 }
-
             });
         }
     });

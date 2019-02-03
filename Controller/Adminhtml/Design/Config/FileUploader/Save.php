@@ -1,4 +1,8 @@
 <?php
+/**
+ * This class is not being used at the moment on Cloudinary_Cloudinary,
+ * it has been replaced by Cloudinary\Cloudinary\Controller\Adminhtml\Ajax\RetrieveImage.
+ */
 
 namespace Cloudinary\Cloudinary\Controller\Adminhtml\Design\Config\FileUploader;
 

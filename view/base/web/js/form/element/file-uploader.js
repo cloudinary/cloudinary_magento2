@@ -16,6 +16,7 @@ define([
         initialize: function() {
             this._super();
             this.cloudinaryMLoptions.imageParamName = this.paramName || this.inputName;
+            this.cloudinaryMLoptions.cldMLid = this.cloudinaryMLoptions.imageParamName + '_' + this.uid;
             this.cloudinaryMLoptions.callbackHandler = this;
             this.cloudinaryMLoptions.callbackHandlerMethod = 'addFile';
         },
