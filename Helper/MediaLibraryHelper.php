@@ -99,7 +99,6 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 ];
                 if (in_array($resourceType, ["image","video"])) {
                     $this->cloudinaryMLoptions["folder"] = [
-                            "path" => "",
                             "resource_type" => $resourceType
                     ];
                 }

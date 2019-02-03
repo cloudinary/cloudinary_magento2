@@ -50,6 +50,7 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
         }
         return $this->_jsonEncoder->encode(
             [
+            'cldMLid' => 'wysiwyg',
             'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]),
             'triggerSelector' => '.media-gallery-modal',
             'triggerEvent' => 'fileuploaddone',
