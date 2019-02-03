@@ -55,18 +55,21 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
     /**
      * Get Cloudinary media library widget options
      *
+     * @param string|null $resourceType Resource Types: "image"/"video" or null for "all".
+     * @param bool $refresh Refresh options
      * @return string
      */
-    public function getCloudinaryMediaLibraryWidgetOptions($refresh = false)
+    public function getCloudinaryMediaLibraryWidgetOptions($resourceType = null, $refresh = false)
     {
-        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($refresh))) {
+        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($resourceType, $refresh))) {
             return null;
         }
         return $this->_jsonEncoder->encode(
             [
             'htmlId' => $this->getHtmlId(),
             'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/product_gallery/upload'),
-            'triggerSelector' => '#media_gallery_content .image.image-placeholder > .uploader',
+            'videoUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/product_gallery/retrieveImage'),
+            'triggerSelector' => '#media_gallery_content',
             'triggerEvent' => 'addItem',
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
             ]

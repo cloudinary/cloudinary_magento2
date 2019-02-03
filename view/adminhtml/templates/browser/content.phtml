@@ -27,12 +27,12 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
         <div id="error-message" data-action="show-error"></div>
         <?php if ($cloudinaryMLwidgetOprions): ?>
             <button id="media_gallery_add_from_cloudinary_button"
-                title="<?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?>"
+                title="<?= $block->escapeHtml(__('Add from Cloudinary')) ?>"
                 data-role="add-from-cloudinary-button"
                 type="button"
                 data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
                 class="add-from-cloudinary-button cloudinary-blue-button-with-logo lg-margin-bottom">
-                <span><?= $block->escapeHtml(__('Add Image(s) From Cloudinary')) ?></span>
+                <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
             </button>
         <?php endif; ?>
         <div id="contents-uploader" class="contents-uploader"><?= $block->getChildHtml('wysiwyg_images.uploader') ?></div>

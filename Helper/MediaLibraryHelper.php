@@ -71,7 +71,13 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->request;
     }
 
-    public function getCloudinaryMLOptions($refresh = false)
+    /**
+     * @method getCloudinaryMLOptions
+     * @param string|null $resourceType Resource Types: "image"/"video" or null for "all".
+     * @param bool $refresh Refresh options
+     * @return array
+     */
+    public function getCloudinaryMLOptions($resourceType = null, $refresh = false)
     {
         if ((is_null($this->cloudinaryMLoptions) || $refresh) && $this->configuration->isEnabled()) {
             $this->cloudinaryMLoptions = [];
@@ -91,6 +97,12 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                     'multiple' => true,
                     //'default_transformations' => [['quality' => 'auto'],['format' => 'auto']],
                 ];
+                if (in_array($resourceType, ["image","video"])) {
+                    $this->cloudinaryMLoptions["folder"] = [
+                            "path" => "",
+                            "resource_type" => $resourceType
+                    ];
+                }
                 if (($this->credentials["username"] = $this->configuration->getAutomaticLoginUser())) {
                     $this->cloudinaryMLoptions["timestamp"] = $this->timestamp;
                     $this->cloudinaryMLoptions["username"] = $this->credentials["username"];
@@ -110,7 +122,7 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
     {
         if ($this->configuration->isEnabled()) {
             $asset = $this->getRequest()->getPostValue("asset");
-            $this->curl->get($asset['url']);
+            $this->curl->get($asset['secure_url']);
             $asset['image'] = $this->curl->getBody();
             $this->getRequest()->setPostValue("asset", $asset);
 
