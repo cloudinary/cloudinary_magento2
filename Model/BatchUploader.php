@@ -2,10 +2,10 @@
 
 namespace Cloudinary\Cloudinary\Model;
 
+use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
 use Cloudinary\Cloudinary\Core\Image;
 use Symfony\Component\Console\Output\OutputInterface;
-use Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface;
 
 class BatchUploader
 {
