@@ -53,7 +53,7 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      * @param ConfigurationInterface $configuration
      * @param RequestInterface $request
      * @param Curl $curl
-    */
+     */
     public function __construct(
         Context $context,
         ConfigurationInterface $configuration,
