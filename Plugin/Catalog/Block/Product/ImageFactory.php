@@ -112,20 +112,20 @@ class ImageFactory
      * @param  array|null          $attributes
      * @return ImageBlock
      */
-    public function aroundCreate(CatalogImageFactory $catalogImageFactory, callable $proceed, Product $product, string $imageId, array $attributes = null)
+    public function aroundCreate(CatalogImageFactory $catalogImageFactory, callable $proceed, $product = null, $imageId = null, $attributes = null)
     {
-        $imageBlock = $proceed($product, $imageId, $attributes);
+        $imageBlock = call_user_func_array($proceed, array_slice(func_get_args(), 2));
 
         if (!$this->configuration->isEnabled()) {
             return $imageBlock;
         }
 
-        if (class_exists('\Magento\Catalog\Model\Product\Image\ParamsBuilder')) {
-            $this->imageParamsBuilder = $this->objectManager->get('\Magento\Catalog\Model\Product\Image\ParamsBuilder');
-        } else {
-            //Skip on Magento versions prior to 2.3
+        //Skip on Magento versions prior to 2.3
+        if (is_array($product) || !class_exists('\Magento\Catalog\Model\Product\Image\ParamsBuilder')) {
             return $imageBlock;
         }
+
+        $this->imageParamsBuilder = $this->objectManager->get('\Magento\Catalog\Model\Product\Image\ParamsBuilder');
 
         try {
             if (strpos($imageBlock->getImageUrl(), $this->configuration->getMediaBaseUrl() . 'catalog/product') === 0) {
