@@ -1,7 +1,7 @@
 {
   "name": "cloudinary/cloudinary",
   "type": "magento2-module",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "Cloudinary Magento 2 Integration.",
   "license": "MIT",
   "require": {
