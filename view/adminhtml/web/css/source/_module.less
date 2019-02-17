@@ -9,3 +9,58 @@
     margin-right: 5px;
     vertical-align: text-bottom;
 }
+.image.image-placeholder.add-from-cloudinary-button .product-image-wrapper:before {
+    background-image: url('Cloudinary_Cloudinary::images/cloudinary_dropzone.svg');
+    background-repeat: no-repeat;
+    background-size: 104px;
+    background-position: center;
+    display: block;
+    content: "";
+    width: 100%;
+    height: 98px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+}
+.cloudinary-button-with-logo{
+    position: relative;
+    padding: 6px 14px 6px 50px;
+
+    &:before{
+        background-image: url('Cloudinary_Cloudinary::images/cloudinary_icon_for_blue_bg.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        display: block;
+        vertical-align: middle;
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 14px;
+        width: 30px;
+        height: 30px;
+    }
+
+    &.small-ver{
+        padding: 0px 8px 0 44px;
+
+        > span {
+            line-height: 25px;
+            font-size: 1.2rem;
+        }
+
+        &:before{
+            left: 8px;
+            height: 25px;
+        }
+    }
+
+    &.sm-top-bottom-margin{
+        margin: 4px 0;
+    }
+
+    &.lg-margin-bottom{
+        margin: 0 0 20px 0;
+    }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
+    <referenceContainer name="root">
+        <block class="Cloudinary\Cloudinary\Block\Adminhtml\Cms\Wysiwyg\Images\Content" name="wysiwyg_images.content" template="Cloudinary_Cloudinary::browser/content.phtml">
+            <block class="Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Tree" name="wysiwyg_images.tree" template="Magento_Cms::browser/tree.phtml"/>
+            <block class="Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content\Uploader" name="wysiwyg_images.uploader" template="Magento_Cms::browser/content/uploader.phtml"/>
+        </block>
+    </referenceContainer>
+</layout>

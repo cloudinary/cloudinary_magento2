@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary\Core\AutoUploadMapping\RequestProcessor;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ReinitableConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Message\ManagerInterface;
@@ -90,7 +91,7 @@ class Configuration implements ObserverInterface
             return $this;
         }
 
-        if (!$this->requestProcessor->handle('media', $this->configuration->getMediaBaseUrl(), true)) {
+        if (!$this->requestProcessor->handle(DirectoryList::MEDIA, $this->configuration->getMediaBaseUrl(), true)) {
             $this->messageManager->addErrorMessage(self::AUTO_UPLOAD_SETUP_FAIL_MESSAGE);
         }
     }

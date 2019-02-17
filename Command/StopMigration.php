@@ -9,9 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StopMigration extends Command
 {
-    const NOP_MESSAGE = 'No upload running to stop.';
-    const STOPPED_MESSAGE = 'Upload manually stopped.';
-    
+    const NOP_MESSAGE = 'No upload/download running to stop.';
+    const STOPPED_MESSAGE = 'Upload/Download manually stopped.';
+
     /**
      * @var MigrationTask
      */
@@ -22,7 +22,7 @@ class StopMigration extends Command
      */
     public function __construct(MigrationTask $migrationTask)
     {
-        parent::__construct('cloudinary:upload:stop');
+        parent::__construct('cloudinary:migration:stop');
 
         $this->migrationTask = $migrationTask;
     }
@@ -34,7 +34,7 @@ class StopMigration extends Command
      */
     protected function configure()
     {
-        $this->setDescription('Stops any currently running upload.');
+        $this->setDescription('Stops any currently running upload/download.');
     }
 
     /**
