@@ -4,6 +4,7 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
+                <item name="cloudinary_download_images" xsi:type="object">Cloudinary\Cloudinary\Command\DownloadImages</item>
                 <item name="cloudinary_upload_images" xsi:type="object">Cloudinary\Cloudinary\Command\UploadImages</item>
                 <item name="cloudinary_upload_stop" xsi:type="object">Cloudinary\Cloudinary\Command\StopMigration</item>
                 <item name="cloudinary_reset" xsi:type="object">Cloudinary\Cloudinary\Command\ResetAll</item>
@@ -65,6 +66,14 @@
 
     <type name="Magento\Catalog\Model\Product">
         <plugin name="cloudinary_validate_product_transform" type="Cloudinary\Cloudinary\Plugin\ValidateProductTransform" />
+    </type>
+
+    <type name="Magento\Ui\Component\Form\Element\DataType\Media">
+        <plugin name="cloudinary_form_element_media_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media" />
+    </type>
+
+    <type name="Magento\Ui\Component\Form\Element\DataType\Media\Image">
+        <plugin name="cloudinary_form_element_media_image_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media\Image" />
     </type>
 
 </config>

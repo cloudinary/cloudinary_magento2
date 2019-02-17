@@ -12,5 +12,13 @@
         </arguments>
     </virtualType>
 
+    <preference for="Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery\Content" type="Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form\Gallery\Content" />
     <preference for="Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVideo" type="Cloudinary\Cloudinary\Block\Adminhtml\Product\Edit\NewVideo" />
+
+    <!-- CLOUDINARY-74: Implementation of Cloudinary-ML in System configuration (still in progress):
+    <type name="Magento\Config\Block\System\Config\Form\Field\Image">
+        <plugin name="cloudinary_system_config_form_field_image_plugin" type="Cloudinary\Cloudinary\Plugin\Config\Block\System\Config\Form\Field\Image" />
+    </type>
+    -->
+
 </config>
