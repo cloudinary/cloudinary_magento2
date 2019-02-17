@@ -64,7 +64,7 @@ class Image
                 data-role="add-from-cloudinary-button"
                 type="button"
                 data-mage-init=\'{"cloudinaryMediaLibraryModal": ' . $this->jsonEncoder->encode(['cloudinaryMLoptions' => $cloudinaryMLoptions, 'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image")]) . '}\'
-                class="add-from-cloudinary-button cloudinary-blue-button-with-logo small-ver sm-top-bottom-margin">
+                class="action-secondary add-from-cloudinary-button cloudinary-button-with-logo small-ver sm-top-bottom-margin">
                 <span>' . $this->escaper->escapeHtml(__('Add from Cloudinary')) . '</span>
             </button>';
         }
