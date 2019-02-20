@@ -221,8 +221,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      */
     protected function appendNewFileName($localFilePath)
     {
-        $destinationFile = $this->appendAbsoluteFileSystemPath($localFilePath);
-        $fileName = Uploader::getNewFileName($destinationFile);
+        $fileName = Uploader::getNewFileName($localFilePath);
         $fileInfo = pathinfo($localFilePath);
         return $fileInfo['dirname'] . DIRECTORY_SEPARATOR . $fileName;
     }

@@ -1,1 +1,0 @@
-/app/modules/cloudinarym2/view/adminhtml/web/js/product_free_transform.js

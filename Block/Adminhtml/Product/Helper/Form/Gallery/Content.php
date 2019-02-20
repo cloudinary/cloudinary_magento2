@@ -71,6 +71,7 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
             'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/ajax/retrieveImage'),
             'triggerSelector' => '#media_gallery_content',
             'triggerEvent' => 'addItem',
+            'useDerived' => false,
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
             'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions(null),
             ]
