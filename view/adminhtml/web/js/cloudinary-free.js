@@ -1,7 +1,8 @@
 define(
     [
-    'jquery'
-    ], function ($) {
+        'jquery'
+    ],
+    function($) {
         'use strict';
 
         $.widget(
@@ -9,22 +10,22 @@ define(
 
                 currentTransform: '',
 
-                getTransformText: function () {
+                getTransformText: function() {
                     return $(this.options.transformInputFieldId).val();
                 },
 
-                getImageHtml: function (src) {
+                getImageHtml: function(src) {
                     var id = 'cloudinary_custom_transform_preview_image',
-                    style = 'width: auto; height: auto; max-width: 500px; max-height: 500px; min-height: 50px;',
-                    footer = '<p>Image size restricted for viewing purposes</p>';
+                        style = 'width: auto; height: auto; max-width: 500px; max-height: 500px; min-height: 50px;',
+                        footer = '<p>Image size restricted for viewing purposes</p>';
                     return '<img id="' + id + '" src="' + src + '" style="' + style + '" />' + footer;
                 },
 
-                getErrorHtml: function (message) {
+                getErrorHtml: function(message) {
                     return '<ul><li class="admin__field-error">' + message + '</li></ul>';
                 },
 
-                updatePreviewImage: function (url) {
+                updatePreviewImage: function(url) {
                     var $image = $('#cloudinary_custom_transform_preview_image');
 
                     if (!$image.length) {
@@ -34,7 +35,7 @@ define(
                     }
                 },
 
-                updatePreview: function () {
+                updatePreview: function() {
                     var self = this;
 
                     if (!self.isPreviewActive()) {
@@ -44,29 +45,27 @@ define(
                     self.currentTransform = self.getTransformText();
                     self.setPreviewActiveState(false);
 
-                    $.ajax(
-                        {
-                            url: this.options.ajaxUrl,
-                            data: {
-                                free: self.getTransformText(),
-                                form_key: self.options.ajaxKey
-                            },
-                            type: 'post',
-                            dataType: 'json',
-                            showLoader: true
-                        }
-                    ).done(
-                        function (response) {
+                    $.ajax({
+                        url: this.options.ajaxUrl,
+                        data: {
+                            free: self.getTransformText(),
+                            form_key: self.options.ajaxKey
+                        },
+                        type: 'post',
+                        dataType: 'json',
+                        showLoader: true
+                    }).done(
+                        function(response) {
                             self.updatePreviewImage(response.url);
                         }
                     ).fail(
-                        function (result) {
+                        function(result) {
                             $('#cloudinary_custom_transform_preview').html(self.getErrorHtml(result.responseJSON.error));
                         }
                     );
                 },
 
-                setPreviewActiveState: function (state) {
+                setPreviewActiveState: function(state) {
                     if (state && (this.currentTransform !== this.getTransformText())) {
                         $(this.options.previewButtonId).removeClass('disabled');
                     } else {
@@ -74,22 +73,22 @@ define(
                     }
                 },
 
-                isPreviewActive: function () {
+                isPreviewActive: function() {
                     return !$(this.options.previewButtonId).hasClass('disabled');
                 },
 
-                _create: function () {
+                _create: function() {
                     var self = this;
 
                     $(this.options.previewButtonId).on(
                         'click',
-                        function () {
+                        function() {
                             self.updatePreview();
                         }
                     );
                     $(this.options.transformInputFieldId).on(
                         'change keydown paste input',
-                        function () {
+                        function() {
                             self.setPreviewActiveState(true);
                         }
                     );
