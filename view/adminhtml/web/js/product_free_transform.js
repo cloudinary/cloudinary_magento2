@@ -111,14 +111,14 @@ define(
             },
 
             insertChildRow: function(params) {
-                if (!this.tableRows()[params.file]) {
+                if (!this.tableRows()[params.id]) {
                     params.ajaxUrl = this.ajaxUrl;
                     var elm = this.createRow(params);
-                    this.tableRows()[params.file] = elm;
+                    this.tableRows()[params.id] = elm;
                     this.insertChild(elm);
                     return elm;
                 } else {
-                    return this.tableRows()[params.file];
+                    return this.tableRows()[params.id];
                 }
             },
 
@@ -137,10 +137,21 @@ define(
                 }
 
                 $(document).on('addItem', '#media_gallery_content', function(event, file) {
-                    if (file && file.media_type === 'image' && file.file && file.image_url) {
-                        file.id = file.id || file.fileId;
+                    if (file && file.media_type === 'image' && file.file && file.image_url && (file.id || file.fileId || file.value_id)) {
+                        file.id = file.id || file.fileId || file.value_id;
                         file.image_url = file.asset_derived_image_url || file.image_url;
                         self.insertChildRow(file).trigger("freeTransformation");
+                    }
+                });
+
+                $(document).on('removeItem', '#media_gallery_content', function(event, file) {
+                    if (file && (file.id || file.fileId || file.value_id)) {
+                        file.id = file.id || file.fileId || file.value_id;
+                        self.elems.each(function(elem) {
+                            if (elem.id == file.id) {
+                                self.removeChild(elem);
+                            }
+                        });
                     }
                 });
 
@@ -150,11 +161,9 @@ define(
             afterRender: function() {
                 var self = this;
 
-                this.elems.each(
-                    function(elem) {
-                        elem.ajaxUrl = self.ajaxUrl;
-                    }
-                );
+                this.elems.each(function(elem) {
+                    elem.ajaxUrl = self.ajaxUrl;
+                });
             }
         });
     }
