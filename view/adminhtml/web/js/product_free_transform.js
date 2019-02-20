@@ -98,7 +98,8 @@ define(
         return Collection.extend({
             defaults: {
                 ajaxUrl: "",
-                template: 'Cloudinary_Cloudinary/product/free_transform'
+                template: 'Cloudinary_Cloudinary/product/free_transform',
+                tableRows: {}
             },
 
             getTransforms: function() {
@@ -109,16 +110,50 @@ define(
                 return FreeTransformRow().configure(params);
             },
 
+            insertChildRow: function(params) {
+                if (!this.tableRows()[params.id]) {
+                    params.ajaxUrl = this.ajaxUrl;
+                    var elm = this.createRow(params);
+                    this.tableRows()[params.id] = elm;
+                    this.insertChild(elm);
+                    return elm;
+                } else {
+                    return this.tableRows()[params.id];
+                }
+            },
+
             initObservable: function() {
                 var self = this;
 
-                this._super();
+                self._super()
+                    .observe([
+                        'tableRows'
+                    ]);
 
                 if (this.getTransforms()) {
                     $.each(this.getTransforms(), function(i, transform) {
-                        self.insertChild(self.createRow(transform));
+                        self.insertChildRow(transform);
                     });
                 }
+
+                $(document).on('addItem', '#media_gallery_content', function(event, file) {
+                    if (file && file.media_type === 'image' && file.file && file.image_url && (file.id || file.fileId || file.value_id)) {
+                        file.id = file.id || file.fileId || file.value_id;
+                        file.image_url = file.asset_derived_image_url || file.image_url;
+                        self.insertChildRow(file).trigger("freeTransformation");
+                    }
+                });
+
+                $(document).on('removeItem', '#media_gallery_content', function(event, file) {
+                    if (file && (file.id || file.fileId || file.value_id)) {
+                        file.id = file.id || file.fileId || file.value_id;
+                        self.elems.each(function(elem) {
+                            if (elem.id == file.id) {
+                                self.removeChild(elem);
+                            }
+                        });
+                    }
+                });
 
                 return this;
             },
@@ -126,11 +161,9 @@ define(
             afterRender: function() {
                 var self = this;
 
-                this.elems.each(
-                    function(elem) {
-                        elem.ajaxUrl = self.ajaxUrl;
-                    }
-                );
+                this.elems.each(function(elem) {
+                    elem.ajaxUrl = self.ajaxUrl;
+                });
             }
         });
     }
