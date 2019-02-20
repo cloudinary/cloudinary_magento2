@@ -98,7 +98,8 @@ define(
         return Collection.extend({
             defaults: {
                 ajaxUrl: "",
-                template: 'Cloudinary_Cloudinary/product/free_transform'
+                template: 'Cloudinary_Cloudinary/product/free_transform',
+                tableRows: {}
             },
 
             getTransforms: function() {
@@ -109,16 +110,39 @@ define(
                 return FreeTransformRow().configure(params);
             },
 
+            insertChildRow: function(params) {
+                if (!this.tableRows()[params.file]) {
+                    params.ajaxUrl = this.ajaxUrl;
+                    var elm = this.createRow(params);
+                    this.tableRows()[params.file] = elm;
+                    this.insertChild(elm);
+                    return elm;
+                } else {
+                    return this.tableRows()[params.file];
+                }
+            },
+
             initObservable: function() {
                 var self = this;
 
-                this._super();
+                self._super()
+                    .observe([
+                        'tableRows'
+                    ]);
 
                 if (this.getTransforms()) {
                     $.each(this.getTransforms(), function(i, transform) {
-                        self.insertChild(self.createRow(transform));
+                        self.insertChildRow(transform);
                     });
                 }
+
+                $(document).on('addItem', '#media_gallery_content', function(event, file) {
+                    if (file && file.media_type === 'image' && file.file && file.image_url) {
+                        file.id = file.id || file.fileId;
+                        file.image_url = file.asset_derived_image_url || file.image_url;
+                        self.insertChildRow(file).trigger("freeTransformation");
+                    }
+                });
 
                 return this;
             },

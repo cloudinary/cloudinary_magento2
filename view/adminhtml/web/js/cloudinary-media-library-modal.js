@@ -22,7 +22,8 @@ define([
             imageParamName: 'image',
             cloudinaryMLoptions: {}, // Options for Cloudinary-ML createMediaLibrary()
             cloudinaryMLshowOptions: {}, // Options for Cloudinary-ML show()
-            cldMLid: 0
+            cldMLid: 0,
+            useDerived: true
         },
 
         /**
@@ -47,7 +48,6 @@ define([
             var widget = this;
             window.cloudinary_ml = window.cloudinary_ml || [];
             this.options.cldMLid = this.options.cldMLid || 0;
-            console.log(this.options.cloudinaryMLoptions);
             if (typeof window.cloudinary_ml[this.options.cldMLid] === "undefined") {
                 this.cloudinary_ml = window.cloudinary_ml[this.options.cldMLid] = cloudinary.createMediaLibrary(
                     this.options.cloudinaryMLoptions, {
@@ -66,7 +66,6 @@ define([
          * Fired on trigger "openMediaLibrary"
          */
         openMediaLibrary: function() {
-            console.log(this.options.cloudinaryMLshowOptions);
             this.cloudinary_ml.show(this.options.cloudinaryMLshowOptions);
         },
 
@@ -74,15 +73,27 @@ define([
          * Fired on trigger "cloudinaryInsertHandler"
          */
         cloudinaryInsertHandler: function(data) {
-            //console.log("Inserted assets:", JSON.stringify(data.assets, null, 2));
             var widget = this;
 
             data.assets.forEach(asset => {
+                //console.log(asset);
                 if (widget.options.imageUploaderUrl) {
-                    //asset.asset_url = (location.protocol === 'https:') ? asset.secure_url : asset.url;
-                    asset.asset_url = asset.asset_image_url = asset.secure_url;
+                    if (asset.derived && asset.derived[0] && asset.derived[0].secure_url) {
+                        asset.asset_derived_url = asset.asset_derived_image_url = asset.derived[0].secure_url;
+                        asset.free_transformation = asset.asset_derived_image_url
+                            .replace(new RegExp('^.*cloudinary.com/' + this.options.cloudinaryMLoptions.cloud_name + '/' + asset.resource_type + '/' + asset.type + '/'), '')
+                            .replace(/\.[^/.]+$/, '')
+                            .replace(new RegExp('\/' + asset.public_id + '$'), '')
+                            .replace(new RegExp('\/v[0-9]{1,10}$'), '')
+                            .replace(new RegExp('\/'), ',');
+                    }
+                    if (widget.options.useDerived) {
+                        asset.asset_url = asset.asset_image_url = asset.derived[0].secure_url;
+                    } else {
+                        asset.asset_url = asset.asset_image_url = asset.secure_url;
+                    }
                     if (asset.resource_type === "video") {
-                        asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(/\/([^\/]+)$/, '/so_auto/$1.jpg');
+                        asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(new RegExp('(\/' + asset.public_id + ')$'), '/so_auto/$1.jpg');
                     }
                     $.ajax({
                         url: widget.options.imageUploaderUrl,
@@ -99,16 +110,23 @@ define([
                     }).done(
                         function(file) {
                             var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
-                            file.fileId = Math.random().toString(36).substr(2, 9);
+                            file.fileId = file.fileId || file.id || file.value_id || Math.random().toString(36).substr(2, 9);
+                            file.id = file.id || file.fileId;
+                            file.value_id = file.value_id || file.fileId;
                             if (asset.resource_type === "video") {
                                 file.video_provider = 'cloudinary';
                                 file.media_type = "external-video";
                                 file.video_url = asset.asset_url;
-                                file.video_title = context.caption || context.alt || "";
+                                file.video_title = context.caption || context.alt || asset.public_id || "";
                                 file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
                             } else {
-                                asset.label = context.alt || context.caption || "";
+                                file.media_type = "image";
+                                file.label = asset.label = context.alt || context.caption || asset.public_id || "";
                             }
+                            file.free_transformation = asset.free_transformation;
+                            file.asset_derived_image_url = asset.asset_derived_image_url;
+                            file.image_url = asset.asset_image_url;
+                            file.cloudinary_asset = asset;
 
                             if (widget.options.triggerSelector && widget.options.triggerEvent) {
                                 $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);

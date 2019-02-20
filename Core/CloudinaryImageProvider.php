@@ -101,7 +101,7 @@ class CloudinaryImageProvider implements ImageProvider
         }
 
         if ($this->configuration->getRemoveVersionNumber()) {
-            $regex = '/\/v[0-9]+\/' . preg_quote(ltrim($image->getId(), '/'), '/') . '$/';
+            $regex = '/\/v[0-9]{1,10}\/' . preg_quote(ltrim($image->getId(), '/'), '/') . '$/';
             $imagePath = preg_replace($regex, '/' . ltrim($image->getId(), '/'), $imagePath);
         }
 
