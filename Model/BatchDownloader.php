@@ -184,8 +184,6 @@ class BatchDownloader
             try {
                 $this->_iteration++;
                 $this->displayMessage('<comment>Iteration #' . $this->_iteration . '</comment>');
-                //$resource = (array)json_decode('{"public_id":"catalog\/category\/logo-girit-circle","format":"jpg","version":1549191887,"resource_type":"image","type":"upload","created_at":"2019-02-03T11:04:47Z","bytes":13915,"width":255,"height":255,"url":"http:\/\/res.cloudinary.com\/daksuxpc4\/image\/upload\/v1549191887\/catalog\/category\/logo-girit-circle.jpg","secure_url":"https:\/\/res.cloudinary.com\/daksuxpc4\/image\/upload\/v1549191887\/catalog\/category\/logo-girit-circle.jpg"}');
-                //print_r($resource);
 
                 $response = $this->getResources($this->_nextCursor);
                 $response->setResourcesCount(count($response->getResources()));
@@ -273,6 +271,9 @@ class BatchDownloader
                 break;
             }
         } while ($this->_nextCursor);
+
+        $this->migrationTask->stop();
+        return true;
     }
 
     /**
