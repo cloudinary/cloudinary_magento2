@@ -272,7 +272,7 @@ class BatchDownloader
             }
         } while ($this->_nextCursor);
 
-        $this->migrationTask->stop();
+        $this->_migrationTask->stop();
         return true;
     }
 
