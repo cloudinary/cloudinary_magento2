@@ -78,6 +78,7 @@ define([
             data.assets.forEach(asset => {
                 //console.log(asset);
                 if (widget.options.imageUploaderUrl) {
+                    asset.asset_url = asset.asset_image_url = asset.secure_url;
                     if (asset.derived && asset.derived[0] && asset.derived[0].secure_url) {
                         asset.asset_derived_url = asset.asset_derived_image_url = asset.derived[0].secure_url;
                         asset.free_transformation = asset.asset_derived_image_url
@@ -86,11 +87,9 @@ define([
                             .replace(new RegExp('\/' + asset.public_id + '$'), '')
                             .replace(new RegExp('\/v[0-9]{1,10}$'), '')
                             .replace(new RegExp('\/'), ',');
-                    }
-                    if (widget.options.useDerived) {
-                        asset.asset_url = asset.asset_image_url = asset.derived[0].secure_url;
-                    } else {
-                        asset.asset_url = asset.asset_image_url = asset.secure_url;
+                        if (widget.options.useDerived) {
+                            asset.asset_url = asset.asset_image_url = asset.derived[0].secure_url;
+                        }
                     }
                     if (asset.resource_type === "video") {
                         asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(new RegExp('(\/' + asset.public_id + ')$'), '/so_auto/$1.jpg');
