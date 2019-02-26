@@ -45,6 +45,10 @@ class SaveProductTransform implements ObserverInterface
         foreach ($changedTransforms as $id => $transform) {
             $this->storeFreeTransformation($this->helper->getImageNameForId($id, $mediaGalleryImages), $transform);
         }
+
+        foreach ($changedTransforms as $id => $transform) {
+            $this->helper->validate($this->helper->getImageNameForId($id, $mediaGalleryImages), $transform);
+        }
     }
 
     /**
