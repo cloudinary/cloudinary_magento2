@@ -35,7 +35,11 @@ class ValidateProductTransform
         );
 
         foreach ($changedTransforms as $id => $transform) {
-            $this->helper->validate($this->helper->getImageNameForId($id, $mediaGalleryImages), $transform);
+            $name = $this->helper->getImageNameForId($id, $mediaGalleryImages);
+            if (preg_match('/.tmp$/', $name)) {
+                continue;
+            }
+            $this->helper->validate($name, $transform);
         }
 
         return $result;
