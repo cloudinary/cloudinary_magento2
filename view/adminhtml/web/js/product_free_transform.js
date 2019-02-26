@@ -137,10 +137,21 @@ define(
                 }
 
                 $(document).on('addItem', '#media_gallery_content', function(event, file) {
-                    if (file && file.media_type === 'image' && file.file && file.image_url && (file.id || file.fileId || file.value_id)) {
-                        file.id = file.id || file.fileId || file.value_id;
-                        file.image_url = file.asset_derived_image_url || file.image_url;
-                        self.insertChildRow(file).trigger("freeTransformation");
+                    if (file && (file.media_type === 'image' || /^image/.test(file.type)) && file.file && (file.image_url || file.url)) {
+                        file.image_url = file.image_url || file.url;
+                        file.id = file.id || file.file_id || file.value_id || file.fileId;
+                        if (!file.id) {
+                            file.id = $('input[name^="product[media_gallery][images]"][name$="[file]"][value="' + file.file + '"]:last');
+                            if (file.id.length) {
+                                file.id = file.file_id = file.id.attr('name')
+                                    .replace(/^product\[media_gallery\]\[images\]\[/, '')
+                                    .replace(/\]\[file\]$/, '');
+                            }
+                        }
+                        if (file.id) {
+                            file.image_url = file.asset_derived_image_url || file.image_url;
+                            self.insertChildRow(file).trigger("freeTransformation");
+                        }
                     }
                 });
 
