@@ -2,10 +2,10 @@
 
 namespace Cloudinary\Cloudinary\Helper\Product;
 
-use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Magento\Catalog\Model\Product;
+use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
 use Cloudinary\Cloudinary\Model\Config\Backend\Free as FreeModel;
+use Magento\Catalog\Model\Product;
 
 class Free
 {
@@ -49,7 +49,7 @@ class Free
      */
     public function getImageNameForId($id, array $images)
     {
-        return array_key_exists($id, $images) ? $images[$id]['file'] : '';
+        return array_key_exists($id, $images) ? preg_replace('/.tmp$/', '', $images[$id]['file']) : '';
     }
 
     /**
