@@ -49,7 +49,7 @@ class Free
      */
     public function getImageNameForId($id, array $images)
     {
-        return array_key_exists($id, $images) ? preg_replace('/.tmp$/', '', $images[$id]['file']) : '';
+        return array_key_exists($id, $images) ? $images[$id]['file'] : '';
     }
 
     /**
