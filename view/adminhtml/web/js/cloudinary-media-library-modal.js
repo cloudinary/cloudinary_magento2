@@ -120,6 +120,9 @@ define([
                                 file.video_title = context.caption || context.alt || asset.public_id || "";
                                 file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
                             } else {
+                                if (file.url.includes("/tmp/catalog/product/") && !/\.tmp$'/.test(file.file)) {
+                                    file.file = file.file + '.tmp';
+                                }
                                 file.media_type = "image";
                                 file.label = asset.label = context.alt || context.caption || asset.public_id || "";
                             }
