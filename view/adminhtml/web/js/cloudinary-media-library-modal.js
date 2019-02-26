@@ -110,9 +110,6 @@ define([
                     }).done(
                         function(file) {
                             var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
-                            file.fileId = file.fileId || file.id || file.value_id || Math.random().toString(36).substr(2, 9);
-                            file.id = file.id || file.fileId;
-                            file.value_id = file.value_id || file.fileId;
                             if (asset.resource_type === "video") {
                                 file.video_provider = 'cloudinary';
                                 file.media_type = "external-video";
@@ -122,6 +119,9 @@ define([
                             } else {
                                 file.media_type = "image";
                                 file.label = asset.label = context.alt || context.caption || asset.public_id || "";
+                                if (file.url.includes("/tmp/catalog/product/") && !/\.tmp$'/.test(file.file)) {
+                                    file.file = file.file + '.tmp';
+                                }
                             }
                             file.free_transformation = asset.free_transformation;
                             file.asset_derived_image_url = asset.asset_derived_image_url;
