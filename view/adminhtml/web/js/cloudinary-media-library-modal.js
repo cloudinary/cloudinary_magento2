@@ -108,39 +108,45 @@ define([
                         showLoader: true
                     }).done(
                         function(file) {
-                            var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
-                            if (asset.resource_type === "video") {
-                                file.video_provider = 'cloudinary';
-                                file.media_type = "external-video";
-                                file.video_url = asset.asset_url;
-                                file.video_title = context.caption || context.alt || asset.public_id || "";
-                                file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
-                            } else {
-                                file.media_type = "image";
-                                file.label = asset.label = context.alt || context.caption || asset.public_id || "";
-                                if (file.url.includes("/tmp/catalog/product/") && !/\.tmp$'/.test(file.file)) {
-                                    file.file = file.file + '.tmp';
-                                }
-                            }
-                            file.free_transformation = asset.free_transformation;
-                            file.asset_derived_image_url = asset.asset_derived_image_url;
-                            file.image_url = asset.asset_image_url;
-                            file.cloudinary_asset = asset;
-
-                            if (widget.options.triggerSelector && widget.options.triggerEvent) {
-                                $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
+                            if (file.file && !file.error) {
+                                var context = (asset.context && asset.context.custom) ? asset.context.custom : {};
                                 if (asset.resource_type === "video") {
-                                    $(widget.options.triggerSelector).last().find('img[src="' + file.url + '"]').addClass('video-item');
+                                    file.video_provider = 'cloudinary';
+                                    file.media_type = "external-video";
+                                    file.video_url = asset.asset_url;
+                                    file.video_title = context.caption || context.alt || asset.public_id || "";
+                                    file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
+                                } else {
+                                    file.media_type = "image";
+                                    file.label = asset.label = context.alt || context.caption || asset.public_id || "";
+                                    if (file.url.includes("/tmp/catalog/product/") && !/\.tmp$'/.test(file.file)) {
+                                        file.file = file.file + '.tmp';
+                                    }
                                 }
+                                file.free_transformation = asset.free_transformation;
+                                file.asset_derived_image_url = asset.asset_derived_image_url;
+                                file.image_url = asset.asset_image_url;
+                                file.cloudinary_asset = asset;
+
+                                if (widget.options.triggerSelector && widget.options.triggerEvent) {
+                                    $(widget.options.triggerSelector).last().trigger(widget.options.triggerEvent, file);
+                                    if (asset.resource_type === "video") {
+                                        $(widget.options.triggerSelector).last().find('img[src="' + file.url + '"]').addClass('video-item');
+                                    }
+                                }
+                                if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
+                                    widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
+                                }
+                            } else {
+                                alert($.mage.__('An error occured during ' + asset.resource_type + ' insert!'));
+                                console.error(file);
                             }
-                            if (widget.options.callbackHandler && widget.options.callbackHandlerMethod && typeof widget.options.callbackHandler[widget.options.callbackHandlerMethod] === 'function') {
-                                widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
-                            }
+
                         }
                     ).fail(
                         function(response) {
                             alert($.mage.__('An error occured during ' + asset.resource_type + ' insert!'));
-                            //console.log(response);
+                            console.error(response);
                         }
                     );
                 }
