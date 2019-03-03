@@ -92,7 +92,7 @@ define([
                         }
                     }
                     if (asset.resource_type === "video") {
-                        asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(new RegExp('\/(' + asset.public_id + ')$'), '/so_auto/$1.jpg');
+                        asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(new RegExp('\/v[0-9]{1,10}\/'), '/').replace(new RegExp('\/(' + asset.public_id + ')$'), '/so_auto/$1.jpg');
                     }
                     $.ajax({
                         url: widget.options.imageUploaderUrl,
