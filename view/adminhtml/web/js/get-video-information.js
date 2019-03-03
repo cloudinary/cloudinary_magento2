@@ -637,7 +637,7 @@ define(
                         context = (tmp.context && tmp.context.custom) ? tmp.context.custom : {};
 
                         tmp.derived = tmp.derived || [];
-                        thumbnail = videoInfo.videoSrc.replace(/\.[^/.]+$/, "").replace(new RegExp('(\/' + tmp.public_id + ')$'), '/so_auto/$1.jpg') || this.options.cloudinaryPlaceholder;
+                        thumbnail = videoInfo.videoSrc.replace(/\.[^/.]+$/, "").replace(new RegExp('\/(' + tmp.public_id + ')$'), '/so_auto/$1.jpg') || this.options.cloudinaryPlaceholder;
 
                         respData = {
                             duration: 'unknown',
