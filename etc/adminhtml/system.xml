@@ -3,8 +3,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="cloudinary" translate="label" sortOrder="400">
-            <label><![CDATA[<span class='cloudinary-icon'></span>Cloudinary]]></label>
-		</tab>
+            <label>
+                <![CDATA[<span class='cloudinary-icon'></span>Cloudinary]]>
+            </label>
+        </tab>
         <section id="cloudinary" translate="label" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
             <label>Settings</label>
             <tab>cloudinary</tab>
@@ -22,7 +24,9 @@
                 <attribute type="expanded">1</attribute>
                 <field id="cloudinary_environment_variable" translate="label comment" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Cloudinary Account Credentials</label>
-                    <comment><![CDATA[Set the credentials of your Cloudinary account. Copy the "Environment variable" string from the dashboard of Cloudinary's Management Console.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name]]></comment>
+                    <comment>
+                        <![CDATA[Set the credentials of your Cloudinary account. Copy the "Environment variable" string from the dashboard of Cloudinary's Management Console.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name]]>
+                    </comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
                 </field>
                 <field id="cloudinary_automatic_login_user" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -147,7 +151,7 @@
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomViewerPosition</source_model>
                         <depends>
                             <field id="zoom">1</field>
-                            <field id="type">flyout</field>
+                            <field id="zoomProps_type">flyout</field>
                         </depends>
                     </field>
                     <field id="zoomProps_trigger" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -182,7 +186,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_width</config_path>
                         <validate>validate-number</validate>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="thumbnailProps_height" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -190,7 +194,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_height</config_path>
                         <validate>validate-number</validate>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="thumbnailProps_navigationShape" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -198,7 +202,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_navigationShape</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsNavigationShape</source_model>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="thumbnailProps_selectedStyle" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -206,7 +210,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_selectedStyle</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsSelectedStyle</source_model>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="thumbnailProps_selectedBorderPosition" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -214,7 +218,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_selectedBorderPosition</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsSelectedBorderPosition</source_model>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="thumbnailProps_selectedBorderWidth" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -222,7 +226,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_selectedBorderWidth</config_path>
                         <validate>validate-number</validate>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="thumbnailProps_mediaSymbolShape" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -230,7 +234,7 @@
                         <config_path>cloudinary/product_gallery/thumbnailProps_mediaSymbolShape</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsMediaSymbolShape</source_model>
                         <depends>
-                            <field id="carousel_style">thumbnails</field>
+                            <field id="carouselStyle">thumbnails</field>
                         </depends>
                     </field>
                     <field id="indicatorProps_shape" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
@@ -238,7 +242,7 @@
                         <config_path>cloudinary/product_gallery/indicatorProps_shape</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\IndicatorsShape</source_model>
                         <depends>
-                            <field id="carousel_style">indicators</field>
+                            <field id="carouselStyle">indicators</field>
                         </depends>
                     </field>
                 </group>
