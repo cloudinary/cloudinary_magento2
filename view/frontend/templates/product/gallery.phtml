@@ -1,0 +1,12 @@
+<?php
+/**
+ * @var \Magento\Catalog\Block\Product\View\Gallery $block
+ */
+?>
+<div id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
+    class="cloudinary-product-gallery"
+    data-mage-init='{"cloudinaryProductGallery": <?= $block->getCloudinaryPGOptions() ?>}'
+    style="max-width:100%;margin:auto"></div>
+<pre>
+    <?php print_r(json_decode($block->getCloudinaryPGOptions())); ?>
+</pre>
