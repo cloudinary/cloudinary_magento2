@@ -24,7 +24,7 @@ define([
             cloudinaryMLshowOptions: {}, // Options for Cloudinary-ML show()
             cldMLid: 0,
             useDerived: true,
-            addTmpExtension: true,
+            addTmpExtension: false,
         },
 
         /**
