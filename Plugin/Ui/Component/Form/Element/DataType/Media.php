@@ -52,6 +52,7 @@ class Media
                         'component' => 'Cloudinary_Cloudinary/js/form/element/file-uploader',
                         'cloudinaryMLoptions' => [
                             'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/ajax/retrieveImage', ['_secure' => true]),
+                            'addTmpExtension' => true,
                             'cloudinaryMLoptions' => $cloudinaryMLoptions,
                             'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
                         ]
