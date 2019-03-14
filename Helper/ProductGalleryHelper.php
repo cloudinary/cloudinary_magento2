@@ -3,6 +3,7 @@
 namespace Cloudinary\Cloudinary\Helper;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Model\Configuration;
 use Magento\Framework\App\Helper\Context;
 
 class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
@@ -18,6 +19,31 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      * @var array|null
      */
     protected $cloudinaryPGoptions;
+
+    const CASTING = [
+        'themeProps_primary' => 'string',
+        'themeProps_onPrimary' => 'string',
+        'themeProps_active' => 'string',
+        'themeProps_onActive' => 'string',
+        'transition' => 'string',
+        'aspectRatio' => 'string',
+        'navigation' => 'string',
+        'zoom' => 'bool',
+        'zoomProps_type' => 'string',
+        'zoomPropsViewerPosition' => 'string',
+        'zoomProps_trigger' => 'string',
+        'carouselLocation' => 'string',
+        'carouselOffset' => 'float',
+        'carouselStyle' => 'string',
+        'thumbnailProps_width' => 'float',
+        'thumbnailProps_height' => 'float',
+        'thumbnailProps_navigationShape' => 'string',
+        'thumbnailProps_selectedStyle' => 'string',
+        'thumbnailProps_selectedBorderPosition' => 'string',
+        'thumbnailProps_selectedBorderWidth' => 'float',
+        'thumbnailProps_mediaSymbolShape' => 'string',
+        'indicatorProps_shape' => 'string',
+    ];
 
     /**
      * @param Context $context
@@ -42,6 +68,12 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
         if ((is_null($this->cloudinaryPGoptions) || $refresh) && ($ignoreDisabled || ($this->configuration->isEnabled() && $this->configuration->isEnabledProductGallery()))) {
             $this->cloudinaryPGoptions = $this->configuration->getProductGalleryAll();
             foreach ($this->cloudinaryPGoptions as $key => $value) {
+                //Change casting
+                if (isset(self::CASTING[$key])) {
+                    \settype($value, self::CASTING[$key]);
+                    $this->cloudinaryPGoptions[$key] = $value;
+                }
+                //Build options hierarchy
                 $path = explode("_", $key);
                 $_path = $path[0];
                 if (in_array($_path, ['themeProps','zoomProps','thumbnailProps','indicatorProps'])) {
@@ -62,6 +94,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $this->cloudinaryPGoptions = array_merge_recursive($this->cloudinaryPGoptions, $customFreeParams);
                 unset($this->cloudinaryPGoptions['custom_free_params']);
             }
+            $this->cloudinaryPGoptions['cloudName'] = (string)$this->configuration->getCloud();
         }
 
         return $this->cloudinaryPGoptions;
