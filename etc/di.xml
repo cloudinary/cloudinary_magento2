@@ -12,64 +12,60 @@
         </arguments>
     </type>
 
-    <preference for="Cloudinary\Cloudinary\Core\ImageProvider"
-                type="Cloudinary\Cloudinary\Core\CloudinaryImageProvider" />
+    <preference for="Cloudinary\Cloudinary\Core\ImageProvider" type="Cloudinary\Cloudinary\Core\CloudinaryImageProvider"/>
 
-    <preference for="Cloudinary\Cloudinary\Api\SynchronisationRepositoryInterface"
-                type="Cloudinary\Cloudinary\Model\SynchronisationRepository" />
+    <preference for="Cloudinary\Cloudinary\Api\SynchronisationRepositoryInterface" type="Cloudinary\Cloudinary\Model\SynchronisationRepository"/>
 
-    <preference for="Cloudinary\Cloudinary\Api\ResourcesManagementInterface"
-                type="Cloudinary\Cloudinary\Model\Api\ResourcesManagement"/>
+    <preference for="Cloudinary\Cloudinary\Api\ResourcesManagementInterface" type="Cloudinary\Cloudinary\Model\Api\ResourcesManagement"/>
 
-    <preference for="Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface"
-                type="Cloudinary\Cloudinary\Model\SynchronisationRepository" />
+    <preference for="Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface" type="Cloudinary\Cloudinary\Model\SynchronisationRepository"/>
 
-    <preference for="Cloudinary\Cloudinary\Core\ConfigurationInterface"
-                type="Cloudinary\Cloudinary\Model\Configuration" />
+    <preference for="Cloudinary\Cloudinary\Core\ConfigurationInterface" type="Cloudinary\Cloudinary\Model\Configuration"/>
 
-    <preference for="Cloudinary\Cloudinary\Core\Image\Synchronizable"
-                type="Cloudinary\Cloudinary\Model\Synchronisation" />
+    <preference for="Cloudinary\Cloudinary\Core\Image\Synchronizable" type="Cloudinary\Cloudinary\Model\Synchronisation"/>
 
-    <preference for="Cloudinary\Cloudinary\Core\Image\SynchronizationCheck"
-                type="Cloudinary\Cloudinary\Model\SynchronisationChecker" />
+    <preference for="Cloudinary\Cloudinary\Core\Image\SynchronizationCheck" type="Cloudinary\Cloudinary\Model\SynchronisationChecker"/>
 
-    <preference for="Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface"
-                type="Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration" />
+    <preference for="Cloudinary\Cloudinary\Core\AutoUploadMapping\AutoUploadConfigurationInterface" type="Cloudinary\Cloudinary\Model\AutoUploadMapping\AutoUploadConfiguration"/>
 
     <type name="Magento\Widget\Model\Template\Filter">
-        <plugin name="cloudinary_plugin_widget_model_template_filter" type="Cloudinary\Cloudinary\Plugin\Widget\Model\Template\Filter" />
+        <plugin name="cloudinary_plugin_widget_model_template_filter" type="Cloudinary\Cloudinary\Plugin\Widget\Model\Template\Filter"/>
     </type>
 
     <type name="Magento\Catalog\Helper\Image">
-        <plugin name="cloudinary_image_helper_plugin" type="Cloudinary\Cloudinary\Plugin\ImageHelper" />
+        <plugin name="cloudinary_image_helper_plugin" type="Cloudinary\Cloudinary\Plugin\ImageHelper"/>
     </type>
 
     <type name="Magento\Catalog\Block\Product\ImageFactory">
-        <plugin name="cloudinary_plugin_catalog_block_product_imagefactory" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\ImageFactory" />
+        <plugin name="cloudinary_plugin_catalog_block_product_imagefactory" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\ImageFactory"/>
     </type>
 
     <type name="Magento\Catalog\Model\Product\Image\UrlBuilder">
-        <plugin name="cloudinary_plugin_catalog_model_product_image_urlbuilder" type="Cloudinary\Cloudinary\Plugin\Catalog\Model\Product\Image\UrlBuilder" />
+        <plugin name="cloudinary_plugin_catalog_model_product_image_urlbuilder" type="Cloudinary\Cloudinary\Plugin\Catalog\Model\Product\Image\UrlBuilder"/>
     </type>
 
     <type name="Magento\Catalog\Model\Product\Media\Config">
-        <plugin name="cloudinary_product_media_config_plugin" type="Cloudinary\Cloudinary\Plugin\MediaConfig" />
+        <plugin name="cloudinary_product_media_config_plugin" type="Cloudinary\Cloudinary\Plugin\MediaConfig"/>
     </type>
 
     <type name="Magento\Framework\File\Uploader">
-        <plugin name="cloudinary_file_uploader_plugin" type="Cloudinary\Cloudinary\Plugin\FileUploader" />
+        <plugin name="cloudinary_file_uploader_plugin" type="Cloudinary\Cloudinary\Plugin\FileUploader"/>
     </type>
 
     <type name="Magento\Cms\Model\Wysiwyg\Images\Storage">
-        <plugin name="cloudinary_file_remover_plugin" type="Cloudinary\Cloudinary\Plugin\FileRemover" />
+        <plugin name="cloudinary_file_remover_plugin" type="Cloudinary\Cloudinary\Plugin\FileRemover"/>
     </type>
 
     <type name="Magento\Ui\Component\Form\Element\DataType\Media">
-        <plugin name="cloudinary_form_element_media_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media" />
+        <plugin name="cloudinary_form_element_media_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media"/>
     </type>
 
     <type name="Magento\Ui\Component\Form\Element\DataType\Media\Image">
-        <plugin name="cloudinary_form_element_media_image_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media\Image" />
+        <plugin name="cloudinary_form_element_media_image_plugin" type="Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType\Media\Image"/>
+    </type>
+
+    <type name="Magento\Catalog\Block\Product\View\Gallery">
+        <plugin name="cloudinary_plugin_catalog_block_product_view_gallery" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View\Gallery"/>
     </type>
 
 </config>
