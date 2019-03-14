@@ -72,6 +72,7 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
             'triggerSelector' => '#media_gallery_content',
             'triggerEvent' => 'addItem',
             'useDerived' => false,
+            'addTmpExtension' => true,
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
             'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions(null),
             ]

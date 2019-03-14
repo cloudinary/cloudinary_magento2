@@ -55,6 +55,7 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
             'triggerSelector' => '.media-gallery-modal',
             'triggerEvent' => 'fileuploaddone',
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
+            'addTmpExtension' => false,
             'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
             ]
         );
