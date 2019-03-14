@@ -1,9 +1,12 @@
 <?php
 /**
- * @var \Cloudinary\Cloudinary\Block\Catalog\CloudinaryProductGallery $block
+ * @var \Magento\Catalog\Block\Product\View\Gallery $block
  */
 ?>
-<h2>Cloudinary Product Gallery will be loaded here:</h2>
+<div id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
+    class="cloudinary-product-gallery"
+    data-mage-init='{"cloudinaryProductGallery": <?= $block->getCloudinaryPGOptions() ?>}'
+    style="max-width:100%;margin:auto"></div>
 <pre>
-    <?php print_r($block->getCloudinaryPGOptions()); ?>
+    <?php print_r(json_decode($block->getCloudinaryPGOptions())); ?>
 </pre>
