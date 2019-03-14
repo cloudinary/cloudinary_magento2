@@ -23,7 +23,8 @@ define([
             cloudinaryMLoptions: {}, // Options for Cloudinary-ML createMediaLibrary()
             cloudinaryMLshowOptions: {}, // Options for Cloudinary-ML show()
             cldMLid: 0,
-            useDerived: true
+            useDerived: true,
+            addTmpExtension: true,
         },
 
         /**
@@ -119,7 +120,7 @@ define([
                                 } else {
                                     file.media_type = "image";
                                     file.label = asset.label = context.alt || context.caption || asset.public_id || "";
-                                    if (file.url.includes("/tmp/catalog/product/") && !/\.tmp$'/.test(file.file)) {
+                                    if (widget.options.addTmpExtension && !/\.tmp$'/.test(file.file)) {
                                         file.file = file.file + '.tmp';
                                     }
                                 }
