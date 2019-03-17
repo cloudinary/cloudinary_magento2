@@ -81,9 +81,6 @@ class Gallery
      */
     protected function getCloudinaryPGOptions($refresh = false, $ignoreDisabled = false)
     {
-        $url = 'https://res.cloudinary.com/dqlogi9lv/video/upload/v1551969992/video5test_copy_4.mp4';
-        echo pathinfo($url, PATHINFO_FILENAME);
-        die;
         if (is_null($this->cloudinaryPGoptions) || $refresh) {
             $this->cloudinaryPGoptions = $this->productGalleryHelper->getCloudinaryPGOptions($refresh, $ignoreDisabled);
             $this->cloudinaryPGoptions['container'] = '#' . $this->getCldPGid();
