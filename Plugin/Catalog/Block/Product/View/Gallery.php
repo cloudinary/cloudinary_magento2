@@ -81,6 +81,9 @@ class Gallery
      */
     protected function getCloudinaryPGOptions($refresh = false, $ignoreDisabled = false)
     {
+        $url = 'https://res.cloudinary.com/dqlogi9lv/video/upload/v1551969992/video5test_copy_4.mp4';
+        echo pathinfo($url, PATHINFO_FILENAME);
+        die;
         if (is_null($this->cloudinaryPGoptions) || $refresh) {
             $this->cloudinaryPGoptions = $this->productGalleryHelper->getCloudinaryPGOptions($refresh, $ignoreDisabled);
             $this->cloudinaryPGoptions['container'] = '#' . $this->getCldPGid();
@@ -95,19 +98,20 @@ class Gallery
             }
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
+                $publicId = null;
                 switch ($value['type']) {
                     case 'image':
-                        $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
-                            "publicId" => $value['full'],
-                            "mediaType" => $value['type'],
-                        ];
+                        $publicId = $value['full'] ?: $value['img'];
                         break;
                     case 'video':
-                        $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
-                            "publicId" => $value['videoUrl'],
-                            "mediaType" => $value['type'],
-                        ];
+                        $publicId = @pathinfo($value['videoUrl'], PATHINFO_FILENAME) ?: null;
                         break;
+                }
+                if ($publicId) {
+                    $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
+                        "publicId" => $publicId,
+                        "mediaType" => $value['type'],
+                    ];
                 }
             }
         }
