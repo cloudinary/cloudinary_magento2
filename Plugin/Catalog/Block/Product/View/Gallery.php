@@ -104,7 +104,9 @@ class Gallery
                         $publicId = $value['full'] ?: $value['img'];
                         break;
                     case 'video':
-                        $publicId = @pathinfo($value['videoUrl'], PATHINFO_FILENAME) ?: null;
+                        if (strpos($value['videoUrl'], '.cloudinary.com/') !== false) {
+                            $publicId = @pathinfo($value['videoUrl'], PATHINFO_FILENAME) ?: null;
+                        }
                         break;
                 }
                 if ($publicId) {
