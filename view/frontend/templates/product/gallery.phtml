@@ -7,6 +7,7 @@
     class="cloudinary-product-gallery"
     data-mage-init='{"cloudinaryProductGallery": <?= $block->getCloudinaryPGOptions() ?>}'
     style="max-width:100%;margin:auto"></div>
+<h3>Cloudinary Product Gallery Options:</h3>
 <pre>
-    <?php print_r(json_decode($block->getCloudinaryPGOptions())); ?>
+    <?php print_r(json_decode($block->getCloudinaryPGOptions())->cloudinaryPGoptions); ?>
 </pre>

@@ -17,6 +17,11 @@ class Gallery
      */
     protected $jsonEncoder;
 
+    /**
+     * @var \Magento\Catalog\Block\Product\View\Gallery
+     */
+    protected $productGalleryBlock;
+
     protected $processed;
     protected $htmlId;
 
@@ -48,6 +53,7 @@ class Gallery
     {
         if (!$this->processed && $this->productGalleryHelper->canDisplayProductGallery()) {
             $this->processed = true;
+            $this->productGalleryBlock = $productGalleryBlock;
             $productGalleryBlock->setTemplate('Cloudinary_Cloudinary::product/gallery.phtml');
             $productGalleryBlock->setCloudinaryPGOptions($this->getCloudinaryPGOptions());
             $productGalleryBlock->setCldPGid($this->getCldPGid());
@@ -78,11 +84,32 @@ class Gallery
         if (is_null($this->cloudinaryPGoptions) || $refresh) {
             $this->cloudinaryPGoptions = $this->productGalleryHelper->getCloudinaryPGOptions($refresh, $ignoreDisabled);
             $this->cloudinaryPGoptions['container'] = '#' . $this->getCldPGid();
-            $this->cloudinaryPGoptions['mediaAssets'] = [
-                (object)["publicId" => "sample", "mediaType" => "image"],
-                (object)["publicId" => "sample", "mediaType" => "image"],
-                (object)["publicId" => "sample", "mediaType" => "image"],
-            ];
+            $galleryAssets = (array) @json_decode($this->productGalleryBlock->getGalleryImagesJson(), true);
+            if (count($galleryAssets)>1) {
+                usort($galleryAssets, function ($a, $b) {
+                    return $b['isMain'] - $a['isMain'];
+                });
+                usort($galleryAssets, function ($a, $b) {
+                    return $a['position'] - $b['position'];
+                });
+            }
+            $this->cloudinaryPGoptions['mediaAssets'] = [];
+            foreach ($galleryAssets as $key => $value) {
+                switch ($value['type']) {
+                    case 'image':
+                        $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
+                            "publicId" => $value['full'],
+                            "mediaType" => $value['type'],
+                        ];
+                        break;
+                    case 'video':
+                        $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
+                            "publicId" => $value['videoUrl'],
+                            "mediaType" => $value['type'],
+                        ];
+                        break;
+                }
+            }
         }
         return $this->jsonEncoder->encode(
             [
