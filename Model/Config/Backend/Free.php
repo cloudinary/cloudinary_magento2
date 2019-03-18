@@ -16,7 +16,6 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
-use Magento\Framework\UrlInterface;
 use Zend_Http_Response;
 
 class Free extends \Magento\Framework\App\Config\Value
