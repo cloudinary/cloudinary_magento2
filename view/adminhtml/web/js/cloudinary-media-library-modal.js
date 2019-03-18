@@ -120,7 +120,7 @@ define([
                                 } else {
                                     file.media_type = "image";
                                     file.label = asset.label = context.alt || context.caption || asset.public_id || "";
-                                    if (widget.options.addTmpExtension && !/\.tmp$'/.test(file.file)) {
+                                    if (widget.options.addTmpExtension && !/\.tmp$/.test(file.file)) {
                                         file.file = file.file + '.tmp';
                                     }
                                 }

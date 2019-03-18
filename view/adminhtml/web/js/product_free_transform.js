@@ -15,6 +15,7 @@ define(
                 src: "",
                 label: "",
                 file: "",
+                origFreeTransformation: "",
                 freeTransformation: "",
                 hasChanges: false,
                 hasChangesToSave: false,
@@ -48,6 +49,7 @@ define(
                 this.file = params.file || "";
                 this.ajaxUrl = params.ajaxUrl || "";
                 this.src(params.image_url || "");
+                this.origFreeTransformation = params.free_transformation || "";
                 this.freeTransformation(params.free_transformation || "");
                 this.hasChanges(false);
 
@@ -70,6 +72,13 @@ define(
                 var self = this;
 
                 self.hasChanges(false);
+
+                if (/\.tmp$/.test(self.file)) {
+                    self.src(self.src().replace(new RegExp('\/image\/upload(\/v[0-9]{1,10})?(\/' + this.origFreeTransformation + ')?(\/v[0-9]{1,10})?\/'), '/image/upload/' + self.freeTransformation() + '/'));
+                    this.origFreeTransformation = self.freeTransformation();
+                    self.hasError(false);
+                    return true;
+                }
 
                 $.ajax({
                     url: self.ajaxUrl,
