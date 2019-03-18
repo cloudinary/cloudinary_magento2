@@ -54,6 +54,11 @@ class CloudinaryImageManager
         } catch (FileExists $e) {
             $this->report($output, sprintf(self::MESSAGE_UPLOADED_EXISTS, $image));
         } catch (\Exception $e) {
+            if ($e->getMessage() === FileExists::DEFAULT_MESSAGE) {
+                $this->report($output, sprintf(self::MESSAGE_UPLOADED_EXISTS, $image));
+                return;
+            }
+
             if ($retryAttempt < self::MAXIMUM_RETRY_ATTEMPTS) {
                 $retryAttempt++;
                 $this->report($output, sprintf(self::MESSAGE_RETRY, $e->getMessage(), $retryAttempt));
