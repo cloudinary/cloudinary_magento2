@@ -44,21 +44,31 @@ class Media
     public function afterPrepare(\Magento\Ui\Component\Form\Element\DataType\Media $component, $result = null)
     {
         if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions(false))) {
-            $component->setData(array_replace_recursive(
-                $component->getData(),
-                [
-                    'config' => [
-                        'template' => 'Cloudinary_Cloudinary/form/element/uploader/uploader',
-                        'component' => 'Cloudinary_Cloudinary/js/form/element/file-uploader',
-                        'cloudinaryMLoptions' => [
-                            'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/ajax/retrieveImage', ['_secure' => true]),
-                            'addTmpExtension' => false,
-                            'cloudinaryMLoptions' => $cloudinaryMLoptions,
-                            'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
+            $uploaderConfigUrl = $component->getData('config/uploaderConfig/url');
+            if (strpos($uploaderConfigUrl, '/design_config_fileUploader/') !== false) {
+                $type = 'design_config_fileUploader';
+            } elseif (strpos($uploaderConfigUrl, '/category_image/') !== false) {
+                $type = 'category_image';
+            } else {
+                $type = null;
+            }
+            if ($type) {
+                $component->setData(array_replace_recursive(
+                    $component->getData(),
+                    [
+                        'config' => [
+                            'template' => 'Cloudinary_Cloudinary/form/element/uploader/uploader',
+                            'component' => 'Cloudinary_Cloudinary/js/form/element/file-uploader',
+                            'cloudinaryMLoptions' => [
+                                'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/ajax/retrieveImage', ['_secure' => true, 'type' => $type]),
+                                'addTmpExtension' => false,
+                                'cloudinaryMLoptions' => $cloudinaryMLoptions,
+                                'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
+                            ]
                         ]
                     ]
-                ]
-            ));
+                ));
+            }
         }
         return $result;
     }
