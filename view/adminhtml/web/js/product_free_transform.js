@@ -165,8 +165,8 @@ define(
                 });
 
                 $(document).on('removeItem', '#media_gallery_content', function(event, file) {
-                    if (file && (file.id || file.fileId || file.value_id)) {
-                        file.id = file.id || file.fileId || file.value_id;
+                    if (file && (file.id || file.file_id || file.value_id || file.fileId)) {
+                        file.id = file.id || file.file_id || file.value_id || file.fileId;
                         self.elems.each(function(elem) {
                             if (elem.id == file.id) {
                                 self.removeChild(elem);
