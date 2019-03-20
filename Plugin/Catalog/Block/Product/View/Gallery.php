@@ -87,11 +87,11 @@ class Gallery
             $galleryAssets = (array) @json_decode($this->productGalleryBlock->getGalleryImagesJson(), true);
             if (count($galleryAssets)>1) {
                 usort($galleryAssets, function ($a, $b) {
-                    return $b['isMain'] - $a['isMain'];
-                });
-                usort($galleryAssets, function ($a, $b) {
                     return $a['position'] - $b['position'];
                 });
+                /*usort($galleryAssets, function ($a, $b) {
+                    return $b['isMain'] - $a['isMain'];
+                });*/
             }
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
