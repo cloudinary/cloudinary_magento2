@@ -17,7 +17,6 @@ define([
         _create: function() {
             this._super();
 
-            console.log(this.options.cloudinaryPGoptions);
             var widget = this;
             window.cloudinary_pg = window.cloudinary_pg || [];
             this.options.cldPGid = this.options.cldPGid || 0;
