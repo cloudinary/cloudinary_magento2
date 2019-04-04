@@ -106,6 +106,7 @@ class Gallery
                             $publicId = explode('/' . DirectoryList::MEDIA . '/', $publicId);
                             $prefix = array_shift($publicId);
                             $publicId = DirectoryList::MEDIA . '/' . implode('/' . DirectoryList::MEDIA . '/', $publicId);
+                            $publicId = @pathinfo($publicId, PATHINFO_FILENAME) ?: null;
                             $transformation = basename($prefix);
                         } else {
                             $publicId = null;
