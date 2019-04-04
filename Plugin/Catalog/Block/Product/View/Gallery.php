@@ -3,6 +3,7 @@
 namespace Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View;
 
 use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Json\EncoderInterface;
 
 class Gallery
@@ -96,9 +97,19 @@ class Gallery
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
                 $publicId = null;
+                $transformation = null;
                 switch ($value['type']) {
                     case 'image':
                         $publicId = $value['full'] ?: $value['img'];
+                        if (strpos($publicId, '.cloudinary.com/') !== false && strpos($publicId, '/' . DirectoryList::MEDIA . '/') !== false) {
+                            $publicId = preg_replace('/\/v[0-9]{1,10}\//', '/', $publicId);
+                            $publicId = explode('/' . DirectoryList::MEDIA . '/', $publicId);
+                            $prefix = array_shift($publicId);
+                            $publicId = DirectoryList::MEDIA . '/' . implode('/' . DirectoryList::MEDIA . '/', $publicId);
+                            $transformation = basename($prefix);
+                        } else {
+                            $publicId = null;
+                        }
                         break;
                     case 'video':
                         if (strpos($value['videoUrl'], '.cloudinary.com/') !== false) {
@@ -110,6 +121,7 @@ class Gallery
                     $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
                         "publicId" => $publicId,
                         "mediaType" => $value['type'],
+                        "transformation" => $transformation,
                     ];
                 }
             }
