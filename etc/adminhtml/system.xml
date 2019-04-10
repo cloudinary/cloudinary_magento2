@@ -31,7 +31,7 @@
                 </field>
                 <field id="cloudinary_automatic_login_user" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Automatic login</label>
-                    <comment>To always automatically log in to the Media Library with a predefined user account, enter the relevant email address. Leave blank to prompt each account user to log in when the Media Library opens.</comment>
+                    <comment>Enter the email address of the user to be automatically logged in to the Media Library. Leave blank to prompt each user to login when the Media Library opens.</comment>
                 </field>
             </group>
             <group id="configuration" translate="label" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -44,7 +44,7 @@
                 </field>
                 <field id="cloudinary_auto_upload_mapping_request" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Use auto upload mapping to upload images</label>
-                    <comment>When enabled, Cloudinary will fetch images it does not have from your site automatically without requiring the manual migration process.</comment>
+                    <comment>Automatically upload images from your site to your Cloudinary account (if they don’t already exist).</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
@@ -58,21 +58,22 @@
                 </field>
                 <field id="cloudinary_image_quality" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Quality</label>
-                    <comment>Adjust quality of generated images to balance between visual quality and file size minimization. The quality is relevant for JPEG and WebP compression levels for example.</comment>
+                    <comment>Adjust the quality of generated images to balance visual quality and file size. The quality is relevant for JPEG and WebP compression levels for example.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Quality</source_model>
                 </field>
                 <field id="cloudinary_gravity" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Cropping Gravity</label>
-                    <comment>Define the part of the image to focus on when cropping images in order to better match your graphic design.</comment>
+                    <comment>Define the part of the image to focus on when cropping images.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Gravity</source_model>
                 </field>
                 <field id="cloudinary_image_dpr" translate="label comment" type="select" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Device Pixel Ratio (DPR)</label>
-                    <comment>Use DPR value higher than 1.0 to generate and deliver hi-res images for better visual result on HiDPI devices, such as Retina Display devices (e.g., 2.0).</comment>
+                    <comment>Set the DPR value for your images. A DPR value of 2.0 will generate and deliver hi-res images for better results on HiDPI devices such as Retina Displays.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Dpr</source_model>
                 </field>
-                <field id="cloudinary_free_transform_global" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="cloudinary_free_transform_global" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Global custom transformation</label>
+                    <comment>Add global custom transformations in addition to those selected above. See the Cloudinary documentation for the full range of transformations. You may need to clear or rebuild the Magento block and page caches to see the changes in the front end.</comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>
                     <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\Form\Field\Free</frontend_model>
                 </field>
@@ -249,7 +250,7 @@
                 <field id="custom_free_params" translate="label comment" type="textarea" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Custom free parameters (advanced)</label>
                     <comment>
-                        <![CDATA[Custom Json code that will add to (or override) the above params<br>e.g., {"zoom": 0, "thumbnailProps": {"borderColor": "#EBF0F4"}}]]>
+                        <![CDATA[Custom json to add or override the above parameters.<br>e.g., {"zoom": 0, "thumbnailProps": {"borderColor": "#EBF0F4"}}]]>
                     </comment>
                     <config_path>cloudinary/product_gallery/custom_free_params</config_path>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\ProductGalleryCustomFreeParams</backend_model>
@@ -270,7 +271,7 @@
                 </field>
                 <field id="use_signed_urls" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Use signed URLs</label>
-                    <comment>A signed Cloudinary image delivery URL is a dynamic URL that has its signature validated before making it available for view</comment>
+                    <comment>Use dynamic Cloudinary delivery URLs with a signature that needs to be validated before making it available to view.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
