@@ -146,7 +146,7 @@ define(
                 }
 
                 $(document).on('addItem', '#media_gallery_content', function(event, file) {
-                    if (file && (file.media_type === 'image' || /^image/.test(file.type)) && file.file && (file.image_url || file.url)) {
+                    if (file && (file.media_type === 'image') && file.file && (file.image_url || file.url)) {
                         file.image_url = file.image_url || file.url;
                         file.id = file.id || file.file_id || file.value_id || file.fileId;
                         if (!file.id) {
