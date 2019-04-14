@@ -91,7 +91,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
             }
             if (isset($this->cloudinaryPGoptions['custom_free_params'])) {
                 $customFreeParams = (array) @json_decode($this->cloudinaryPGoptions['custom_free_params'], true);
-                $this->cloudinaryPGoptions = array_merge_recursive($this->cloudinaryPGoptions, $customFreeParams);
+                $this->cloudinaryPGoptions = array_replace_recursive($this->cloudinaryPGoptions, $customFreeParams);
                 unset($this->cloudinaryPGoptions['custom_free_params']);
             }
             $this->cloudinaryPGoptions['cloudName'] = (string)$this->configuration->getCloud();
