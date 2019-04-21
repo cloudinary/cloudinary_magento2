@@ -250,7 +250,7 @@
                 <field id="custom_free_params" translate="label comment" type="textarea" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Custom free parameters (advanced)</label>
                     <comment>
-                        <![CDATA[Custom json to add or override the above parameters.<br>e.g., {"zoom": 0, "thumbnailProps": {"borderColor": "#EBF0F4"}}]]>
+                        <![CDATA[Custom json to add or override the above parameters.<br>e.g., {"zoom": true, "thumbnailProps": {"borderColor": "#EBF0F4"}}]]>
                     </comment>
                     <config_path>cloudinary/product_gallery/custom_free_params</config_path>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\ProductGalleryCustomFreeParams</backend_model>
