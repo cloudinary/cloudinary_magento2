@@ -108,6 +108,9 @@ class Gallery
                             $publicId = DirectoryList::MEDIA . '/' . implode('/' . DirectoryList::MEDIA . '/', $publicId);
                             //$publicId = preg_replace('/\.[^.]+$/', '', $publicId);
                             $transformation = basename($prefix);
+                            if (($prefix = basename(dirname($prefix))) && preg_match('/[a-zA-Z].*_[\w.-].*/', $prefix)) {
+                                $transformation .= ',' . $prefix;
+                            }
                         } else {
                             $publicId = null;
                         }
