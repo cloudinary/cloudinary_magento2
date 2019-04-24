@@ -17,6 +17,7 @@
                 <field id="cloudinary_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable cloudinary</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[<input name="disable_autofill_envvar" type="text" style="display:none!important;"><input name="disable_autofill_loginuser" type="password" style="display:none!important;">]]></comment>
                 </field>
             </group>
             <group id="setup" translate="label" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
