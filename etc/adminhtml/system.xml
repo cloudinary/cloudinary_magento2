@@ -3,14 +3,17 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="cloudinary" translate="label" sortOrder="400">
-            <label><![CDATA[<span class='cloudinary-icon'></span>Cloudinary]]></label>
-		</tab>
+            <label>
+                <![CDATA[<span class='cloudinary-icon'></span>Cloudinary]]>
+            </label>
+        </tab>
         <section id="cloudinary" translate="label" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0">
             <label>Settings</label>
             <tab>cloudinary</tab>
             <resource>Cloudinary_Cloudinary::config_cloudinary</resource>
             <group id="cloud" translate="label" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Enable module</label>
+                <attribute type="expanded">1</attribute>
                 <field id="cloudinary_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable cloudinary</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -18,14 +21,22 @@
             </group>
             <group id="setup" translate="label" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Cloudinary Setup</label>
+                <attribute type="expanded">1</attribute>
                 <field id="cloudinary_environment_variable" translate="label comment" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Cloudinary Account Credentials</label>
-                    <comment><![CDATA[Set the credentials of your Cloudinary account. Copy the "Environment variable" string from the dashboard of Cloudinary's Management Console.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name]]></comment>
+                    <comment>
+                        <![CDATA[Set the credentials of your Cloudinary account. Copy the "Environment variable" string from the dashboard of Cloudinary's Management Console.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name<input name="disable_autofill_envvar" type="text" style="display:none!important;"><input name="disable_autofill_loginuser" type="password" style="display:none!important;">]]>
+                    </comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
+                </field>
+                <field id="cloudinary_automatic_login_user" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Automatic login</label>
+                    <comment><![CDATA[Enter the email address of the user to be automatically logged in to the Media Library. Leave blank to prompt each user to login when the Media Library opens.]]></comment>
                 </field>
             </group>
             <group id="configuration" translate="label" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Cloudinary Configuration</label>
+                <attribute type="expanded">1</attribute>
                 <field id="cloudinary_cdn_subdomain" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Delivery Domain Sharding</label>
                     <comment>Enable multiple sub-domains of image delivery URLs for faster page load speed.</comment>
@@ -33,12 +44,13 @@
                 </field>
                 <field id="cloudinary_auto_upload_mapping_request" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Use auto upload mapping to upload images</label>
-                    <comment>When enabled, Cloudinary will fetch images it does not have from your site automatically without requiring the manual migration process.</comment>
+                    <comment>Automatically upload images from your site to your Cloudinary account (if they don’t already exist).</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
             <group id="transformations" translate="label" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Default Image Transformations</label>
+                <attribute type="expanded">0</attribute>
                 <field id="cloudinary_fetch_format" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Automatic Image Format Optimisation</label>
                     <comment>Automatically deliver images converted to modern image formats based on viewing device and browser. For example, deliver WebP on Chrome and JPEG-XR on Internet Explorer for better performance and user experience.</comment>
@@ -46,27 +58,207 @@
                 </field>
                 <field id="cloudinary_image_quality" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Quality</label>
-                    <comment>Adjust quality of generated images to balance between visual quality and file size minimization. The quality is relevant for JPEG and WebP compression levels for example.</comment>
+                    <comment>Adjust the quality of generated images to balance visual quality and file size. The quality is relevant for JPEG and WebP compression levels for example.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Quality</source_model>
                 </field>
                 <field id="cloudinary_gravity" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Cropping Gravity</label>
-                    <comment>Define the part of the image to focus on when cropping images in order to better match your graphic design.</comment>
+                    <comment>Define the part of the image to focus on when cropping images.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Gravity</source_model>
                 </field>
                 <field id="cloudinary_image_dpr" translate="label comment" type="select" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Image Device Pixel Ratio (DPR)</label>
-                    <comment>Use DPR value higher than 1.0 to generate and deliver hi-res images for better visual result on HiDPI devices, such as Retina Display devices (e.g., 2.0).</comment>
+                    <comment>Set the DPR value for your images. A DPR value of 2.0 will generate and deliver hi-res images for better results on HiDPI devices such as Retina Displays.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Dpr</source_model>
                 </field>
-                <field id="cloudinary_free_transform_global" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="cloudinary_free_transform_global" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Global custom transformation</label>
+                    <comment>Add global custom transformations in addition to those selected above. See the Cloudinary documentation for the full range of transformations. You may need to clear or rebuild the Magento block and page caches to see the changes in the front end.</comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>
                     <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\Form\Field\Free</frontend_model>
                 </field>
             </group>
-            <group id="advanced" translate="label" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+            <group id="product_gallery" translate="label" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Product Gallery</label>
+                <attribute type="expanded">0</attribute>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Cloudinary's product gallery</label>
+                    <comment>Enable Cloudinary's product gallery (override Magento's default)</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>cloudinary/product_gallery/enabled</config_path>
+                </field>
+                <group id="themeProps" translate="label" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Theme colors</label>
+                    <attribute type="expanded">1</attribute>
+                    <field id="themeProps_primary" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Primary</label>
+                        <config_path>cloudinary/product_gallery/themeProps_primary</config_path>
+                        <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                        <validate>validate-length minimum-length-4 maximum-length-7</validate>
+                    </field>
+                    <field id="themeProps_onPrimary" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>onPrimary</label>
+                        <config_path>cloudinary/product_gallery/themeProps_onPrimary</config_path>
+                        <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                        <validate>validate-length minimum-length-4 maximum-length-7</validate>
+                    </field>
+                    <field id="themeProps_active" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Active</label>
+                        <config_path>cloudinary/product_gallery/themeProps_active</config_path>
+                        <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                        <validate>validate-length minimum-length-4 maximum-length-7</validate>
+                    </field>
+                    <field id="themeProps_onActive" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>onActive</label>
+                        <config_path>cloudinary/product_gallery/themeProps_onActive</config_path>
+                        <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\System\Config\Form\Field\ColorPicker</frontend_model>
+                        <validate>validate-length minimum-length-4 maximum-length-7</validate>
+                    </field>
+                </group>
+                <group id="main_viewer_parameters" translate="label" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Main viewer parameters</label>
+                    <attribute type="expanded">1</attribute>
+                    <field id="transition" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Fade transition</label>
+                        <config_path>cloudinary/product_gallery/transition</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\Transition</source_model>
+                    </field>
+                    <field id="aspectRatio" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Aspect ratio</label>
+                        <config_path>cloudinary/product_gallery/aspectRatio</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\AspectRatio</source_model>
+                    </field>
+                    <field id="navigation" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Navigation</label>
+                        <config_path>cloudinary/product_gallery/navigation</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\Navigation</source_model>
+                    </field>
+                    <field id="zoom" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Show zoom</label>
+                        <config_path>cloudinary/product_gallery/zoom</config_path>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field>
+                    <field id="zoomProps_type" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Zoom type</label>
+                        <config_path>cloudinary/product_gallery/zoomProps_type</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomType</source_model>
+                        <depends>
+                            <field id="zoom">1</field>
+                        </depends>
+                    </field>
+                    <field id="zoomProps_viewerPosition" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Zoom trigger</label>
+                        <config_path>cloudinary/product_gallery/zoomProps_viewerPosition</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomViewerPosition</source_model>
+                        <depends>
+                            <field id="zoom">1</field>
+                            <field id="zoomProps_type">flyout</field>
+                        </depends>
+                    </field>
+                    <field id="zoomProps_trigger" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Zoom viewer position</label>
+                        <config_path>cloudinary/product_gallery/zoomProps_trigger</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomTrigger</source_model>
+                        <depends>
+                            <field id="zoom">1</field>
+                        </depends>
+                    </field>
+                </group>
+                <group id="carousel_parameters" translate="label" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Carousel parameters</label>
+                    <attribute type="expanded">1</attribute>
+                    <field id="carouselLocation" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Carousel Location</label>
+                        <config_path>cloudinary/product_gallery/carouselLocation</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\CarouselLocation</source_model>
+                    </field>
+                    <field id="carouselOffset" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Carousel Offset</label>
+                        <config_path>cloudinary/product_gallery/carouselOffset</config_path>
+                        <validate>validate-number</validate>
+                    </field>
+                    <field id="carouselStyle" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Carousel Style</label>
+                        <config_path>cloudinary/product_gallery/carouselStyle</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\CarouselStyle</source_model>
+                    </field>
+                    <field id="thumbnailProps_width" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Thumbnail width</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_width</config_path>
+                        <validate>validate-number</validate>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="thumbnailProps_height" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Thumbnail height</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_height</config_path>
+                        <validate>validate-number</validate>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="thumbnailProps_navigationShape" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Navigation button shape</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_navigationShape</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsNavigationShape</source_model>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="thumbnailProps_selectedStyle" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Thumbnail selected style</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_selectedStyle</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsSelectedStyle</source_model>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="thumbnailProps_selectedBorderPosition" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Thumbnail selected border position</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_selectedBorderPosition</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsSelectedBorderPosition</source_model>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="thumbnailProps_selectedBorderWidth" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Thumbnail selected border width</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_selectedBorderWidth</config_path>
+                        <validate>validate-number</validate>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="thumbnailProps_mediaSymbolShape" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Thumbnail media icon shape</label>
+                        <config_path>cloudinary/product_gallery/thumbnailProps_mediaSymbolShape</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ThumbnailsMediaSymbolShape</source_model>
+                        <depends>
+                            <field id="carouselStyle">thumbnails</field>
+                        </depends>
+                    </field>
+                    <field id="indicatorProps_shape" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                        <label>Indicators shape</label>
+                        <config_path>cloudinary/product_gallery/indicatorProps_shape</config_path>
+                        <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\IndicatorsShape</source_model>
+                        <depends>
+                            <field id="carouselStyle">indicators</field>
+                        </depends>
+                    </field>
+                </group>
+                <field id="custom_free_params" translate="label comment" type="textarea" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Custom free parameters (advanced)</label>
+                    <comment>
+                        <![CDATA[Custom json to add or override the above parameters.<br>e.g., {"zoom": true, "thumbnailProps": {"borderColor": "#EBF0F4"}}]]>
+                    </comment>
+                    <config_path>cloudinary/product_gallery/custom_free_params</config_path>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\ProductGalleryCustomFreeParams</backend_model>
+                </field>
+            </group>
+            <group id="advanced" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Advanced</label>
+                <attribute type="expanded">0</attribute>
                 <field id="remove_version_number" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Remove version number from URLs</label>
                     <comment>Remove version number (e.g., ".../v1/...") from URLs</comment>
@@ -79,7 +271,7 @@
                 </field>
                 <field id="use_signed_urls" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Use signed URLs</label>
-                    <comment>A signed Cloudinary image delivery URL is a dynamic URL that has its signature validated before making it available for view</comment>
+                    <comment>Use dynamic Cloudinary delivery URLs with a signature that needs to be validated before making it available to view.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>

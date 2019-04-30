@@ -15,6 +15,7 @@ define(
                 src: "",
                 label: "",
                 file: "",
+                origFreeTransformation: "",
                 freeTransformation: "",
                 hasChanges: false,
                 hasChangesToSave: false,
@@ -48,6 +49,7 @@ define(
                 this.file = params.file || "";
                 this.ajaxUrl = params.ajaxUrl || "";
                 this.src(params.image_url || "");
+                this.origFreeTransformation = params.free_transformation || "";
                 this.freeTransformation(params.free_transformation || "");
                 this.hasChanges(false);
 
@@ -70,6 +72,13 @@ define(
                 var self = this;
 
                 self.hasChanges(false);
+
+                if (/\.tmp$/.test(self.file)) {
+                    self.src(self.src().replace(new RegExp('\/image\/upload(\/v[0-9]{1,10})?(\/' + this.origFreeTransformation + ')?(\/v[0-9]{1,10})?\/'), '/image/upload/' + self.freeTransformation() + '/'));
+                    this.origFreeTransformation = self.freeTransformation();
+                    self.hasError(false);
+                    return true;
+                }
 
                 $.ajax({
                     url: self.ajaxUrl,
@@ -98,7 +107,8 @@ define(
         return Collection.extend({
             defaults: {
                 ajaxUrl: "",
-                template: 'Cloudinary_Cloudinary/product/free_transform'
+                template: 'Cloudinary_Cloudinary/product/free_transform',
+                tableRows: {}
             },
 
             getTransforms: function() {
@@ -109,16 +119,61 @@ define(
                 return FreeTransformRow().configure(params);
             },
 
+            insertChildRow: function(params) {
+                if (!this.tableRows()[params.id]) {
+                    params.ajaxUrl = this.ajaxUrl;
+                    var elm = this.createRow(params);
+                    this.tableRows()[params.id] = elm;
+                    this.insertChild(elm);
+                    return elm;
+                } else {
+                    return this.tableRows()[params.id];
+                }
+            },
+
             initObservable: function() {
                 var self = this;
 
-                this._super();
+                self._super()
+                    .observe([
+                        'tableRows'
+                    ]);
 
                 if (this.getTransforms()) {
                     $.each(this.getTransforms(), function(i, transform) {
-                        self.insertChild(self.createRow(transform));
+                        self.insertChildRow(transform);
                     });
                 }
+
+                $(document).on('addItem', '#media_gallery_content', function(event, file) {
+                    if (file && (file.media_type === 'image') && file.file && (file.image_url || file.url)) {
+                        file.image_url = file.image_url || file.url;
+                        file.id = file.id || file.file_id || file.value_id || file.fileId;
+                        if (!file.id) {
+                            file.id = $('input[name^="product[media_gallery][images]"][name$="[file]"][value="' + file.file + '"]:last');
+                            if (file.id.length) {
+                                file.id = file.file_id = file.id.attr('name')
+                                    .replace(/^product\[media_gallery\]\[images\]\[/, '')
+                                    .replace(/\]\[file\]$/, '');
+                            }
+                        }
+                        if (file.id) {
+                            file.image_url = file.asset_derived_image_url || file.image_url;
+                            self.insertChildRow(file).trigger("freeTransformation");
+                        }
+                    }
+                });
+
+                $(document).on('removeItem', '#media_gallery_content', function(event, file) {
+                    if (file && (file.id || file.file_id || file.value_id || file.fileId)) {
+                        file.id = file.id || file.file_id || file.value_id || file.fileId;
+                        self.elems.each(function(elem) {
+                            if (elem.id == file.id) {
+                                self.removeChild(elem);
+                            }
+                        });
+                    }
+                });
 
                 return this;
             },
@@ -126,11 +181,9 @@ define(
             afterRender: function() {
                 var self = this;
 
-                this.elems.each(
-                    function(elem) {
-                        elem.ajaxUrl = self.ajaxUrl;
-                    }
-                );
+                this.elems.each(function(elem) {
+                    elem.ajaxUrl = self.ajaxUrl;
+                });
             }
         });
     }

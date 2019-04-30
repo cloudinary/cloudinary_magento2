@@ -15,6 +15,32 @@
                 <remove_version_number>0</remove_version_number>
                 <use_root_path>0</use_root_path>
             </advanced>
+            <product_gallery>
+                <enabled>0</enabled>
+                <themeProps_primary>#ffffff</themeProps_primary>
+                <themeProps_onPrimary>#000000</themeProps_onPrimary>
+                <themeProps_active>#0078ff</themeProps_active>
+                <themeProps_onActive>#ffffff</themeProps_onActive>
+                <transition>slide</transition>
+                <aspectRatio>square</aspectRatio>
+                <navigation>mouseover</navigation>
+                <zoom>1</zoom>
+                <zoomProps_type>inline</zoomProps_type>
+                <zoomProps_viewerPosition>right</zoomProps_viewerPosition>
+                <zoomProps_trigger>click</zoomProps_trigger>
+                <carouselLocation>left</carouselLocation>
+                <carouselOffset>5</carouselOffset>
+                <carouselStyle>thumbnails</carouselStyle>
+                <thumbnailProps_width>64</thumbnailProps_width>
+                <thumbnailProps_height>64</thumbnailProps_height>
+                <thumbnailProps_navigationShape>rectangle</thumbnailProps_navigationShape>
+                <thumbnailProps_selectedStyle>all</thumbnailProps_selectedStyle>
+                <thumbnailProps_selectedBorderPosition>left</thumbnailProps_selectedBorderPosition>
+                <thumbnailProps_selectedBorderWidth>2</thumbnailProps_selectedBorderWidth>
+                <thumbnailProps_mediaSymbolShape>round</thumbnailProps_mediaSymbolShape>
+                <indicatorProps_shape>round</indicatorProps_shape>
+                <custom_free_params>{}</custom_free_params>
+            </product_gallery>
         </cloudinary>
     </default>
 </config>
