@@ -53,6 +53,7 @@ define([
                 this.cloudinary_ml = window.cloudinary_ml[this.options.cldMLid] = cloudinary.createMediaLibrary(
                     this.options.cloudinaryMLoptions, {
                         insertHandler: function(data) {
+                            $('body').first().css('overflow', 'initial');
                             return widget.cloudinaryInsertHandler(data);
                         }
                     }
