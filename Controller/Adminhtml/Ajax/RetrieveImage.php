@@ -4,7 +4,6 @@ namespace Cloudinary\Cloudinary\Controller\Adminhtml\Ajax;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Controller\Result\RawFactory as ResultRawFactory;
 use Magento\Framework\Exception\LocalizedException;
@@ -22,7 +21,7 @@ use Magento\Theme\Model\Design\Config\FileUploader\FileProcessor;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class RetrieveImage extends \Magento\Backend\App\Action implements HttpPostActionInterface
+class RetrieveImage extends \Magento\Backend\App\Action
 {
     /**
      * @var ResultRawFactory
