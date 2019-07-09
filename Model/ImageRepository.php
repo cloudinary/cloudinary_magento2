@@ -61,7 +61,7 @@ class ImageRepository
     private function getRecursiveIterator($directory)
     {
         return new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory),
+            new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::SELF_FIRST
         );
     }

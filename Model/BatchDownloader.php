@@ -146,9 +146,6 @@ class BatchDownloader
         $this->_extensionValidator = $extensionValidator;
         $this->_synchronizationChecker = $synchronizationChecker;
         $this->_synchronisationRepository = $synchronisationRepository;
-        if ($this->_configuration->isEnabled()) {
-            $this->_authorise();
-        }
     }
 
     private function _authorise()
@@ -167,6 +164,10 @@ class BatchDownloader
      */
     public function downloadUnsynchronisedImages(OutputInterface $output = null, $override = false)
     {
+        if ($this->_configuration->isEnabled()) {
+            $this->_authorise();
+        }
+
         //= Config
         $this->_output = $output;
         $this->_override = (bool) $override;
