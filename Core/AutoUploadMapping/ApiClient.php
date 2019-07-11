@@ -15,6 +15,11 @@ class ApiClient
     const URL_KEY = 'template';
 
     /**
+     * @var bool
+     */
+    private $_authorised;
+
+    /**
      * @var ConfigurationInterface
      */
     private $configuration;
@@ -43,9 +48,6 @@ class ApiClient
         $this->configuration = $configuration;
         $this->configurationBuilder = $configurationBuilder;
         $this->api = $api;
-        if ($this->configuration->isEnabled()) {
-            $this->authorise();
-        }
     }
 
     /**
@@ -54,6 +56,7 @@ class ApiClient
      */
     public static function fromConfiguration(ConfigurationInterface $configuration)
     {
+        $this->authorise();
         return new ApiClient(
             $configuration,
             new ConfigurationBuilder($configuration),
@@ -69,6 +72,7 @@ class ApiClient
     public function prepareMapping($folder, $url)
     {
         try {
+            $this->authorise();
             $existingMappings = $this->parseFetchMappingsResponse($this->api->upload_mappings());
 
             if ($this->hasMapping($existingMappings, $folder)) {
@@ -145,8 +149,11 @@ class ApiClient
 
     private function authorise()
     {
-        Cloudinary::config($this->configurationBuilder->build());
-        Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+        if (!$this->_authorised && $configuration->isEnabled()) {
+            Cloudinary::config($this->configurationBuilder->build());
+            Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+            $this->_authorised = true;
+        }
     }
 
     /**
