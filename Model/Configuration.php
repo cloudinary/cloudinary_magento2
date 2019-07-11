@@ -199,7 +199,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.9.2', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.9.3', '2.0.0');
     }
 
     /**
