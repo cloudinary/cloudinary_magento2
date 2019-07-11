@@ -10,6 +10,11 @@ use Cloudinary\Uploader;
 class CloudinaryImageProvider implements ImageProvider
 {
     /**
+     * @var bool
+     */
+    private $_authorised;
+
+    /**
      * @var ConfigurationInterface
      */
     private $configuration;
@@ -37,9 +42,6 @@ class CloudinaryImageProvider implements ImageProvider
         $this->configuration = $configuration;
         $this->uploadResponseValidator = $uploadResponseValidator;
         $this->configurationBuilder = $configurationBuilder;
-        if ($configuration->isEnabled()) {
-            $this->authorise();
-        }
     }
 
     /**
@@ -48,6 +50,7 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public static function fromConfiguration(ConfigurationInterface $configuration)
     {
+        $this->authorise();
         return new CloudinaryImageProvider(
             $configuration,
             new ConfigurationBuilder($configuration),
@@ -61,6 +64,7 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public function upload(Image $image)
     {
+        $this->authorise();
         if (!$this->configuration->isEnabled()) {
             return false;
         }
@@ -83,6 +87,7 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public function retrieveTransformed(Image $image, Transformation $transformation)
     {
+        $this->authorise();
         $imagePath = \cloudinary_url(
             $image->getId(),
             [
@@ -114,6 +119,7 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public function retrieve(Image $image)
     {
+        $this->authorise();
         return $this->retrieveTransformed($image, $this->configuration->getDefaultTransformation());
     }
 
@@ -123,6 +129,7 @@ class CloudinaryImageProvider implements ImageProvider
      */
     public function delete(Image $image)
     {
+        $this->authorise();
         if ($this->configuration->isEnabled()) {
             Uploader::destroy($image->getIdWithoutExtension());
         }
@@ -134,6 +141,7 @@ class CloudinaryImageProvider implements ImageProvider
     public function validateCredentials()
     {
         try {
+            $this->authorise();
             $pingValidation = $this->api->ping();
             if (!(isset($pingValidation["status"]) && $pingValidation["status"] === "ok")) {
                 return false;
@@ -148,7 +156,10 @@ class CloudinaryImageProvider implements ImageProvider
 
     private function authorise()
     {
-        Cloudinary::config($this->configurationBuilder->build());
-        Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+        if (!$this->_authorised && $configuration->isEnabled()) {
+            Cloudinary::config($this->configurationBuilder->build());
+            Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+            $this->_authorised = true;
+        }
     }
 }
