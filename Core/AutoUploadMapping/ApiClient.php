@@ -56,7 +56,6 @@ class ApiClient
      */
     public static function fromConfiguration(ConfigurationInterface $configuration)
     {
-        $this->authorise();
         return new ApiClient(
             $configuration,
             new ConfigurationBuilder($configuration),
@@ -149,7 +148,7 @@ class ApiClient
 
     private function authorise()
     {
-        if (!$this->_authorised && $configuration->isEnabled()) {
+        if (!$this->_authorised && $this->configuration->isEnabled()) {
             Cloudinary::config($this->configurationBuilder->build());
             Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
             $this->_authorised = true;
