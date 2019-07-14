@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-  <module name="Cloudinary_Cloudinary" setup_version="1.9.3">
+  <module name="Cloudinary_Cloudinary" setup_version="1.9.4">
       <sequence>
           <module name="Magento_ProductVideo"/>
       </sequence>
