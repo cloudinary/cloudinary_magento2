@@ -24,9 +24,9 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
 {
 
     /**
-     * @var DirectoryResolver
+     * @var DirectoryList
      */
-    private $_directoryResolver;
+    private $directoryList;
 
     /**
      * @var RawFactory
@@ -75,7 +75,8 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      * @param  Context               $context
      * @param  Registry              $coreRegistry
      * @param  JsonFactory           $resultJsonFactory
-     * @param  DirectoryResolver     $directoryResolver
+     * @param  DirectoryResolver     $directoryResolver|null $directoryResolver
+     * @param  DirectoryList         $directoryList
      * @param  Config                $mediaConfig
      * @param  Filesystem            $fileSystem
      * @param  AdapterFactory        $imageAdapterFactory
@@ -88,7 +89,8 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         Context $context,
         Registry $coreRegistry,
         JsonFactory $resultJsonFactory,
-        DirectoryResolver $directoryResolver,
+        DirectoryResolver $directoryResolver = null,
+        DirectoryList $directoryList,
         Config $mediaConfig,
         Filesystem $fileSystem,
         AdapterFactory $imageAdapterFactory,
@@ -98,7 +100,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         NotProtectedExtension $extensionValidator
     ) {
         parent::__construct($context, $coreRegistry, $resultJsonFactory, $directoryResolver);
-        $this->_directoryResolver = $directoryResolver;
+        $this->directoryList = $directoryList;
         $this->mediaConfig = $mediaConfig;
         $this->fileSystem = $fileSystem;
         $this->imageAdapter = $imageAdapterFactory->create();
@@ -119,7 +121,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         try {
             $this->_initAction();
             $path = $this->getStorage()->getSession()->getCurrentPath();
-            if (!$this->_directoryResolver->validatePath($path, DirectoryList::MEDIA)) {
+            if (!$this->validatePath($path, DirectoryList::MEDIA)) {
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('Directory %1 is not under storage root path.', $path)
                 );
@@ -160,6 +162,28 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         }
 
         return $this;
+    }
+
+    /**
+     * Validate path.
+     *
+     * Gets real path for directory provided in parameters and compares it with specified root directory.
+     * Will return TRUE if real path of provided value contains root directory path and FALSE if not.
+     * Throws the \Magento\Framework\Exception\FileSystemException in case when directory path is absent
+     * in Directories configuration.
+     *
+     * @param string $path
+     * @param string $directoryConfig
+     * @return bool
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
+    private function validatePath($path, $directoryConfig = DirectoryList::MEDIA)
+    {
+        $directory = $this->filesystem->getDirectoryWrite($directoryConfig);
+        $realPath = $directory->getDriver()->getRealPathSafety($path);
+        $root = $this->directoryList->getPath($directoryConfig);
+
+        return strpos($realPath, $root) === 0;
     }
 
     /**
