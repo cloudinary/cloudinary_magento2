@@ -179,7 +179,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      */
     private function validatePath($path, $directoryConfig = DirectoryList::MEDIA)
     {
-        $directory = $this->filesystem->getDirectoryWrite($directoryConfig);
+        $directory = $this->fileSystem->getDirectoryWrite($directoryConfig);
         $realPath = $directory->getDriver()->getRealPathSafety($path);
         $root = $this->directoryList->getPath($directoryConfig);
 
