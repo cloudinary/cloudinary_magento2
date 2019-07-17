@@ -116,7 +116,7 @@ class Gallery
                         }
                         break;
                     case 'video':
-                        if (strpos($value['videoUrl'], '.cloudinary.com/') !== false) {
+                        if (strpos($value['videoUrl'], '.cloudinary.com/') !== false && strpos($value['videoUrl'], '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
                             $publicId = @pathinfo($value['videoUrl'], PATHINFO_FILENAME) ?: null;
                         }
                         break;
