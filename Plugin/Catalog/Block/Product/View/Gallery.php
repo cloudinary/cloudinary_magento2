@@ -117,18 +117,14 @@ class Gallery
                         break;
                     case 'video':
                         if (strpos($value['videoUrl'], '.cloudinary.com/') !== false && strpos($value['videoUrl'], '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
-                            $publicId = preg_replace('/\/v[0-9]{1,10}\//', '/', $publicId);
-                            $publicId = explode('/' . DirectoryList::MEDIA . '/', $publicId);
-                            $prefix = array_shift($publicId);
-                            $publicId = DirectoryList::MEDIA . '/' . implode('/' . DirectoryList::MEDIA . '/', $publicId);
-                            //$publicId = preg_replace('/\.[^.]+$/', '', $publicId);
-                            $transformation = basename($prefix);
-                            if (($prefix = basename(dirname($prefix))) && preg_match('/[a-zA-Z].*_[\w.-].*/', $prefix)) {
-                                $transformation .= ',' . $prefix;
+                            $publicId = $value['videoUrl'];
+                            $publicId = preg_replace('/^.*\/' . $this->productGalleryHelper->getCloudName() . '\/video\/(upload\/)?/', '', $publicId);
+                            $publicId = preg_replace('/\.[^.]+$/', '', $publicId);
+                            $publicId = (array) preg_split('/\/v[0-9]{1,10}\//', $publicId);
+                            if (count($publicId) > 1) {
+                                $transformation = array_shift($publicId);
                             }
-                            print_r([$transformation,$publicId]);
-                            die;
-                            $publicId = @pathinfo($value['videoUrl'], PATHINFO_FILENAME) ?: null;
+                            $publicId = implode('', $publicId);
                         }
                         break;
                 }
