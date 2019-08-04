@@ -829,7 +829,7 @@ define(
                         }
                     } else if (href.host.match(/cloudinary\.com/)) {
                         type = 'cloudinary';
-                        id = this._baseName(href.href);
+                        id = href.href.replace(new RegExp('^.*\/video\/(upload\/)?((.*\/)?v[0-9]{1,10}\/)?'), '').replace(new RegExp('\.[^.]+$'), '');
                     }
 
                     if ((!id || !type) && forceVideo) {

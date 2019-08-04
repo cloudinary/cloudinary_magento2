@@ -2,13 +2,13 @@
 
 namespace Cloudinary\Cloudinary\Controller\Adminhtml\Ajax\Free;
 
-use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
+use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
+use Cloudinary\Cloudinary\Model\Config\Backend\Free as FreeBackendModel;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Cloudinary\Cloudinary\Model\Config\Backend\Free as FreeBackendModel;
-use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 
 class Sample extends Action
 {
@@ -76,7 +76,7 @@ class Sample extends Action
     private function defaultTransformWithFreeTransform($freeTransform)
     {
         return $this->configuration->getDefaultTransformation()
-            ->withFreeform(Freeform::fromString($freeTransform));
+            ->withFreeform(Freeform::fromString($freeTransform), false);
     }
 
     /**

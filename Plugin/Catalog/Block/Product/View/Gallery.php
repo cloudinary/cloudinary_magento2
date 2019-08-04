@@ -117,7 +117,14 @@ class Gallery
                         break;
                     case 'video':
                         if (strpos($value['videoUrl'], '.cloudinary.com/') !== false && strpos($value['videoUrl'], '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
-                            $publicId = @pathinfo($value['videoUrl'], PATHINFO_FILENAME) ?: null;
+                            $publicId = $value['videoUrl'];
+                            $publicId = preg_replace('/^.*\/' . $this->productGalleryHelper->getCloudName() . '\/video\/(upload\/)?/', '', $publicId);
+                            $publicId = preg_replace('/\.[^.]+$/', '', $publicId);
+                            $publicId = (array) preg_split('/\/v[0-9]{1,10}\//', $publicId);
+                            if (count($publicId) > 1) {
+                                $transformation = array_shift($publicId);
+                            }
+                            $publicId = implode('', $publicId);
                         }
                         break;
                 }
