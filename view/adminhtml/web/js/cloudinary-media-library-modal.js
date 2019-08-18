@@ -84,7 +84,7 @@ define([
                     if (asset.derived && asset.derived[0] && asset.derived[0].secure_url) {
                         asset.asset_derived_url = asset.asset_derived_image_url = asset.derived[0].secure_url;
                         asset.free_transformation = asset.asset_derived_image_url
-                            .replace(new RegExp('^.*cloudinary.com/' + this.options.cloudinaryMLoptions.cloud_name + '/' + asset.resource_type + '/' + asset.type + '/'), '')
+                            .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
                             .replace(/\.[^/.]+$/, '')
                             .replace(new RegExp('\/' + asset.public_id + '$'), '')
                             .replace(new RegExp('\/v[0-9]{1,10}$'), '')
