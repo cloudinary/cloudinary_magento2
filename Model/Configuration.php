@@ -242,7 +242,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getMigratedPath($file)
     {
-        return $this->autoUploadConfiguration->isActive() ? sprintf('%s/%s', DirectoryList::MEDIA, $file) : $file;
+        return sprintf('%s/%s', DirectoryList::MEDIA, $file);
     }
 
     /**
