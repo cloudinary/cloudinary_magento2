@@ -264,7 +264,7 @@ class BatchDownloader
                 }
                 if (($this->_nextCursor = $response->getNextCursor()) && (int)$this->_rateLimitRemaining <= self::API_REQUEST_STOP_ON_REMAINING_RATE_LIMIT) {
                     $this->displayMessage('<comment>' . sprintf(self::WAIT_FOR_RATE_LIMIT_RESET_MESSAGE, date('Y-m-d H:i:s', ($this->_rateLimitResetAt + 10))) . '</comment>');
-                    @time_sleep_until($this->_rateLimitResetAt + 10);
+                    time_sleep_until($this->_rateLimitResetAt + 10);
                 }
                 sleep(self::API_REQUESTS_SLEEP_BEFORE_NEXT_CALL); //Wait between each API call.
             } catch (\Exception $e) {

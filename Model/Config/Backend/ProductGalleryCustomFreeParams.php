@@ -63,7 +63,7 @@ class ProductGalleryCustomFreeParams extends \Magento\Framework\App\Config\Value
         $this->appConfig->reinit();
 
         if ($rawValue) {
-            $data = @json_decode($rawValue);
+            $data = json_decode($rawValue);
             if ($data === null || $data === false) {
                 $this->setValue('{}');
                 try {
