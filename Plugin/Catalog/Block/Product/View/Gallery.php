@@ -64,7 +64,7 @@ class Gallery
     public function getHtmlId()
     {
         if (!$this->htmlId) {
-            $this->htmlId = md5(uniqid('', true));
+            $this->htmlId = hash('sha256', uniqid('', true));
         }
         return $this->htmlId;
     }
@@ -85,7 +85,7 @@ class Gallery
         if (is_null($this->cloudinaryPGoptions) || $refresh) {
             $this->cloudinaryPGoptions = $this->productGalleryHelper->getCloudinaryPGOptions($refresh, $ignoreDisabled);
             $this->cloudinaryPGoptions['container'] = '#' . $this->getCldPGid();
-            $galleryAssets = (array) @json_decode($this->productGalleryBlock->getGalleryImagesJson(), true);
+            $galleryAssets = (array) json_decode($this->productGalleryBlock->getGalleryImagesJson(), true);
             if (count($galleryAssets)>1) {
                 usort($galleryAssets, function ($a, $b) {
                     return $a['position'] - $b['position'];

@@ -199,7 +199,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.9.7', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.9.8', '2.0.0');
     }
 
     /**
@@ -242,7 +242,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getMigratedPath($file)
     {
-        return $this->autoUploadConfiguration->isActive() ? sprintf('%s/%s', DirectoryList::MEDIA, $file) : $file;
+        return sprintf('%s/%s', DirectoryList::MEDIA, $file);
     }
 
     /**
