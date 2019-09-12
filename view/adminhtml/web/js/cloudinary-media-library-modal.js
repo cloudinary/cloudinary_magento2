@@ -1,14 +1,16 @@
 define([
     'jquery',
     'productGallery',
+    'Magento_Ui/js/modal/alert',
+    'mage/backend/notification',
+    'mage/translate',
     'jquery/ui',
     'Magento_Ui/js/modal/modal',
-    'mage/translate',
     'mage/backend/tree-suggest',
     'mage/backend/validation',
     'cloudinaryMediaLibraryAll',
     'es6Promise'
-], function($, productGallery) {
+], function($, productGallery, uiAlert, notification, $t) {
     'use strict';
 
     $.widget('mage.cloudinaryMediaLibraryModal', {
@@ -37,6 +39,20 @@ define([
             } else {
                 this.element.on('click', this.openMediaLibrary.bind(this));
             }
+        },
+
+        /**
+         * @param {Array} messages
+         */
+        notifyError: function(messages) {
+            var data = {
+                content: messages.join('')
+            };
+            if (messages.length > 1) {
+                data.modalClass = '_image-box';
+            }
+            uiAlert(data);
+            return this;
         },
 
         /**
@@ -76,15 +92,18 @@ define([
          */
         cloudinaryInsertHandler: function(data) {
             var widget = this;
+            var aggregatedErrorMessages = [];
+            var $i = data.assets.length;
 
             data.assets.forEach(asset => {
                 //console.log(asset);
+                $i--;
                 if (widget.options.imageUploaderUrl) {
                     asset.asset_url = asset.asset_image_url = asset.secure_url;
                     if (asset.derived && asset.derived[0] && asset.derived[0].secure_url) {
                         asset.asset_derived_url = asset.asset_derived_image_url = asset.derived[0].secure_url;
                         asset.free_transformation = asset.asset_derived_image_url
-                            .replace(new RegExp('^.*cloudinary.com/' + this.options.cloudinaryMLoptions.cloud_name + '/' + asset.resource_type + '/' + asset.type + '/'), '')
+                            .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
                             .replace(/\.[^/.]+$/, '')
                             .replace(new RegExp('\/' + asset.public_id + '$'), '')
                             .replace(new RegExp('\/v[0-9]{1,10}$'), '')
@@ -140,15 +159,29 @@ define([
                                     widget.options.callbackHandler[widget.options.callbackHandlerMethod](file);
                                 }
                             } else {
-                                alert($.mage.__('An error occured during ' + asset.resource_type + ' insert!'));
                                 console.error(file);
+                                notification().add({
+                                    error: true,
+                                    message: $t('An error occured during ' + asset.resource_type + ' insert (' + asset.public_id + ')!') + '%s%sError: ' + file.error.replace(/File:.*$/, ''),
+                                    insertMethod: function(constructedMessage) {
+                                        aggregatedErrorMessages.push(constructedMessage.replace('%s%s', '<br>'));
+                                    }
+                                });
                             }
-
+                            if (!$i && aggregatedErrorMessages.length) {
+                                widget.notifyError(aggregatedErrorMessages);
+                            }
                         }
                     ).fail(
                         function(response) {
-                            alert($.mage.__('An error occured during ' + asset.resource_type + ' insert!'));
                             console.error(response);
+                            notification().add({
+                                error: true,
+                                message: $t('An error occured during ' + asset.resource_type + ' insert (' + asset.public_id + ')!')
+                            });
+                            if (!$i && aggregatedErrorMessages.length) {
+                                widget.notifyError(aggregatedErrorMessages);
+                            }
                         }
                     );
                 }

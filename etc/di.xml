@@ -68,4 +68,8 @@
         <plugin name="cloudinary_plugin_catalog_block_product_view_gallery" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View\Gallery"/>
     </type>
 
+    <type name="Magento\Framework\View\Asset\Minification">
+        <plugin name="cloudinary_plugin_framework_view_asset_minification" type="Cloudinary\Cloudinary\Plugin\ExcludeFilesFromMinification" />
+    </type>
+
 </config>
