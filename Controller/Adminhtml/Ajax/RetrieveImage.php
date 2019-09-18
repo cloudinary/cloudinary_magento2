@@ -12,7 +12,7 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Image\AdapterFactory as ImageAdapterFactory;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\Validator\ValidatorInterface;
+use Magento\Framework\Validator\AllowedProtocols;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
 use Magento\Store\Model\StoreManagerInterface;
@@ -59,9 +59,9 @@ class RetrieveImage extends \Magento\Backend\App\Action
     protected $fileProcessor;
 
     /**
-     * URI validator
+     * AllowedProtocols validator
      *
-     * @var ValidatorInterface
+     * @var AllowedProtocols
      */
     private $protocolValidator;
 
@@ -85,7 +85,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
      * @param  Curl                  $curl
      * @param  FileUtility           $fileUtility
      * @param  FileProcessor         $fileProcessor
-     * @param  ValidatorInterface    $protocolValidator
+     * @param  AllowedProtocols      $protocolValidator
      * @param  NotProtectedExtension $extensionValidator
      * @param  StoreManagerInterface $storeManager
      */
@@ -98,7 +98,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
         Curl $curl,
         FileUtility $fileUtility,
         FileProcessor $fileProcessor,
-        ValidatorInterface $protocolValidator,
+        AllowedProtocols $protocolValidator,
         NotProtectedExtension $extensionValidator,
         StoreManagerInterface $storeManager
     ) {

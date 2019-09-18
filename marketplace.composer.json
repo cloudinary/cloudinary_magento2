@@ -1,24 +1,18 @@
 {
-  "name": "cloudinary/cloudinary",
-  "type": "magento2-module",
-  "version": "1.9.8",
-  "description": "Cloudinary Magento 2 Integration.",
-  "license": "MIT",
-  "require": {
-    "cloudinary/cloudinary_php": "*"
-  },
-  "autoload": {
-    "files": [
-      "registration.php"
-    ],
-    "psr-4": {
-      "Cloudinary\\Cloudinary\\": ""
+    "name": "cloudinary/cloudinary",
+    "description": "Cloudinary Magento 2 Integration.",
+    "type": "magento2-module",
+    "version": "1.9.9",
+    "license": "MIT",
+    "require": {
+        "cloudinary/cloudinary_php": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Cloudinary\\Cloudinary\\": ""
+        }
     }
-  },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://repo.magento.com/"
-    }
-  ]
 }
