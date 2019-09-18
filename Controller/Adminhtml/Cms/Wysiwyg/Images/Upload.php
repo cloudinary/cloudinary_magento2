@@ -12,7 +12,7 @@ use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Image\AdapterFactory;
 use Magento\Framework\Registry;
-use Magento\Framework\Validator\ValidatorInterface;
+use Magento\Framework\Validator\AllowedProtocols;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
 
@@ -58,9 +58,9 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
     protected $fileUtility;
 
     /**
-     * URI validator
+     * AllowedProtocols validator
      *
-     * @var ValidatorInterface
+     * @var AllowedProtocols
      */
     private $protocolValidator;
 
@@ -81,7 +81,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      * @param  AdapterFactory        $imageAdapterFactory
      * @param  Curl                  $curl
      * @param  File                  $fileUtility
-     * @param  ValidatorInterface    $protocolValidator
+     * @param  AllowedProtocols      $protocolValidator
      * @param  NotProtectedExtension $extensionValidator
      */
     public function __construct(
@@ -95,7 +95,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         AdapterFactory $imageAdapterFactory,
         Curl $curl,
         File $fileUtility,
-        ValidatorInterface $protocolValidator,
+        AllowedProtocols $protocolValidator,
         NotProtectedExtension $extensionValidator
     ) {
         parent::__construct($context, $coreRegistry, $resultJsonFactory, $directoryResolver);

@@ -15,7 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\File\Uploader;
 use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
-use Magento\Framework\Validator\ValidatorInterface;
+use Magento\Framework\Validator\AllowedProtocols;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -70,7 +70,7 @@ class BatchDownloader
     private $_fileUtility;
 
     /**
-     * @var ValidatorInterface
+     * @var AllowedProtocols
      */
     private $_protocolValidator;
 
@@ -115,7 +115,7 @@ class BatchDownloader
      * @param  Curl                                 $curl
      * @param  Filesystem                           $fileSystem
      * @param  FileUtility                          $fileUtility
-     * @param  ValidatorInterface                   $protocolValidator
+     * @param  AllowedProtocols                     $protocolValidator
      * @param  NotProtectedExtension                $extensionValidator
      * @param  SynchronizationCheck                 $synchronizationChecker
      * @param  SynchroniseAssetsRepositoryInterface $synchronisationRepository
@@ -129,7 +129,7 @@ class BatchDownloader
         Curl $curl,
         Filesystem $fileSystem,
         FileUtility $fileUtility,
-        ValidatorInterface $protocolValidator,
+        AllowedProtocols $protocolValidator,
         NotProtectedExtension $extensionValidator,
         SynchronizationCheck $synchronizationChecker,
         SynchroniseAssetsRepositoryInterface $synchronisationRepository
