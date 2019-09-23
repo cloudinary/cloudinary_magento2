@@ -78,4 +78,23 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
             ]
         );
     }
+
+    /**
+     * Escape a string for the HTML attribute context
+     *
+     * @param string $string
+     * @param boolean $escapeSingleQuote
+     * @return string
+     */
+    public function escapeHtmlAttr($string, $escapeSingleQuote = true)
+    {
+        if (method_exists(get_parent_class($this), 'escapeHtmlAttr')) {
+            return parent::escapeHtmlAttr($string, $escapeSingleQuote);
+        }
+        if ($escapeSingleQuote) {
+            $escaper = new \Zend\Escaper\Escaper();
+            return $escaper->escapeHtmlAttr((string) $string);
+        }
+        return htmlspecialchars((string)$string, ENT_COMPAT, 'UTF-8', false);
+    }
 }
