@@ -3,7 +3,6 @@
 namespace Cloudinary\Cloudinary\Helper;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Cloudinary\Cloudinary\Model\Configuration;
 use Magento\Framework\App\Helper\Context;
 
 class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
@@ -20,7 +19,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $cloudinaryPGoptions;
 
-    const CASTING = [
+    protected $_casting = [
         'themeProps_primary' => 'string',
         'themeProps_onPrimary' => 'string',
         'themeProps_active' => 'string',
@@ -69,8 +68,8 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
             $this->cloudinaryPGoptions = $this->configuration->getProductGalleryAll();
             foreach ($this->cloudinaryPGoptions as $key => $value) {
                 //Change casting
-                if (isset(self::CASTING[$key])) {
-                    \settype($value, self::CASTING[$key]);
+                if (isset($this->_casting[$key])) {
+                    \settype($value, $this->_casting[$key]);
                     $this->cloudinaryPGoptions[$key] = $value;
                 }
                 //Build options hierarchy

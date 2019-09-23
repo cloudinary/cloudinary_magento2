@@ -6,7 +6,7 @@
 
 namespace Cloudinary\Cloudinary\Model\Observer;
 
-use Cloudinary\Cloudinary\Model\Configuration;
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
@@ -14,15 +14,15 @@ class ProductGalleryChangeTemplate implements ObserverInterface
 {
 
     /**
-     * @var Configuration
+     * @var ConfigurationInterface
      */
     protected $configuration;
 
     /**
-     * @param Configuration $configuration
+     * @param ConfigurationInterface $configuration
      */
     public function __construct(
-        Configuration $configuration
+        ConfigurationInterface $configuration
     ) {
         $this->configuration = $configuration;
     }
