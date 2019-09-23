@@ -3,7 +3,6 @@
 namespace Cloudinary\Cloudinary\Helper;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
-use Cloudinary\Cloudinary\Model\Configuration;
 use Magento\Framework\App\Helper\Context;
 
 class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
