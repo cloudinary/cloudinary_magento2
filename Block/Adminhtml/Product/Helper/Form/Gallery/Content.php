@@ -88,8 +88,8 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
      */
     public function escapeHtmlAttr($string, $escapeSingleQuote = true)
     {
-        if (method_exists(get_parent_class($this), 'escapeHtmlAttr')) {
-            return parent::escapeHtmlAttr($string, $escapeSingleQuote);
+        if (method_exists($this->_escaper, 'escapeHtmlAttr')) {
+            return $this->_escaper->escapeHtmlAttr($string, $escapeSingleQuote);
         }
         if ($escapeSingleQuote) {
             $escaper = new \Zend\Escaper\Escaper();
