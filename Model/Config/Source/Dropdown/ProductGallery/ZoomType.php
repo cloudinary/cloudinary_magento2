@@ -18,8 +18,8 @@ class ZoomType implements OptionSourceInterface
                 'label' => 'Flyout',
             ],
             [
-                'value' => 'lightbox',
-                'label' => 'Lightbox',
+                'value' => 'popup',
+                'label' => 'Popup',
             ],
         ];
     }
