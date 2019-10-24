@@ -19,4 +19,22 @@
 	</route>
 	<!--/ cloudinary/resources/video -->
 
+	<!-- cloudinary/productGallery/addItem -->
+	<route method="POST" url="/V1/cloudinary/productGallery/addItem">
+		<service class="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" method="addItem"/>
+		<resources>
+			<resource ref="Magento_Catalog::products" />
+		</resources>
+	</route>
+	<!--/ cloudinary/productGallery/addItem -->
+
+	<!-- cloudinary/productGallery/addItem -->
+	<route method="POST" url="/V1/cloudinary/productGallery/addItems">
+		<service class="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" method="addItems"/>
+		<resources>
+			<resource ref="Magento_Catalog::products" />
+		</resources>
+	</route>
+	<!--/ cloudinary/productGallery/addItem -->
+
 </routes>

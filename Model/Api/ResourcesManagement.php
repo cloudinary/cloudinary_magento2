@@ -11,6 +11,8 @@ use Magento\Framework\Json\EncoderInterface;
 
 class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagementInterface
 {
+    private $initialized;
+    private $id;
     protected $_resourceType = "image";
     protected $_resourceData = [];
 
@@ -60,15 +62,32 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
         $this->_api = $api;
         $this->_request = $request;
         $this->_jsonEncoder = $jsonEncoder;
-        if ($this->_configuration->isEnabled()) {
-            $this->_authorise();
-        }
     }
 
-    private function _authorise()
+    private function initialize()
     {
-        Cloudinary::config($this->_configurationBuilder->build());
-        Cloudinary::$USER_PLATFORM = $this->_configuration->getUserPlatform();
+        if (!$this->initialized) {
+            $this->initialized = true;
+            if ($this->_request->getParam("id")) {
+                $this->setId($this->_request->getParam("id"));
+            }
+            if ($this->_configuration->isEnabled()) {
+                Cloudinary::config($this->_configurationBuilder->build());
+                Cloudinary::$USER_PLATFORM = $this->_configuration->getUserPlatform();
+            }
+        }
+        return $this;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -81,7 +100,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         try {
             $this->_resourceData = $this->_api->resource(
-                $this->_request->getParam("id"),
+                $this->getId(),
                 [
                 "resource_type" => $this->_resourceType
                 ]
@@ -107,6 +126,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
      */
     public function getImage()
     {
+        $this->initialize();
         $this->_resourceType = "image";
         return $this->_getResourceData();
     }
@@ -116,6 +136,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
      */
     public function getVideo()
     {
+        $this->initialize();
         $this->_resourceType = "video";
         return $this->_getResourceData();
     }

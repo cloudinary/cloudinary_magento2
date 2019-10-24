@@ -353,4 +353,108 @@ class Configuration implements ConfigurationInterface
     {
         return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
     }
+
+    /**
+     * Parse Cloudinary URL
+     * @method parseCloudinaryUrl
+     * @param  string             $url
+     * @param  string|null        $publicId
+     * @return array
+     */
+    public function parseCloudinaryUrl($url, $publicId = null)
+    {
+        $parsed = [
+            "orig_url" => $url,
+            "scheme" => null,
+            "host" => null,
+            "path" => null,
+            "extension" => \pathinfo($url, PATHINFO_EXTENSION),
+            "type" => null,
+            "cloudName" => null,
+            "version" => null,
+            "publicId" => ltrim($publicId, '/') ?: null,
+            "transformations_string" => null,
+            "transformations" => [],
+            "transformationless_url" => $url,
+            "versionless_url" => $url,
+            "versionless_transformationless_url" => $url,
+            "thumbnail_url" => null,
+        ];
+
+        $parsed["scheme"] = $this->mbParseUrl($url, PHP_URL_SCHEME);
+        $parsed["host"] = $this->mbParseUrl($url, PHP_URL_HOST);
+        $parsed["path"] = $this->mbParseUrl($url, PHP_URL_PATH);
+
+        $_url = ltrim($parsed["path"], '/');
+        $_url = preg_replace('/\.[^.]+$/', '', $_url);
+
+        preg_match('/\/v[0-9]{1,10}\//', $_url, $version);
+        if ($version && isset($version[0])) {
+            $parsed["version"] = trim($version[0], '/');
+        }
+
+        if (!$parsed["publicId"] && $parsed["version"]) {
+            $parsed["publicId"] = preg_replace('/.+\/v[0-9]{1,10}\//', '', $_url);
+        }
+
+        $_url = preg_replace('/(\/|\/v[0-9]{1,10}\/)' . \preg_quote($parsed["publicId"], '/') . '$/', '', $_url);
+        $_url = explode('/', $_url);
+
+        $slug = \array_shift($_url);
+        if (\in_array($slug, ["image","video"])) {
+            $parsed["type"] = $slug;
+        } else {
+            $parsed["cloudName"] = $slug;
+        }
+
+        $slug = \array_shift($_url);
+        $parsed["type"] = ($parsed["cloudName"] && $slug  === "video") ? "video" : "image";
+
+        $slug = \array_shift($_url);
+        $parsed["transformations_string"] = ($slug === 'upload' ? '' : $slug) . implode('/', $_url);
+
+        if ($parsed["transformations_string"]) {
+            $parsed["transformations"] = explode(',', \str_replace('/', ',', $parsed["transformations_string"]));
+            $parsed["transformationless_url"] = preg_replace('/\/' . \preg_quote($parsed["transformations_string"], '/') . '\//', '/', $url, 1);
+        }
+
+        $parsed["versionless_url"] = preg_replace('/\/v[0-9]{1,10}\//', '/', $url, 1);
+        $parsed["versionless_transformationless_url"] = preg_replace('/\/v[0-9]{1,10}\//', '/', $parsed["transformationless_url"], 1);
+
+        if ($parsed["type"] === "video") {
+            $parsed["thumbnail_url"] = preg_replace('/\.[^.]+$/', '', $url);
+            $parsed["thumbnail_url"] = preg_replace('/\/v[0-9]{1,10}\//', '/', $parsed["thumbnail_url"]);
+            $parsed["thumbnail_url"] = preg_replace('/\/(' . $parsed["publicId"] . ')$/', '/so_auto/$1.jpg', $parsed["thumbnail_url"]);
+        }
+
+        return $parsed;
+    }
+
+    /**
+     * UTF-8 aware parse_url() replacement.
+     *
+     * @return array
+     */
+    public function mbParseUrl($url, $component=-1)
+    {
+        $enc_url = preg_replace_callback(
+            '%[^:/@?&=#]+%usD',
+            function ($matches) {
+                return rawurlencode($matches[0]);
+            },
+            $url
+        );
+        $parts = parse_url($enc_url, $component);
+        if ($parts === false) {
+            throw new \InvalidArgumentException('Malformed URL: ' . $url);
+        }
+        if (is_array($parts)) {
+            foreach ($parts as $name => $value) {
+                $parts[$name] = rawurldecode($value);
+            }
+        } else {
+            $parts = rawurldecode($parts);
+        }
+        return $parts;
+    }
 }

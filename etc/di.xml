@@ -18,6 +18,8 @@
 
     <preference for="Cloudinary\Cloudinary\Api\ResourcesManagementInterface" type="Cloudinary\Cloudinary\Model\Api\ResourcesManagement"/>
 
+    <preference for="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" type="Cloudinary\Cloudinary\Model\Api\ProductGalleryManagement"/>
+
     <preference for="Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface" type="Cloudinary\Cloudinary\Model\SynchronisationRepository"/>
 
     <preference for="Cloudinary\Cloudinary\Core\ConfigurationInterface" type="Cloudinary\Cloudinary\Model\Configuration"/>
