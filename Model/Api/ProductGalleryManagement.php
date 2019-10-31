@@ -263,6 +263,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
 
         if ($parsed["type"] === "video") {
             $videoData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($parsed["publicId"])->getVideo());
+            $videoData["title"] = $videoData["description"] = "";
             if (!$videoData["error"]) {
                 $videoData["context"] = new DataObject((isset($videoData["data"]["context"])) ? (array)$videoData["data"]["context"] : []);
                 $videoData["title"] = $videoData["context"]->getData('caption') ?: $videoData["context"]->getData('alt');
