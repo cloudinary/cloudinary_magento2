@@ -201,6 +201,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     {
         $result = [
             "errors" => 0,
+            "items" => [],
             "message" => ""
         ];
         try {
@@ -210,27 +211,32 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                 );
             }
             $items = (array)$items;
-            foreach ($items as $item) {
+            foreach ($items as $i => $item) {
                 try {
-                    $item = new DataObject($item);
+                    $item = $result["items"][$i] = (array)$item;
+                    $result["items"][$i]["error"] = 0;
+                    $result["items"][$i]["message"] = "success";
                     $this->addGalleryItem(
-                        $item->getData('url'),
-                        $item->getData('sku'),
-                        $item->getData('publicId'),
-                        $item->getData('roles')
+                        $item["url"],
+                        $item["sku"],
+                        (isset($item["publicId"])) ? $item["publicId"] : null,
+                        (isset($item["roles"])) ? $item["roles"] : null
                     );
                 } catch (\Exception $e) {
                     $result["errors"]++;
-                    $result["message"] .= "addGalleryItem({$item->getData('url')}, {$item->getData('sku')}): {$e->getMessage()} \n";
+                    $result["items"][$i]["error"] = 1;
+                    $result["items"][$i]["message"] = $e->getMessage();
                 }
             }
         } catch (\Exception $e) {
             $result["errors"]++;
-            $result["message"] .= "{$e->getMessage()} \n";
+            $result["message"] = "\n{$e->getMessage()}";
         }
 
         if (!$result["errors"]) {
             $result["message"] = "success";
+        } else {
+            $result["message"] = "error" . $result["message"];
         }
 
         return $this->jsonHelper->jsonEncode($result);
@@ -246,6 +252,13 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     private function addGalleryItem($url, $sku, $publicId = null, $roles = null)
     {
         $parsed = $this->configuration->parseCloudinaryUrl($url, $publicId);
+
+        if (!$parsed["version"] && !$publicId) {
+            throw new LocalizedException(
+                __("The `publicId` field is mandatory for Cloudinary URLs that doesn't contain a version number.")
+            );
+        }
+
         $roles = ($roles) ? array_map('trim', explode(',', $roles)) : null;
         $product = $this->productRepository->get($sku);
 
