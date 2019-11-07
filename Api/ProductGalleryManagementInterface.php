@@ -6,6 +6,7 @@ interface ProductGalleryManagementInterface
 {
 
     /**
+     * [!] DEPRECATED, please use addProductMedia() instead.
      * Add product gallery item from Cloudinary URL.
      * @method addItem
      * @param  string       $url
@@ -17,10 +18,19 @@ interface ProductGalleryManagementInterface
     public function addItem($url, $sku, $publicId = null, $roles = null);
 
     /**
-     * Add multiple product gallery items from Cloudinary URLs.
+     * Add multiple gallery items to one or more products from Cloudinary URLs.
      * @method addItems
      * @param  mixed  $items
      * @return string
      */
     public function addItems($items);
+
+    /**
+     * Add product gallery items from Cloudinary URLs.
+     * @method addItem
+     * @param  string  $sku
+     * @param  mixed   $urls
+     * @return string
+     */
+    public function addProductMedia($sku, $urls);
 }

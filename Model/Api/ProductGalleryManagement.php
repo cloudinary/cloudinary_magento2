@@ -184,6 +184,49 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * {@inheritdoc}
      */
+    public function addProductMedia($sku, $urls)
+    {
+        $result = [
+            "passed" => 0,
+            "failed" => [
+                "count" => 0,
+                "urls" => []
+            ]
+        ];
+        try {
+            if (!$this->configuration->isEnabled()) {
+                throw new LocalizedException(
+                    __("Cloudinary module is disabled. Please enable it first in order to use this API.")
+                );
+            }
+            $urls = (array)$urls;
+            foreach ($urls as $i => $url) {
+                try {
+                    $url = (array)$url;
+                    $this->addGalleryItem(
+                        $url["url"],
+                        $sku,
+                        (isset($url["publicId"])) ? $url["publicId"] : null,
+                        (isset($url["roles"])) ? $url["roles"] : null
+                    );
+                    $result["passed"]++;
+                } catch (\Exception $e) {
+                    $result["failed"]["count"]++;
+                    $url["error"] = $e->getMessage();
+                    $result["failed"]["urls"][] = $url;
+                }
+            }
+        } catch (\Exception $e) {
+            $result["error"] = 1;
+            $result["message"] = $e->getMessage();
+        }
+
+        return $this->jsonHelper->jsonEncode($result);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function addItem($url, $sku, $publicId = null, $roles = null)
     {
         return $this->addItems([[
