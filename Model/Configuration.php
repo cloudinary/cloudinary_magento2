@@ -18,11 +18,17 @@ use Cloudinary\Cloudinary\Core\UploadConfig;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Module\ModuleListInterface;
+use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class Configuration implements ConfigurationInterface
 {
+    const MODULE_NAME = 'Cloudinary_Cloudinary';
+
     //= Basics
     const CONFIG_PATH_ENABLED = 'cloudinary/cloud/cloudinary_enabled';
     const CONFIG_PATH_ENVIRONMENT_VARIABLE = 'cloudinary/setup/cloudinary_environment_variable';
@@ -106,24 +112,45 @@ class Configuration implements ConfigurationInterface
     private $autoUploadConfiguration;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @param ScopeConfigInterface             $configReader
-     * @param WriterInterface                  $configWriter
-     * @param EncryptorInterface               $decryptor
-     * @param AutoUploadConfigurationInterface $autoUploadConfiguration
-     * @param StoreManagerInterface            $storeManager
+     * @var ModuleListInterface
+     */
+    private $moduleList;
+
+    /**
+     * @var ProductMetadataInterface
+     */
+    private $productMetadata;
+
+    /**
+     * @method __construct
+     * @param  ScopeConfigInterface             $configReader
+     * @param  WriterInterface                  $configWriter
+     * @param  EncryptorInterface               $decryptor
+     * @param  AutoUploadConfigurationInterface $autoUploadConfiguration
+     * @param  LoggerInterface                  $logger
+     * @param  StoreManagerInterface            $storeManager
+     * @param  ModuleListInterface              $moduleList
+     * @param  ProductMetadataInterface         $productMetadata
      */
     public function __construct(
         ScopeConfigInterface $configReader,
         WriterInterface $configWriter,
         EncryptorInterface $decryptor,
         AutoUploadConfigurationInterface $autoUploadConfiguration,
-        \Psr\Log\LoggerInterface $logger,
-        StoreManagerInterface $storeManager
+        LoggerInterface $logger,
+        StoreManagerInterface $storeManager,
+        ModuleListInterface $moduleList,
+        ProductMetadataInterface $productMetadata
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
@@ -131,6 +158,8 @@ class Configuration implements ConfigurationInterface
         $this->autoUploadConfiguration = $autoUploadConfiguration;
         $this->logger = $logger;
         $this->storeManager = $storeManager;
+        $this->moduleList = $moduleList;
+        $this->productMetadata = $productMetadata;
     }
 
     /**
@@ -199,7 +228,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getUserPlatform()
     {
-        return sprintf(self::USER_PLATFORM_TEMPLATE, '1.10.2', '2.0.0');
+        return sprintf(self::USER_PLATFORM_TEMPLATE, $this->getModuleVersion(), $this->getMagentoPlatformVersion());
     }
 
     /**
@@ -351,7 +380,27 @@ class Configuration implements ConfigurationInterface
      */
     public function getMediaBaseUrl()
     {
-        return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+        return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+    }
+
+    public function getModuleVersion()
+    {
+        return $this->moduleList->getOne(self::MODULE_NAME)['setup_version'];
+    }
+
+    public function getMagentoPlatformName()
+    {
+        return $this->productMetadata->getName();
+    }
+
+    public function getMagentoPlatformEdition()
+    {
+        return $this->productMetadata->getEdition();
+    }
+
+    public function getMagentoPlatformVersion()
+    {
+        return $this->productMetadata->getVersion();
     }
 
     /**
