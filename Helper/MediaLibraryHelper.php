@@ -72,6 +72,11 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                     'api_key' => $this->credentials["api_key"],
                     'cms_type' => 'magento',
                     //'default_transformations' => [['quality' => 'auto'],['format' => 'auto']],
+                    'integration' => [
+                        'type' => 'magento_plugin',
+                        'version' => $this->configuration->getModuleVersion(),
+                        'platform' => "{$this->configuration->getMagentoPlatformName()} {$this->configuration->getMagentoPlatformEdition()} {$this->configuration->getMagentoPlatformVersion()}"
+                    ]
                 ];
                 if (($this->credentials["username"] = $this->configuration->getAutomaticLoginUser())) {
                     $this->cloudinaryMLoptions["timestamp"] = $this->timestamp;
