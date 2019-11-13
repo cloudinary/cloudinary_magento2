@@ -45,6 +45,8 @@ class Configuration implements ConfigurationInterface
     //= Advanced
     const CONFIG_PATH_REMOVE_VERSION_NUMBER = 'cloudinary/advanced/remove_version_number';
     const CONFIG_PATH_USE_ROOT_PATH = 'cloudinary/advanced/use_root_path';
+    const CONFIG_PATH_USE_SIGNED_URLS = 'cloudinary/advanced/use_signed_urls';
+    const CONFIG_PATH_ENABLE_LOCAL_MAPPING = 'cloudinary/advanced/enable_local_mapping';
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -77,7 +79,6 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_SECURE_BASE_URL = "web/secure/base_url";
     const CONFIG_PATH_UNSECURE_BASE_URL = "web/unsecure/base_url";
     const CONFIG_PATH_USE_SECURE_IN_FRONTEND = "web/secure/use_in_frontend";
-    const CONFIG_PATH_USE_SIGNED_URLS = 'cloudinary/advanced/use_signed_urls';
 
     const USER_PLATFORM_TEMPLATE = 'CloudinaryMagento/%s (Magento %s)';
     const USE_FILENAME = true;
@@ -85,6 +86,7 @@ class Configuration implements ConfigurationInterface
     const OVERWRITE = false;
     const SCOPE_ID_ONE = 1;
     const SCOPE_ID_ZERO = 0;
+    const CLD_UNIQID_PREFIX = 'CLD_';
 
     /**
      * @var ScopeConfigInterface
@@ -375,6 +377,14 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabledLocalMapping()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_ENABLE_LOCAL_MAPPING);
+    }
+
+    /**
      * @method getMediaBaseUrl
      * @return string
      */
@@ -505,5 +515,16 @@ class Configuration implements ConfigurationInterface
             $parts = rawurldecode($parts);
         }
         return $parts;
+    }
+
+    public function generateCLDuniqid()
+    {
+        return uniqid(self::CLD_UNIQID_PREFIX) . '_';
+    }
+
+    public function addUniquePrefixToBasename($filename, $uniqid = null)
+    {
+        $uniqid = $uniqid ? $uniqid : $this->generateCLDuniqid();
+        return dirname($filename) . '/' . $uniqid . basename($filename);
     }
 }

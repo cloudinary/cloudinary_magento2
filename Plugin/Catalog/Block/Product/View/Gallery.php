@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View;
 
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Json\EncoderInterface;
 
 class Gallery
@@ -17,6 +17,11 @@ class Gallery
      * @var EncoderInterface
      */
     protected $jsonEncoder;
+
+    /**
+     * @var ConfigurationInterface
+     */
+    private $configuration;
 
     /**
      * @var \Magento\Catalog\Block\Product\View\Gallery
@@ -33,15 +38,19 @@ class Gallery
     protected $cloudinaryPGoptions;
 
     /**
-     * @param ProductGalleryHelper $productGalleryHelper
-     * @param EncoderInterface $jsonEncoder
+     * @method __construct
+     * @param  ProductGalleryHelper   $productGalleryHelper
+     * @param  EncoderInterface       $jsonEncoder
+     * @param  ConfigurationInterface $configuration
      */
     public function __construct(
         ProductGalleryHelper $productGalleryHelper,
-        EncoderInterface $jsonEncoder
+        EncoderInterface $jsonEncoder,
+        ConfigurationInterface $configuration
     ) {
         $this->productGalleryHelper = $productGalleryHelper;
         $this->jsonEncoder = $jsonEncoder;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -96,37 +105,16 @@ class Gallery
             }
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
-                $publicId = null;
-                $transformation = null;
-                switch ($value['type']) {
-                    case 'image':
-                        $publicId = $value['full'] ?: $value['img'];
-                        if (strpos($publicId, '.cloudinary.com/') !== false && strpos($publicId, '/' . DirectoryList::MEDIA . '/') !== false) {
-                            $publicId = preg_replace('/\/v[0-9]{1,10}\//', '/', $publicId);
-                            $publicId = explode('/' . DirectoryList::MEDIA . '/', $publicId);
-                            $prefix = array_shift($publicId);
-                            $publicId = DirectoryList::MEDIA . '/' . implode('/' . DirectoryList::MEDIA . '/', $publicId);
-                            //$publicId = preg_replace('/\.[^.]+$/', '', $publicId);
-                            $transformation = basename($prefix);
-                            if (($prefix = basename(dirname($prefix))) && preg_match('/[a-zA-Z].*_[\w.-].*/', $prefix)) {
-                                $transformation .= ',' . $prefix;
-                            }
-                        } else {
-                            $publicId = null;
-                        }
-                        break;
-                    case 'video':
-                        if (strpos($value['videoUrl'], '.cloudinary.com/') !== false && strpos($value['videoUrl'], '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
-                            $publicId = $value['videoUrl'];
-                            $publicId = preg_replace('/^.*\/' . $this->productGalleryHelper->getCloudName() . '\/video\/(upload\/)?/', '', $publicId);
-                            $publicId = preg_replace('/\.[^.]+$/', '', $publicId);
-                            $publicId = (array) preg_split('/\/v[0-9]{1,10}\//', $publicId);
-                            if (count($publicId) > 1) {
-                                $transformation = array_shift($publicId);
-                            }
-                            $publicId = implode('', $publicId);
-                        }
-                        break;
+                $publicId = $url = $transformation = null;
+                if ($value['type'] === 'image') {
+                    $url = $value['full'] ?: $value['img'];
+                } elseif ($value['type'] === 'video') {
+                    $url = $value['videoUrl'];
+                }
+                if (\strpos($url, '.cloudinary.com/') !== false && strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
+                    $parsed = $this->configuration->parseCloudinaryUrl($url);
+                    $publicId = $parsed['publicId'];
+                    $transformation = \str_replace('/', ',', $parsed['transformations_string']);
                 }
                 if ($publicId) {
                     $this->cloudinaryPGoptions['mediaAssets'][] = (object)[

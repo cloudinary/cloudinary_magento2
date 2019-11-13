@@ -4,6 +4,8 @@ namespace Cloudinary\Cloudinary\Model\Api;
 
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Model\MediaLibraryMap;
+use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Cloudinary\Cloudinary\Model\ProductImageFinder;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -27,6 +29,20 @@ use Magento\Theme\Model\Design\Config\FileUploader\FileProcessor;
 
 class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface
 {
+    /**
+     * @var array
+     */
+    private $parsedRemoteFileUrl = [];
+
+    /**
+     * @var string|null
+     */
+    private $cldUniqid;
+
+    /**
+     * @var MediaLibraryMap|null
+     */
+    private $mapped;
 
     /**
      * @var ConfigurationInterface
@@ -121,6 +137,11 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     private $mediaGalleryProcessor;
 
     /**
+     * @var MediaLibraryMapFactory
+     */
+    private $mediaLibraryMapFactory;
+
+    /**
      * @method __construct
      * @param  ConfigurationInterface     $configuration
      * @param  Http                       $request
@@ -140,6 +161,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  ResourcesManagement        $cloudinaryResourcesManagement
      * @param  TransformationFactory      $transformationFactory
      * @param  Processor                  $mediaGalleryProcessor
+     * @param  MediaLibraryMapFactory     $mediaLibraryMapFactory
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -159,7 +181,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         CloudinaryImageManager $cloudinaryImageManager,
         ResourcesManagement $cloudinaryResourcesManagement,
         TransformationFactory $transformationFactory,
-        Processor $mediaGalleryProcessor
+        Processor $mediaGalleryProcessor,
+        MediaLibraryMapFactory $mediaLibraryMapFactory
     ) {
         $this->configuration = $configuration;
         $this->request = $request;
@@ -179,6 +202,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->cloudinaryResourcesManagement = $cloudinaryResourcesManagement;
         $this->transformationFactory = $transformationFactory;
         $this->mediaGalleryProcessor = $mediaGalleryProcessor;
+        $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
     }
 
     /**
@@ -269,6 +293,9 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $result["errors"]++;
                     $result["items"][$i]["error"] = 1;
                     $result["items"][$i]["message"] = $e->getMessage();
+                    if ($this->mapped && $this->mapped->getId()) {
+                        $this->mapped->delete();
+                    }
                 }
             }
         } catch (\Exception $e) {
@@ -294,9 +321,10 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      */
     private function addGalleryItem($url, $sku, $publicId = null, $roles = null)
     {
-        $parsed = $this->configuration->parseCloudinaryUrl($url, $publicId);
+        $this->cldUniqid = $this->mapped = null;
+        $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($url, $publicId);
 
-        if (!$parsed["version"] && !$publicId) {
+        if (!$this->parsedRemoteFileUrl["version"] && !$publicId) {
             throw new LocalizedException(
                 __("The `publicId` field is mandatory for Cloudinary URLs that doesn't contain a version number.")
             );
@@ -305,7 +333,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $roles = ($roles) ? array_map('trim', explode(',', $roles)) : null;
         $product = $this->productRepository->get($sku);
 
-        $result = $this->retrieveImage($parsed['thumbnail_url'] ?: $parsed['transformationless_url']);
+        $result = $this->retrieveImage($this->parsedRemoteFileUrl['thumbnail_url'] ?: $this->parsedRemoteFileUrl['transformationless_url']);
         $result["file"] = $this->mediaGalleryProcessor->addImage(
             $product,
             $result["tmp_name"],
@@ -317,22 +345,22 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $mediaGalleryData = $product->getMediaGallery();
         $galItem = array_pop($mediaGalleryData["images"]);
 
-        if ($parsed["type"] === "video") {
-            $videoData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($parsed["publicId"])->getVideo());
+        if ($this->parsedRemoteFileUrl["type"] === "video") {
+            $videoData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getVideo());
             $videoData["title"] = $videoData["description"] = "";
             if (!$videoData["error"]) {
                 $videoData["context"] = new DataObject((isset($videoData["data"]["context"])) ? (array)$videoData["data"]["context"] : []);
                 $videoData["title"] = $videoData["context"]->getData('caption') ?: $videoData["context"]->getData('alt');
                 $videoData["description"] = $videoData["context"]->getData('description') ?: $videoData["context"]->getData('alt');
             }
-            $videoData["title"] = $videoData["title"] ?: $parsed["publicId"];
+            $videoData["title"] = $videoData["title"] ?: $this->parsedRemoteFileUrl["publicId"];
             $videoData["description"] = preg_replace('/(&nbsp;|<([^>]+)>)/i', '', $videoData["description"] ?: $videoData["title"]);
 
             $galItem = array_merge($galItem, [
                 "media_type" => "external-video",
                 "video_provider" => "cloudinary",
                 "disabled" => 0,
-                "video_url" => $parsed["orig_url"],
+                "video_url" => $this->parsedRemoteFileUrl["orig_url"],
                 "video_title" => $videoData["title"],
                 "video_description" => $videoData["description"],
             ]);
@@ -348,11 +376,15 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             $this->cloudinaryImageManager->uploadAndSynchronise($image);
         }
 
-        if ($parsed["type"] === "image" && $parsed['transformations_string']) {
+        if ($this->parsedRemoteFileUrl["type"] === "image" && $this->parsedRemoteFileUrl['transformations_string']) {
             $this->transformationFactory->create()
                 ->setImageName($galItem["file"])
-                ->setFreeTransformation($parsed['transformations_string'])
+                ->setFreeTransformation($this->parsedRemoteFileUrl['transformations_string'])
                 ->save();
+        }
+
+        if ($this->configuration->isEnabledLocalMapping()) {
+            $this->saveCloudinaryMapping();
         }
     }
 
@@ -365,7 +397,11 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         try {
             $this->validateRemoteFile($remoteFileUrl);
             $baseTmpMediaPath = $this->mediaConfig->getBaseTmpMediaPath();
-            $localUniqFilePath = $this->appendNewFileName($baseTmpMediaPath . $this->getLocalTmpFileName($remoteFileUrl));
+            if ($this->configuration->isEnabledLocalMapping()) {
+                $this->cldUniqid = $this->configuration->generateCLDuniqid();
+                $localUniqFilePath = $this->configuration->addUniquePrefixToBasename($remoteFileUrl, $this->cldUniqid);
+            }
+            $localUniqFilePath = $this->appendNewFileName($baseTmpMediaPath . $this->getLocalTmpFileName($localUniqFilePath));
             $this->validateRemoteFileExtensions($localUniqFilePath);
             $this->retrieveRemoteImage($remoteFileUrl, $localUniqFilePath);
             $localFileFullPath = $this->appendAbsoluteFileSystemPath($localUniqFilePath);
@@ -485,5 +521,14 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $mediaDirectory = $this->fileSystem->getDirectoryRead(DirectoryList::MEDIA);
         $pathToSave = $mediaDirectory->getAbsolutePath();
         return $pathToSave . $localTmpFile;
+    }
+
+    private function saveCloudinaryMapping()
+    {
+        return $this->mapped = $this->mediaLibraryMapFactory->create()
+            ->setCldUniqid($this->cldUniqid)
+            ->setCldPublicId($this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
+            ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
+            ->save();
     }
 }
