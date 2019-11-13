@@ -2,6 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Controller\Adminhtml\Ajax;
 
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -23,6 +25,21 @@ use Magento\Theme\Model\Design\Config\FileUploader\FileProcessor;
  */
 class RetrieveImage extends \Magento\Backend\App\Action
 {
+    /**
+     * @var string|null
+     */
+    private $remoteFileUrl;
+
+    /**
+     * @var array
+     */
+    private $parsedRemoteFileUrl = [];
+
+    /**
+     * @var string|null
+     */
+    private $cldUniqid;
+
     /**
      * @var ResultRawFactory
      */
@@ -76,18 +93,30 @@ class RetrieveImage extends \Magento\Backend\App\Action
     private $storeManager;
 
     /**
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * @var MediaLibraryMapFactory
+     */
+    private $mediaLibraryMapFactory;
+
+    /**
      * @method __construct
-     * @param  Context               $context
-     * @param  ResultRawFactory      $resultRawFactory
-     * @param  ProductMediaConfig    $mediaConfig
-     * @param  Filesystem            $fileSystem
-     * @param  ImageAdapterFactory   $imageAdapterFactory
-     * @param  Curl                  $curl
-     * @param  FileUtility           $fileUtility
-     * @param  FileProcessor         $fileProcessor
-     * @param  AllowedProtocols      $protocolValidator
-     * @param  NotProtectedExtension $extensionValidator
-     * @param  StoreManagerInterface $storeManager
+     * @param  Context                $context
+     * @param  ResultRawFactory       $resultRawFactory
+     * @param  ProductMediaConfig     $mediaConfig
+     * @param  Filesystem             $fileSystem
+     * @param  ImageAdapterFactory    $imageAdapterFactory
+     * @param  Curl                   $curl
+     * @param  FileUtility            $fileUtility
+     * @param  FileProcessor          $fileProcessor
+     * @param  AllowedProtocols       $protocolValidator
+     * @param  NotProtectedExtension  $extensionValidator
+     * @param  StoreManagerInterface  $storeManager
+     * @param  ConfigurationInterface $configuration
+     * @param  MediaLibraryMapFactory $mediaLibraryMapFactory
      */
     public function __construct(
         Context $context,
@@ -100,7 +129,9 @@ class RetrieveImage extends \Magento\Backend\App\Action
         FileProcessor $fileProcessor,
         AllowedProtocols $protocolValidator,
         NotProtectedExtension $extensionValidator,
-        StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        ConfigurationInterface $configuration,
+        MediaLibraryMapFactory $mediaLibraryMapFactory
     ) {
         parent::__construct($context);
         $this->resultRawFactory = $resultRawFactory;
@@ -113,6 +144,8 @@ class RetrieveImage extends \Magento\Backend\App\Action
         $this->extensionValidator = $extensionValidator;
         $this->protocolValidator = $protocolValidator;
         $this->storeManager = $storeManager;
+        $this->configuration = $configuration;
+        $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
     }
 
     /**
@@ -121,15 +154,24 @@ class RetrieveImage extends \Magento\Backend\App\Action
     public function execute()
     {
         try {
-            $remoteFileUrl = $this->getRequest()->getParam('remote_image');
-            $this->validateRemoteFile($remoteFileUrl);
+            $localUniqFilePath = $this->remoteFileUrl = $this->getRequest()->getParam('remote_image');
+            $this->validateRemoteFile($this->remoteFileUrl);
+            $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->remoteFileUrl);
+            $this->parsedRemoteFileUrl["transformations_string"] = $this->getRequest()->getParam('asset')["free_transformation"];
             $baseTmpMediaPath = $this->getBaseTmpMediaPath();
-            $localUniqFilePath = $this->appendNewFileName($baseTmpMediaPath . $this->getLocalTmpFileName($remoteFileUrl));
-            $this->validateRemoteFileExtensions($localUniqFilePath);
-            $this->retrieveRemoteImage($remoteFileUrl, $localUniqFilePath);
+            if ($this->configuration->isEnabledLocalMapping()) {
+                $this->cldUniqid = $this->configuration->generateCLDuniqid();
+                $localUniqFilePath = $this->configuration->addUniquePrefixToBasename($localUniqFilePath, $this->cldUniqid);
+            }
+            $localUniqFilePath = $this->appendNewFileName($baseTmpMediaPath . $this->getLocalTmpFileName($localUniqFilePath));
+            $this->validateFileExtensions($localUniqFilePath);
+            $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
             $localFileFullPath = $this->appendAbsoluteFileSystemPath($localUniqFilePath);
             $this->imageAdapter->validateUploadFile($localFileFullPath);
             $result = $this->appendResultSaveRemoteImage($localUniqFilePath, $baseTmpMediaPath);
+            if ($this->configuration->isEnabledLocalMapping()) {
+                $this->saveCloudinaryMapping();
+            }
         } catch (\Exception $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
             $fileWriter = $this->fileSystem->getDirectoryWrite(DirectoryList::MEDIA);
@@ -137,7 +179,6 @@ class RetrieveImage extends \Magento\Backend\App\Action
                 $fileWriter->delete($localFileFullPath);
             }
         }
-
         /** @var \Magento\Framework\Controller\Result\Raw $response */
         $response = $this->resultRawFactory->create();
         $response->setHeader('Content-type', 'text/plain');
@@ -183,19 +224,17 @@ class RetrieveImage extends \Magento\Backend\App\Action
     /**
      * Validate remote file
      *
-     * @param string $remoteFileUrl
      * @throws LocalizedException
      *
      * @return $this
      */
-    private function validateRemoteFile($remoteFileUrl)
+    private function validateRemoteFile()
     {
-        if (!$this->protocolValidator->isValid($remoteFileUrl)) {
+        if (!$this->protocolValidator->isValid($this->remoteFileUrl)) {
             throw new LocalizedException(
                 __("Protocol isn't allowed")
             );
         }
-
         return $this;
     }
 
@@ -206,7 +245,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
      * @throws ValidatorException
      * @return void
      */
-    private function validateRemoteFileExtensions($filePath)
+    private function validateFileExtensions($filePath)
     {
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
         if (!$this->extensionValidator->isValid($extension)) {
@@ -277,5 +316,17 @@ class RetrieveImage extends \Magento\Backend\App\Action
         $mediaDirectory = $this->fileSystem->getDirectoryRead(DirectoryList::MEDIA);
         $pathToSave = $mediaDirectory->getAbsolutePath();
         return $pathToSave . $localTmpFile;
+    }
+
+    /**
+     * @return string
+     */
+    private function saveCloudinaryMapping()
+    {
+        return $this->mediaLibraryMapFactory->create()
+            ->setCldUniqid($this->cldUniqid)
+            ->setCldPublicId($this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
+            ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
+            ->save();
     }
 }

@@ -100,9 +100,12 @@ define([
                 $i--;
                 if (widget.options.imageUploaderUrl) {
                     asset.asset_url = asset.asset_image_url = asset.secure_url;
+                    asset.free_transformation = "";
                     if (asset.derived && asset.derived[0] && asset.derived[0].secure_url) {
                         asset.asset_derived_url = asset.asset_derived_image_url = asset.derived[0].secure_url;
-                        asset.free_transformation = asset.asset_derived_image_url
+                        asset.free_transformation = (asset.derived[0].hasOwnProperty('raw_transformation')) ?
+                            asset.derived[0].raw_transformation :
+                            asset.asset_derived_image_url
                             .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
                             .replace(/\.[^/.]+$/, '')
                             .replace(new RegExp('\/' + asset.public_id + '$'), '')
