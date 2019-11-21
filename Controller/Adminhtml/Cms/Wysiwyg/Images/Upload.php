@@ -2,6 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Controller\Adminhtml\Cms\Wysiwyg\Images;
 
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Model\Product\Media\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -21,6 +23,20 @@ use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
  */
 class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
 {
+    /**
+     * @var string|null
+     */
+    private $remoteFileUrl;
+
+    /**
+     * @var array
+     */
+    private $parsedRemoteFileUrl = [];
+
+    /**
+     * @var string|null
+     */
+    private $cldUniqid;
 
     /**
      * @var DirectoryList
@@ -70,19 +86,31 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
     private $extensionValidator;
 
     /**
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * @var MediaLibraryMapFactory
+     */
+    private $mediaLibraryMapFactory;
+
+    /**
      * @method __construct
-     * @param  Context               $context
-     * @param  Registry              $coreRegistry
-     * @param  JsonFactory           $resultJsonFactory
-     * @param  \Magento\Framework\App\Filesystem\DirectoryResolver     $directoryResolver|null $directoryResolver
-     * @param  DirectoryList         $directoryList
-     * @param  Config                $mediaConfig
-     * @param  Filesystem            $fileSystem
-     * @param  AdapterFactory        $imageAdapterFactory
-     * @param  Curl                  $curl
-     * @param  File                  $fileUtility
-     * @param  AllowedProtocols      $protocolValidator
-     * @param  NotProtectedExtension $extensionValidator
+     * @param  Context                $context
+     * @param  Registry               $coreRegistry
+     * @param  JsonFactory            $resultJsonFactory
+     * @param  \Magento\Framework\App\Filesystem\DirectoryResolver|null $directoryResolver
+     * @param  DirectoryList          $directoryList
+     * @param  Config                 $mediaConfig
+     * @param  Filesystem             $fileSystem
+     * @param  AdapterFactory         $imageAdapterFactory
+     * @param  Curl                   $curl
+     * @param  File                   $fileUtility
+     * @param  AllowedProtocols       $protocolValidator
+     * @param  NotProtectedExtension  $extensionValidator
+     * @param  ConfigurationInterface $configuration
+     * @param  MediaLibraryMapFactory $mediaLibraryMapFactory
      */
     public function __construct(
         Context $context,
@@ -96,7 +124,9 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         Curl $curl,
         File $fileUtility,
         AllowedProtocols $protocolValidator,
-        NotProtectedExtension $extensionValidator
+        NotProtectedExtension $extensionValidator,
+        ConfigurationInterface $configuration,
+        MediaLibraryMapFactory $mediaLibraryMapFactory
     ) {
         parent::__construct($context, $coreRegistry, $resultJsonFactory, $directoryResolver);
         $this->directoryList = $directoryList;
@@ -107,6 +137,8 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         $this->fileUtility = $fileUtility;
         $this->extensionValidator = $extensionValidator;
         $this->protocolValidator = $protocolValidator;
+        $this->configuration = $configuration;
+        $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
     }
 
     /**
@@ -125,16 +157,25 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
                     __('Directory %1 is not under storage root path.', $path)
                 );
             }
-            $remoteFileUrl = $this->getRequest()->getParam('remote_image');
-            $this->validateRemoteFile($remoteFileUrl);
-            $localFileName = Uploader::getCorrectFileName(basename($remoteFileUrl));
-            $localFilePath = $path . DIRECTORY_SEPARATOR . $localFileName;
-            $localFileFullPath = $this->appendNewFileName($localFilePath);
-            $this->validateRemoteFileExtensions($localFileFullPath);
-            $this->retrieveRemoteImage($remoteFileUrl, $localFileFullPath);
-            $this->getStorage()->resizeFile($localFileFullPath, true);
-            $this->imageAdapter->validateUploadFile($localFileFullPath);
-            $result = $this->appendResultSaveRemoteImage($localFileFullPath);
+            $localFileName = $this->remoteFileUrl = $this->getRequest()->getParam('remote_image');
+            $this->validateRemoteFile($this->remoteFileUrl);
+            $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->remoteFileUrl);
+            $this->parsedRemoteFileUrl["transformations_string"] = $this->getRequest()->getParam('asset')["free_transformation"];
+            if ($this->configuration->isEnabledLocalMapping()) {
+                $this->cldUniqid = $this->configuration->generateCLDuniqid();
+                $localFileName = $this->configuration->addUniquePrefixToBasename($localFileName, $this->cldUniqid);
+            }
+            $localFileName = Uploader::getCorrectFileName(basename($localFileName));
+            $localFilePath = $this->appendNewFileName($path . DIRECTORY_SEPARATOR . $localFileName);
+            $this->validateRemoteFileExtensions($localFilePath);
+
+            $this->retrieveRemoteImage($this->remoteFileUrl, $localFilePath);
+            $this->getStorage()->resizeFile($localFilePath, true);
+            $this->imageAdapter->validateUploadFile($localFilePath);
+            $result = $this->appendResultSaveRemoteImage($localFilePath);
+            if ($this->configuration->isEnabledLocalMapping()) {
+                $this->saveCloudinaryMapping();
+            }
         } catch (\Exception $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }
@@ -147,14 +188,13 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
     /**
      * Validate remote file
      *
-     * @param string $remoteFileUrl
      * @throws LocalizedException
      *
      * @return $this
      */
-    private function validateRemoteFile($remoteFileUrl)
+    private function validateRemoteFile()
     {
-        if (!$this->protocolValidator->isValid($remoteFileUrl)) {
+        if (!$this->protocolValidator->isValid($this->remoteFileUrl)) {
             throw new LocalizedException(
                 __("Protocol isn't allowed")
             );
@@ -259,5 +299,17 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         $mediaDirectory = $this->fileSystem->getDirectoryRead(DirectoryList::MEDIA);
         $pathToSave = $mediaDirectory->getAbsolutePath();
         return $pathToSave . $localTmpFile;
+    }
+
+    /**
+     * @return string
+     */
+    private function saveCloudinaryMapping()
+    {
+        return $this->mediaLibraryMapFactory->create()
+            ->setCldUniqid($this->cldUniqid)
+            ->setCldPublicId($this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
+            ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
+            ->save();
     }
 }
