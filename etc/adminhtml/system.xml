@@ -270,9 +270,14 @@
                     <comment>Remove "/image/upload/" from URLs</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="use_signed_urls" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="use_signed_urls" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Use signed URLs</label>
                     <comment>Use dynamic Cloudinary delivery URLs with a signature that needs to be validated before making it available to view.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="enable_local_mapping" translate="label comment" type="select" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Use existing Cloudinary folder</label>
+                    <comment>Map Cloudinary assets to their original location to prevent duplication in your Cloudinary Media Library. If set to 'No', assets will be synchronized to a new Cloudinary location based on the local Magento path.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>

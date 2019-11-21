@@ -14,6 +14,7 @@
             <advanced>
                 <remove_version_number>0</remove_version_number>
                 <use_root_path>0</use_root_path>
+                <enable_local_mapping>1</enable_local_mapping>
             </advanced>
             <product_gallery>
                 <enabled>0</enabled>

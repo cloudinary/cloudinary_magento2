@@ -5,7 +5,9 @@ namespace Cloudinary\Cloudinary\Core;
 use Cloudinary;
 use Cloudinary\Cloudinary\Core\Exception\ApiError;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
+use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Cloudinary\Uploader;
+use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
 
 class CloudinaryImageProvider implements ImageProvider
 {
@@ -30,18 +32,35 @@ class CloudinaryImageProvider implements ImageProvider
     private $configurationBuilder;
 
     /**
-     * @param ConfigurationInterface  $configuration
-     * @param ConfigurationBuilder    $configurationBuilder
-     * @param UploadResponseValidator $uploadResponseValidator
+     * @var ProductMediaConfig
+     */
+    private $productMediaConfig;
+
+    /**
+     * @var MediaLibraryMapFactory
+     */
+    private $mediaLibraryMapFactory;
+
+    /**
+     * @method __construct
+     * @param  ConfigurationInterface  $configuration
+     * @param  ConfigurationBuilder    $configurationBuilder
+     * @param  UploadResponseValidator $uploadResponseValidator
+     * @param  ProductMediaConfig      $productMediaConfig
+     * @param  MediaLibraryMapFactory  $mediaLibraryMapFactory
      */
     public function __construct(
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
-        UploadResponseValidator $uploadResponseValidator
+        UploadResponseValidator $uploadResponseValidator,
+        ProductMediaConfig $productMediaConfig,
+        MediaLibraryMapFactory $mediaLibraryMapFactory
     ) {
         $this->configuration = $configuration;
         $this->uploadResponseValidator = $uploadResponseValidator;
         $this->configurationBuilder = $configurationBuilder;
+        $this->productMediaConfig = $productMediaConfig;
+        $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
     }
 
     /**
@@ -87,26 +106,48 @@ class CloudinaryImageProvider implements ImageProvider
     public function retrieveTransformed(Image $image, Transformation $transformation)
     {
         $this->authorise();
-        $imagePath = \cloudinary_url(
-            $image->getId(),
-            [
-            'transformation' => $transformation->build(),
-            'secure' => true,
-            'sign_url' => $this->configuration->getUseSignedUrls()
-            ]
-        );
+        $imageId = $image->getId();
 
-        if ($this->configuration->getUseRootPath()) {
-            if (strpos($imagePath, "cloudinary.com/{$this->configuration->getCloud()}/image/upload/") !== false) {
-                $imagePath = str_replace("cloudinary.com/{$this->configuration->getCloud()}/image/upload/", "cloudinary.com/{$this->configuration->getCloud()}/", $imagePath);
-            } elseif (strpos($imagePath, "cloudinary.com/image/upload/") !== false) {
-                $imagePath = str_replace("cloudinary.com/image/upload/", "cloudinary.com/", $imagePath);
+        if ($this->configuration->isEnabledLocalMapping()) {
+            //Look for a match on the mapping table:
+            preg_match('/(CLD_[A-Za-z0-9]{13}_).+$/', $imageId, $cldUniqid);
+            if ($cldUniqid && isset($cldUniqid[1])) {
+                $mapped = $this->mediaLibraryMapFactory->create()->getCollection()->addFieldToFilter("cld_uniqid", $cldUniqid[1])->setPageSize(1)->getFirstItem();
+                if ($mapped && ($origPublicId = $mapped->getCldPublicId())) {
+                    if (($freeTransformation = $mapped->getFreeTransformation()) && \strpos($imageId, $this->productMediaConfig->getBaseMediaUrl()) === 0) {
+                        $transformation->withFreeform($freeTransformation, false);
+                    }
+                    $imageId = $origPublicId;
+                }
             }
         }
 
-        if ($this->configuration->getRemoveVersionNumber()) {
-            $regex = '/\/v[0-9]{1,10}\/' . preg_quote(ltrim($image->getId(), '/'), '/') . '$/';
-            $imagePath = preg_replace($regex, '/' . ltrim($image->getId(), '/'), $imagePath);
+        //Generate the CLD URL:
+        $imagePath = \cloudinary_url(
+            $imageId,
+            [
+            'transformation' => $transformation->build(),
+            'secure' => true,
+            'sign_url' => $this->configuration->getUseSignedUrls(),
+            'version' => 1
+            ]
+        );
+
+        if (!$this->configuration->isEnabledProductGallery()) {
+            //Handle with use-root-path if necessary:
+            if ($this->configuration->getUseRootPath()) {
+                if (\strpos($imagePath, "cloudinary.com/{$this->configuration->getCloud()}/image/upload/") !== false) {
+                    $imagePath = str_replace("cloudinary.com/{$this->configuration->getCloud()}/image/upload/", "cloudinary.com/{$this->configuration->getCloud()}/", $imagePath);
+                } elseif (\strpos($imagePath, "cloudinary.com/image/upload/") !== false) {
+                    $imagePath = str_replace("cloudinary.com/image/upload/", "cloudinary.com/", $imagePath);
+                }
+            }
+
+            //Remove version number if necessary:
+            if ($this->configuration->getRemoveVersionNumber()) {
+                $regex = '/\/v[0-9]{1,10}\/' . preg_quote(ltrim($imageId, '/'), '/') . '$/';
+                $imagePath = preg_replace($regex, '/' . ltrim($imageId, '/'), $imagePath);
+            }
         }
 
         return Image::fromPath($imagePath, $image->getRelativePath());
