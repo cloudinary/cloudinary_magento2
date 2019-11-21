@@ -215,7 +215,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
                 $localTmpFileName = DIRECTORY_SEPARATOR . $localFileName;
                 break;
             default:
-                $localTmpFileName = Uploader::getDispersionPath($localFileName) . DIRECTORY_SEPARATOR . $localFileName;
+                $localTmpFileName = Uploader::getDispretionPath($localFileName) . DIRECTORY_SEPARATOR . $localFileName;
                 break;
         }
         return $localTmpFileName;

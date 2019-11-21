@@ -421,7 +421,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     private function getLocalTmpFileName($remoteFileUrl)
     {
         $localFileName = Uploader::getCorrectFileName(basename($remoteFileUrl));
-        return Uploader::getDispersionPath($localFileName) . DIRECTORY_SEPARATOR . $localFileName;
+        return Uploader::getDispretionPath($localFileName) . DIRECTORY_SEPARATOR . $localFileName;
     }
 
     /**
