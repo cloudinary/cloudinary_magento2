@@ -64,7 +64,7 @@ class SynchronisationChecker implements SynchronizationCheck
 
         if ($this->configuration->isEnabledLocalMapping()) {
             //Look for a match on the mapping table:
-            preg_match('/(CLD_[A-Za-z0-9]{13}_).+$/', $imageName, $cldUniqid);
+            preg_match('/(cld_[A-Za-z0-9]{13}_).+$/i', $imageName, $cldUniqid);
             if ($cldUniqid && isset($cldUniqid[1])) {
                 $mapped = $this->mediaLibraryMapFactory->create()->getCollection()->addFieldToFilter("cld_uniqid", $cldUniqid[1])->setPageSize(1)->getFirstItem();
                 if ($mapped && ($origPublicId = $mapped->getCldPublicId())) {
