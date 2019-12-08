@@ -74,4 +74,12 @@
         <plugin name="cloudinary_plugin_framework_view_asset_minification" type="Cloudinary\Cloudinary\Plugin\ExcludeFilesFromMinification" />
     </type>
 
+    <type name="Magento\CatalogImportExport\Model\Import\Uploader">
+        <plugin name="cloudinary_plugin_catalogimportexport_uploader" type="Cloudinary\Cloudinary\Plugin\CatalogImportExport\Model\Import\Uploader" />
+    </type>
+
+    <type name="Magento\CatalogImportExport\Model\Import\Product\MediaGalleryProcessor">
+        <plugin name="cloudinary_plugin_catalogimportexport_product_mediagalleryprocessor" type="Cloudinary\Cloudinary\Plugin\CatalogImportExport\Model\Import\Product\MediaGalleryProcessor" />
+    </type>
+
 </config>
