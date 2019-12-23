@@ -330,7 +330,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             );
         }
 
-        $roles = ($roles) ? array_map('trim', explode(',', $roles)) : null;
+        $roles = ($roles) ? array_map('trim', (is_string($roles) ? explode(',', $roles) : (array) $roles)) : null;
         $product = $this->productRepository->get($sku);
 
         $result = $this->retrieveImage($this->parsedRemoteFileUrl['thumbnail_url'] ?: $this->parsedRemoteFileUrl['transformationless_url']);
