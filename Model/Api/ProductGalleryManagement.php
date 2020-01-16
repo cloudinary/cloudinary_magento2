@@ -330,7 +330,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             );
         }
 
-        $roles = ($roles) ? array_map('trim', explode(',', $roles)) : null;
+        $roles = ($roles) ? array_map('trim', (is_string($roles) ? explode(',', $roles) : (array) $roles)) : null;
         $product = $this->productRepository->get($sku);
 
         $result = $this->retrieveImage($this->parsedRemoteFileUrl['thumbnail_url'] ?: $this->parsedRemoteFileUrl['transformationless_url']);
@@ -372,9 +372,9 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $mediaGalleryData = $product->getMediaGallery();
         $galItem = array_pop($mediaGalleryData["images"]);
 
-        foreach ($this->productImageFinder->findNewImages($product) as $image) {
+        /*foreach ($this->productImageFinder->findNewImages($product) as $image) {
             $this->cloudinaryImageManager->uploadAndSynchronise($image);
-        }
+        }*/
 
         if ($this->parsedRemoteFileUrl["type"] === "image" && $this->parsedRemoteFileUrl['transformations_string']) {
             $this->transformationFactory->create()
@@ -527,7 +527,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     {
         return $this->mapped = $this->mediaLibraryMapFactory->create()
             ->setCldUniqid($this->cldUniqid)
-            ->setCldPublicId($this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
+            ->setCldPublicId(($this->parsedRemoteFileUrl["type"] === "video") ? $this->parsedRemoteFileUrl["thumbnail_url"] : $this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
             ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
             ->save();
     }

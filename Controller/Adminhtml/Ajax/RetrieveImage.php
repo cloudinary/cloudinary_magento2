@@ -158,6 +158,9 @@ class RetrieveImage extends \Magento\Backend\App\Action
             $this->validateRemoteFile($this->remoteFileUrl);
             $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->remoteFileUrl);
             $this->parsedRemoteFileUrl["transformations_string"] = $this->getRequest()->getParam('asset')["free_transformation"];
+            $assetParsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->getRequest()->getParam('asset')["asset_url"]);
+            $this->parsedRemoteFileUrl["type"] = $assetParsedRemoteFileUrl['type'];
+            $this->parsedRemoteFileUrl["thumbnail_url"] = $assetParsedRemoteFileUrl['thumbnail_url'];
             $baseTmpMediaPath = $this->getBaseTmpMediaPath();
             if ($this->configuration->isEnabledLocalMapping()) {
                 $this->cldUniqid = $this->configuration->generateCLDuniqid();
@@ -325,7 +328,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
     {
         return $this->mediaLibraryMapFactory->create()
             ->setCldUniqid($this->cldUniqid)
-            ->setCldPublicId($this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
+            ->setCldPublicId(($this->parsedRemoteFileUrl["type"] === "video") ? $this->parsedRemoteFileUrl["thumbnail_url"] : $this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
             ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
             ->save();
     }

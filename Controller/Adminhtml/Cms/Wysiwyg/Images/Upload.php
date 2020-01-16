@@ -308,7 +308,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
     {
         return $this->mediaLibraryMapFactory->create()
             ->setCldUniqid($this->cldUniqid)
-            ->setCldPublicId($this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
+            ->setCldPublicId(($this->parsedRemoteFileUrl["type"] === "video") ? $this->parsedRemoteFileUrl["thumbnail_url"] : $this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
             ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
             ->save();
     }
