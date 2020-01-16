@@ -47,6 +47,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_USE_ROOT_PATH = 'cloudinary/advanced/use_root_path';
     const CONFIG_PATH_USE_SIGNED_URLS = 'cloudinary/advanced/use_signed_urls';
     const CONFIG_PATH_ENABLE_LOCAL_MAPPING = 'cloudinary/advanced/enable_local_mapping';
+    const CONFIG_PATH_SCHEDULED_VIDEO_DATA_IMPORT_LIMIT = 'cloudinary/advanced/cloudinary_scheduled_video_data_import_limit';
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -86,7 +87,7 @@ class Configuration implements ConfigurationInterface
     const OVERWRITE = false;
     const SCOPE_ID_ONE = 1;
     const SCOPE_ID_ZERO = 0;
-    const CLD_UNIQID_PREFIX = 'CLD_';
+    const CLD_UNIQID_PREFIX = 'cld_';
 
     /**
      * @var ScopeConfigInterface
@@ -385,6 +386,14 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @return bool
+     */
+    public function getScheduledVideoDataImportLimit()
+    {
+        return (int) $this->configReader->getValue(self::CONFIG_PATH_SCHEDULED_VIDEO_DATA_IMPORT_LIMIT);
+    }
+
+    /**
      * @method getMediaBaseUrl
      * @return string
      */
@@ -519,7 +528,7 @@ class Configuration implements ConfigurationInterface
 
     public function generateCLDuniqid()
     {
-        return uniqid(self::CLD_UNIQID_PREFIX) . '_';
+        return strtolower(uniqid(self::CLD_UNIQID_PREFIX)) . '_';
     }
 
     public function addUniquePrefixToBasename($filename, $uniqid = null)
