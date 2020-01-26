@@ -264,8 +264,7 @@ class MediaGalleryProcessor
                 $this->mediaGalleryTableName,
                 $this->connection->quoteInto('value_id IN (?)', $newMediaValues)
             );
-            print_r($e->getMessage());
-            die;
+            throw $e;
         }
     }
 
