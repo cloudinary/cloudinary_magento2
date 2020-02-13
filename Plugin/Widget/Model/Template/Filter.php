@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image\ImageFactory;
 use Cloudinary\Cloudinary\Core\UrlGenerator;
 use Cloudinary\Cloudinary\Model\Template\Filter as CloudinaryWidgetFilter;
+use Magento\Framework\Registry;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -34,21 +35,32 @@ class Filter
     protected $_cloudinaryWidgetFilter;
 
     /**
-     * @param ImageFactory           $imageFactory
-     * @param UrlGenerator           $urlGenerator
-     * @param CloudinaryWidgetFilter $cloudinaryWidgetFilter
+     * @var Registry
+     */
+    protected $_coreRegistry;
+
+    /**
+     * @method __construct
+     * @param  StoreManagerInterface  $storeManager
+     * @param  ImageFactory           $imageFactory
+     * @param  UrlGenerator           $urlGenerator
+     * @param  ConfigurationInterface $configuration
+     * @param  CloudinaryWidgetFilter $cloudinaryWidgetFilter
+     * @param  Registry               $coreRegistry
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         ImageFactory $imageFactory,
         UrlGenerator $urlGenerator,
         ConfigurationInterface $configuration,
-        CloudinaryWidgetFilter $cloudinaryWidgetFilter
+        CloudinaryWidgetFilter $cloudinaryWidgetFilter,
+        Registry $coreRegistry
     ) {
         $this->_imageFactory = $imageFactory;
         $this->_urlGenerator = $urlGenerator;
         $this->_configuration = $configuration;
         $this->_cloudinaryWidgetFilter = $cloudinaryWidgetFilter;
+        $this->_coreRegistry = $coreRegistry;
     }
 
     /**
@@ -79,6 +91,12 @@ class Filter
             }
         );
 
-        return $this->_urlGenerator->generateFor($image);
+        $generated = $this->_urlGenerator->generateFor($image);
+
+        if ($this->_configuration->isEnabledLazyload() && $this->_configuration->isLazyloadAutoReplaceCmsBlocks()) {
+            $this->_coreRegistry->register('cloudinary_generated_' . md5($generated), $image, true);
+        }
+
+        return $generated;
     }
 }

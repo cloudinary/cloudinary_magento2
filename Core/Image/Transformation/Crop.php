@@ -4,8 +4,10 @@ namespace Cloudinary\Cloudinary\Core\Image\Transformation;
 
 class Crop
 {
-    const PAD = 'lpad';
+    const PAD = 'pad';
+    const LPAD = 'lpad';
     const FIT = 'fit';
+    const LIMIT = 'limit';
 
     private $value;
 
@@ -24,9 +26,19 @@ class Crop
         return new Crop(self::PAD);
     }
 
+    public static function lpad()
+    {
+        return new Crop(self::LPAD);
+    }
+
     public static function fit()
     {
         return new Crop(self::FIT);
+    }
+
+    public static function limit()
+    {
+        return new Crop(self::LIMIT);
     }
 
     public function __toString()
