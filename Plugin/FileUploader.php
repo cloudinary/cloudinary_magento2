@@ -9,6 +9,8 @@ use Magento\Framework\File\Uploader;
 
 class FileUploader
 {
+    const ALLOWED_EXTENSIONS = ['png', 'gif', 'jpg', 'jpeg'];
+
     /**
      * @var CloudinaryImageManager
      */
@@ -40,13 +42,22 @@ class FileUploader
     {
         $filepath = $this->absoluteFilePath($result);
 
-        if ($this->isMediaFilePath($filepath) && !$this->isMediaTmpFilePath($filepath)) {
+        if ($this->isAllowedImageExtension($filepath) && $this->isMediaFilePath($filepath) && !$this->isMediaTmpFilePath($filepath)) {
             $this->cloudinaryImageManager->uploadAndSynchronise(
                 Image::fromPath($filepath, $this->mediaRelativePath($filepath))
             );
         }
 
         return $result;
+    }
+
+    /**
+     * @param  string $filepath
+     * @return string
+     */
+    protected function isAllowedImageExtension($filepath)
+    {
+        return in_array(pathinfo($filepath, PATHINFO_EXTENSION), self::ALLOWED_EXTENSIONS);
     }
 
     /**
