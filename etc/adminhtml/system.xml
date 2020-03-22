@@ -302,7 +302,7 @@
                 </field>
                 <field id="lazyload_placeholder" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Lazyload Placeholder</label>
-                    <comment>Base64 image string, set a background on every element as loading placeholder</comment>
+                    <comment>Choose the transformation effect that will be used on the images as a loading placeholder</comment>
                     <config_path>cloudinary/lazyload/placeholder</config_path>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Lazyload\Placeholder</source_model>
                     <depends>
