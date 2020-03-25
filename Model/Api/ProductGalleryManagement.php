@@ -11,6 +11,7 @@ use Cloudinary\Cloudinary\Model\TransformationFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product\Gallery\Processor;
 use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\DataObject;
@@ -24,6 +25,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\Validator\AllowedProtocols;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
+use Magento\Store\Model\App\Emulation as AppEmulation;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Theme\Model\Design\Config\FileUploader\FileProcessor;
 
@@ -142,6 +144,11 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     private $mediaLibraryMapFactory;
 
     /**
+     * @var AppEmulation
+     */
+    protected $_appEmulation;
+
+    /**
      * @method __construct
      * @param  ConfigurationInterface     $configuration
      * @param  Http                       $request
@@ -162,6 +169,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  TransformationFactory      $transformationFactory
      * @param  Processor                  $mediaGalleryProcessor
      * @param  MediaLibraryMapFactory     $mediaLibraryMapFactory
+     * @param  AppEmulation               $appEmulation
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -182,7 +190,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         ResourcesManagement $cloudinaryResourcesManagement,
         TransformationFactory $transformationFactory,
         Processor $mediaGalleryProcessor,
-        MediaLibraryMapFactory $mediaLibraryMapFactory
+        MediaLibraryMapFactory $mediaLibraryMapFactory,
+        AppEmulation $appEmulation
     ) {
         $this->configuration = $configuration;
         $this->request = $request;
@@ -203,6 +212,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->transformationFactory = $transformationFactory;
         $this->mediaGalleryProcessor = $mediaGalleryProcessor;
         $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
+        $this->appEmulation = $appEmulation;
     }
 
     /**
@@ -223,6 +233,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     __("Cloudinary module is disabled. Please enable it first in order to use this API.")
                 );
             }
+            $this->emulateAdminhtmlArea();
             $urls = (array)$urls;
             foreach ($urls as $i => $url) {
                 try {
@@ -231,7 +242,9 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                         $url["url"],
                         $sku,
                         (isset($url["publicId"])) ? $url["publicId"] : null,
-                        (isset($url["roles"])) ? $url["roles"] : null
+                        (isset($url["roles"])) ? $url["roles"] : null,
+                        (isset($url["label"])) ? $url["label"] : null,
+                        (isset($url["disabled"])) ? $url["disabled"] : null
                     );
                     $result["passed"]++;
                 } catch (\Exception $e) {
@@ -240,6 +253,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $result["failed"]["urls"][] = $url;
                 }
             }
+            $this->stopEnvironmentEmulation();
         } catch (\Exception $e) {
             $result["error"] = 1;
             $result["message"] = $e->getMessage();
@@ -251,13 +265,15 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * {@inheritdoc}
      */
-    public function addItem($url, $sku, $publicId = null, $roles = null)
+    public function addItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
     {
         return $this->addItems([[
             "url" => $url,
             "sku" => $sku,
             "publicId" => $publicId,
-            "roles" => $roles
+            "roles" => $roles,
+            "label" => $label,
+            "disabled" => $disabled
         ]]);
     }
 
@@ -277,6 +293,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     __("Cloudinary module is disabled. Please enable it first in order to use this API.")
                 );
             }
+            $this->emulateAdminhtmlArea();
             $items = (array)$items;
             foreach ($items as $i => $item) {
                 try {
@@ -287,7 +304,9 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                         $item["url"],
                         $item["sku"],
                         (isset($item["publicId"])) ? $item["publicId"] : null,
-                        (isset($item["roles"])) ? $item["roles"] : null
+                        (isset($item["roles"])) ? $item["roles"] : null,
+                        (isset($item["label"])) ? $item["label"] : null,
+                        (isset($item["disabled"])) ? $item["disabled"] : null
                     );
                 } catch (\Exception $e) {
                     $result["errors"]++;
@@ -298,6 +317,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     }
                 }
             }
+            $this->stopEnvironmentEmulation();
         } catch (\Exception $e) {
             $result["errors"]++;
             $result["message"] = "\n{$e->getMessage()}";
@@ -314,12 +334,14 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
 
     /**
      * @method addGalleryItem
-     * @param  string       $url
-     * @param  string       $sku
-     * @param  string|null  $publicId
-     * @param  string|null  $roles
+     * @param  string        $url
+     * @param  string        $sku
+     * @param  string|null   $publicId
+     * @param  string|null   $roles
+     * @param  string|null   $label
+     * @param  bool|int|null $disabled
      */
-    private function addGalleryItem($url, $sku, $publicId = null, $roles = null)
+    private function addGalleryItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
     {
         $this->cldUniqid = $this->mapped = null;
         $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($url, $publicId);
@@ -347,10 +369,11 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
 
         if ($this->parsedRemoteFileUrl["type"] === "video") {
             $videoData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getVideo());
-            $videoData["title"] = $videoData["description"] = "";
+            $videoData["title"] = $label;
+            $videoData["description"] = "";
             if (!$videoData["error"]) {
                 $videoData["context"] = new DataObject((isset($videoData["data"]["context"])) ? (array)$videoData["data"]["context"] : []);
-                $videoData["title"] = $videoData["context"]->getData('caption') ?: $videoData["context"]->getData('alt');
+                $videoData["title"] = $videoData["title"] ? $videoData["title"] : ($videoData["context"]->getData('caption') ?: $videoData["context"]->getData('alt'));
                 $videoData["description"] = $videoData["context"]->getData('description') ?: $videoData["context"]->getData('alt');
             }
             $videoData["title"] = $videoData["title"] ?: $this->parsedRemoteFileUrl["publicId"];
@@ -359,14 +382,31 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             $galItem = array_merge($galItem, [
                 "media_type" => "external-video",
                 "video_provider" => "cloudinary",
-                "disabled" => 0,
+                "disabled" => $disabled ? 1 : 0,
+                "label" => $videoData["title"],
                 "video_url" => $this->parsedRemoteFileUrl["orig_url"],
                 "video_title" => $videoData["title"],
                 "video_description" => $videoData["description"],
             ]);
-            $mediaGalleryData["images"][] = $galItem;
-            $product->setData('media_gallery', $mediaGalleryData);
         }
+
+        if ($this->parsedRemoteFileUrl["type"] === "image") {
+            if (!$label) {
+                $imageData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getImage());
+                if (!$imageData["error"]) {
+                    $imageData["context"] = new DataObject((isset($imageData["data"]["context"])) ? (array)$imageData["data"]["context"] : []);
+                    $label = $imageData["context"]->getData('caption') ?: $imageData["context"]->getData('alt');
+                }
+                $label = $label ?: "";
+            }
+            $galItem = array_merge($galItem, [
+                "disabled" => $disabled ? 1 : 0,
+                "label" => $label,
+            ]);
+        }
+
+        $mediaGalleryData["images"][] = $galItem;
+        $product->setData('media_gallery', $mediaGalleryData);
 
         $product->save();
         $mediaGalleryData = $product->getMediaGallery();
@@ -530,5 +570,50 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             ->setCldPublicId(($this->parsedRemoteFileUrl["type"] === "video") ? $this->parsedRemoteFileUrl["thumbnail_url"] : $this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
             ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
             ->save();
+    }
+
+    ///////////////////////////////
+    // App Environment Emulation //
+    ///////////////////////////////
+
+    /**
+     * Start environment emulation of the specified store
+     *
+     * Function returns information about initial store environment and emulates environment of another store
+     *
+     * @param  integer $storeId
+     * @param  string  $area
+     * @param  bool    $force   A true value will ensure that environment is always emulated, regardless of current store
+     * @return $this
+     */
+    private function startEnvironmentEmulation($storeId, $area = Area::AREA_FRONTEND, $force = false)
+    {
+        $this->stopEnvironmentEmulation();
+        $this->appEmulation->startEnvironmentEmulation($storeId, $area, $force);
+        return $this;
+    }
+
+    /**
+     * Stop environment emulation
+     *
+     * Function restores initial store environment
+     *
+     * @return $this
+     */
+    private function stopEnvironmentEmulation()
+    {
+        $this->appEmulation->stopEnvironmentEmulation();
+        return $this;
+    }
+
+    /**
+     * @method emulateAdminArea
+     * @param  boolean          $force
+     * @return $this
+     */
+    private function emulateAdminhtmlArea($force = true)
+    {
+        $this->startEnvironmentEmulation(0, Area::AREA_ADMINHTML, $force);
+        return $this;
     }
 }
