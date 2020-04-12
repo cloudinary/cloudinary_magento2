@@ -16,6 +16,10 @@
                     <label>Enable cloudinary</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="module_version" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Module Version</label>
+                    <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\System\Config\ModuleVersion</frontend_model>
+                </field>
             </group>
             <group id="setup" translate="label" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Cloudinary Setup</label>
@@ -255,7 +259,62 @@
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\ProductGalleryCustomFreeParams</backend_model>
                 </field>
             </group>
-            <group id="advanced" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+            <group id="lazyload" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Lazyload Settings</label>
+                <attribute type="expanded">0</attribute>
+                <field id="lazyload_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Lazyload</label>
+                    <comment><![CDATA[Enable lazyload (using <a href="https://github.com/tuupola/lazyload/tree/1.9.7">Lazy Load Plugin for jQuery</a>)]]></comment>
+                    <config_path>cloudinary/lazyload/enabled</config_path>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="lazyload_auto_replace_cms_blocks" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Apply on CMS blocks</label>
+                    <comment>Automatically apply lazyload on CMS blocks</comment>
+                    <config_path>cloudinary/lazyload/auto_replace_cms_blocks</config_path>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="lazyload_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="lazyload_ignored_cms_blocks" translate="label comment" type="multiselect" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Apply on CMS blocks - Ignored List</label>
+                    <comment>When applying on CMS blocks, skip those (use this if there are conflicts on some of the blocks)</comment>
+                    <config_path>cloudinary/lazyload/ignored_cms_blocks</config_path>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\CmsBlocks</source_model>
+                    <depends>
+                        <field id="lazyload_enabled">1</field>
+                        <field id="lazyload_auto_replace_cms_blocks">1</field>
+                    </depends>
+                </field>
+                <field id="lazyload_threshold" translate="label comment" type="text" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Lazyload Threshold</label>
+                    <comment>Amount of pixels below the viewport, in which all images gets loaded before the user sees them</comment>
+                    <config_path>cloudinary/lazyload/threshold</config_path>
+                    <depends>
+                        <field id="lazyload_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="lazyload_effect" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Lazyload Effect</label>
+                    <comment>The effect you want to use to show the loaded images</comment>
+                    <config_path>cloudinary/lazyload/effect</config_path>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Lazyload\Effect</source_model>
+                    <depends>
+                        <field id="lazyload_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="lazyload_placeholder" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Lazyload Placeholder</label>
+                    <comment>Choose the transformation effect that will be used on the images as a loading placeholder</comment>
+                    <config_path>cloudinary/lazyload/placeholder</config_path>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Lazyload\Placeholder</source_model>
+                    <depends>
+                        <field id="lazyload_enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="advanced" translate="label" sortOrder="7" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Advanced</label>
                 <attribute type="expanded">0</attribute>
                 <field id="remove_version_number" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">

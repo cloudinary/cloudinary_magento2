@@ -8,6 +8,7 @@ use Cloudinary\Cloudinary\Core\Image\Transformation;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Crop;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dimensions;
 use Cloudinary\Cloudinary\Core\UrlGenerator;
+use Cloudinary\Cloudinary\Model\Configuration;
 use Cloudinary\Cloudinary\Model\Transformation as TransformationModel;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
 use Magento\Catalog\Api\Data\ProductInterface;
@@ -103,6 +104,23 @@ class ImageFactory
     }
 
     /**
+     * Retrieve image custom attributes for HTML element
+     *
+     * @param array $attributes
+     * @return string
+     */
+    private function getStringCustomAttributes(array $attributes): string
+    {
+        $result = [];
+        foreach ($attributes as $name => $value) {
+            if ($name != 'class') {
+                $result[] = $name . '="' . $value . '"';
+            }
+        }
+        return !empty($result) ? implode(' ', $result) : '';
+    }
+
+    /**
      * Create image block from product
      *
      * @param  CatalogImageFactory $catalogImageFactory
@@ -118,6 +136,14 @@ class ImageFactory
 
         if (!$this->configuration->isEnabled()) {
             return $imageBlock;
+        }
+
+        if ($this->configuration->isEnabledLazyload()) {
+            $imageBlock->setTemplate(
+                \preg_match('/\/image_with_borders.phtml$/', $imageBlock->getTemplate()) ?
+                    'Cloudinary_Cloudinary::product/image_with_borders.phtml' : 'Cloudinary_Cloudinary::product/image.phtml'
+            );
+            $imageBlock->setLazyloadPlaceholder(Configuration::LAZYLOAD_DATA_PLACEHOLDER);
         }
 
         //Skip on Magento versions prior to 2.3
@@ -146,15 +172,24 @@ class ImageFactory
                     }
                 );
 
+                $transformations = $this->transformationModel->addFreeformTransformationForImage(
+                    $this->createTransformation($imageMiscParams),
+                    $imagePath
+                );
                 $generatedImageUrl = $this->urlGenerator->generateFor(
                     $image,
-                    $this->transformationModel->addFreeformTransformationForImage(
-                        $this->createTransformation($imageMiscParams),
-                        $imagePath
-                    )
+                    $transformations
                 );
                 $imageBlock->setOriginalImageUrl($imageBlock->setImageUrl());
                 $imageBlock->setImageUrl($generatedImageUrl);
+
+                if ($this->configuration->isEnabledLazyload()) {
+                    $generatedImageUrl = $this->urlGenerator->generateFor(
+                        $image,
+                        $transformations->withFreeform($this->configuration->getLazyloadPlaceholderFreeform())
+                    );
+                    $imageBlock->setLazyloadPlaceholder($generatedImageUrl);
+                }
             }
         } catch (\Exception $e) {
             $imageBlock = $proceed($product, $imageId, $attributes);
@@ -169,9 +204,7 @@ class ImageFactory
      */
     private function createTransformation(array $imageMiscParams)
     {
-        $imageMiscParams['image_height'] = (isset($imageMiscParams['image_height'])) ? $imageMiscParams['image_height'] : null;
-        $imageMiscParams['image_width'] = (isset($imageMiscParams['image_width'])) ? $imageMiscParams['image_width'] : null;
-        $dimensions = $this->dimensions ?: Dimensions::fromWidthAndHeight($imageMiscParams['image_width'], $imageMiscParams['image_height']);
+        $dimensions = $this->getDimensions($imageMiscParams);
         $transform = $this->configuration->getDefaultTransformation()->withDimensions($dimensions);
 
         if (isset($imageMiscParams['keep_frame'])) {
@@ -179,12 +212,23 @@ class ImageFactory
         }
 
         if ($this->keepFrame) {
-            $transform->withCrop(Crop::fromString('lpad'))
+            $transform->withCrop(Crop::lpad())
                 ->withDimensions(Dimensions::squareMissingDimension($dimensions));
         } else {
-            $transform->withCrop(Crop::fromString('fit'));
+            $transform->withCrop(Crop::limit());
         }
 
         return $transform;
+    }
+
+    /**
+     * @param  array $imageMiscParams
+     * @return Dimensions
+     */
+    private function getDimensions(array $imageMiscParams)
+    {
+        $imageMiscParams['image_height'] = (isset($imageMiscParams['image_height'])) ? $imageMiscParams['image_height'] : null;
+        $imageMiscParams['image_width'] = (isset($imageMiscParams['image_width'])) ? $imageMiscParams['image_width'] : null;
+        return $this->dimensions ?: Dimensions::fromWidthAndHeight($imageMiscParams['image_width'], $imageMiscParams['image_height']);
     }
 }
