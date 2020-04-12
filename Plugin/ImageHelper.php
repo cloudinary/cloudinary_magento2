@@ -162,10 +162,10 @@ class ImageHelper
         $transform = $this->configuration->getDefaultTransformation()->withDimensions($dimensions);
 
         if ($this->keepFrame) {
-            $transform->withCrop(Crop::fromString('lpad'))
+            $transform->withCrop(Crop::lpad())
                 ->withDimensions(Dimensions::squareMissingDimension($dimensions));
         } else {
-            $transform->withCrop(Crop::fromString('fit'));
+            $transform->withCrop(Crop::limit());
         }
 
         return $transform;

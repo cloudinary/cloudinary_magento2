@@ -82,4 +82,16 @@
         <plugin name="cloudinary_plugin_catalogimportexport_product_mediagalleryprocessor" type="Cloudinary\Cloudinary\Plugin\CatalogImportExport\Model\Import\Product\MediaGalleryProcessor" />
     </type>
 
+    <type name="Magento\Catalog\Block\Category\View">
+        <plugin name="cloudinary_plugin_block_catalog_category_view" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Category\View"/>
+    </type>
+
+    <type name="Magento\Cms\Block\Block">
+        <plugin name="cloudinary_plugin_block_cms_block_block" type="Cloudinary\Cloudinary\Plugin\Cms\Block\Block"/>
+    </type>
+
+    <type name="Magento\Cms\Block\Widget\Block">
+        <plugin name="cloudinary_plugin_block_cms_block_widget_block" type="Cloudinary\Cloudinary\Plugin\Cms\Block\Widget\Block"/>
+    </type>
+
 </config>
