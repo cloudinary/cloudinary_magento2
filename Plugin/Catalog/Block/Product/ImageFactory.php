@@ -109,7 +109,7 @@ class ImageFactory
      * @param array $attributes
      * @return string
      */
-    private function getStringCustomAttributes(array $attributes): string
+    private function getStringCustomAttributes(array $attributes)
     {
         $result = [];
         foreach ($attributes as $name => $value) {
