@@ -46,18 +46,13 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
      data-mage-init='{"openVideoModal":{}}'
      data-parent-component="<?= $block->escapeHtml($block->getData('config/parentComponent')) ?>"
      data-images="<?= $block->escapeHtmlAttr($block->getImagesJson()) ?>"
-     data-types="<?= $block->escapeHtml(
-         $this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getImageTypes())
-     ) ?>"
->
+     data-types="<?= $block->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getImageTypes())) ?>">
 
     <?php if ($cloudinaryMLwidgetOprions): ?>
         <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
-                    <?= $block->escapeHtml(
-                        __('Add from Cloudinary')
-                    ); ?>
+                    <?= $block->escapeHtml(__('Add from Cloudinary')) ?>
                 </p>
             </div>
         </div>
@@ -67,13 +62,10 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
     if (!$block->getElement()->getReadonly()):
         ?>
         <div class="image image-placeholder">
-            <?php /* @escapeNotVerified */ echo $block->getUploaderHtml();
-            ?>
+            <?= /* @escapeNotVerified */ $block->getUploaderHtml() ?>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
-                    <?= $block->escapeHtml(
-                        __('Browse to find or drag image here')
-                    ); ?>
+                    <?= $block->escapeHtml(__('Browse to find or drag image here')) ?>
                 </p>
             </div>
         </div>
@@ -167,31 +159,21 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             class="action-remove"
                             data-role="delete-button"
                             title="<% if (data.media_type == 'external-video') {%>
-                            <?= $block->escapeHtml(
-                                __('Delete video')
-                            ); ?>
-                        <%} else {%>
-                            <?= $block->escapeHtml(
-                                __('Delete image')
-                            ); ?>
-                        <%}%>">
+                                <?= $block->escapeHtml(__('Delete video')) ?>
+                            <%} else {%>
+                                <?= $block->escapeHtml(__('Delete image')) ?>
+                            <%}%>">
                     <span>
                         <% if (data.media_type == 'external-video') { %>
-                        <?= $block->escapeHtml(
-                            __('Delete video')
-                        ); ?>
+                        <?= $block->escapeHtml(__('Delete video')) ?>
                         <% } else {%>
-                        <?= $block->escapeHtml(
-                            __('Delete image')
-                        ); ?>
+                        <?= $block->escapeHtml(__('Delete image')) ?>
                         <%} %>
                     </span>
                     </button>
                     <div class="draggable-handle"></div>
                 </div>
-                <div class="image-fade"><span><?= $block->escapeHtml(
-                            __('Hidden')
-                        ); ?></span></div>
+                <div class="image-fade"><span><?= $block->escapeHtml(__('Hidden')) ?></span></div>
             </div>
 
             <div class="item-description">
@@ -209,11 +191,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                 <?php
                 foreach ($block->getImageTypes() as $typeData):
                     ?>
-                    <li data-role-code="<?= $block->escapeHtml(
-                        $typeData['code']
-                    ) ?>" class="item-role item-role-<?= $block->escapeHtml(
-                        $typeData['code']
-                    ) ?>">
+                    <li data-role-code="<?= $block->escapeHtml($typeData['code']) ?>" class="item-role item-role-<?= $block->escapeHtml($typeData['code']) ?>">
                         <?= $block->escapeHtml($typeData['label']) ?>
                     </li>
                     <?php
@@ -245,17 +223,13 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             <textarea data-role="image-description"
                                       rows="3"
                                       class="admin__control-textarea"
-                                      name="<?php /* @escapeNotVerified */
-                                      echo $elementName
-                                      ?>[<%- data.file_id %>][label]"><%- data.label %></textarea>
+                                      name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][label]"><%- data.label %></textarea>
                     </div>
                 </div>
 
                 <div class="admin__field field-image-role">
                     <label class="admin__field-label">
-                            <span><?= $block->escapeHtml(
-                                    __('Role')
-                                ); ?></span>
+                            <span><?= $block->escapeHtml(__('Role')) ?></span>
                     </label>
                     <div class="admin__field-control">
                         <ul class="multiselect-alt">
@@ -268,13 +242,9 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                                data-role="type-selector"
                                                data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
                                                type="checkbox"
-                                               value="<?= $block->escapeHtml(
-                                                   $attribute->getAttributeCode()
-                                               ) ?>"
+                                               value="<?= $block->escapeHtml($attribute->getAttributeCode()) ?>"
                                         />
-                                        <?php /* @escapeNotVerified */ echo $block->escapeHtml(
-                                            $attribute->getFrontendLabel()
-                                        ) ?>
+                                        <?= /* @escapeNotVerified */ $block->escapeHtml($attribute->getFrontendLabel()) ?>
                                     </label>
                                 </li>
                                 <?php
@@ -311,9 +281,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             <% if (data.disabled == 1) { %>checked="checked"<% } %> />
 
                             <label for="hide-from-product-page" class="admin__field-label">
-                                <?= $block->escapeHtml(
-                                    __('Hide from Product Page')
-                                ); ?>
+                                <?= $block->escapeHtml(__('Hide from Product Page')) ?>
                             </label>
                         </div>
                     </div>
@@ -326,24 +294,16 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
         <div id="video-player-preview-location" class="video-player-sidebar">
             <div class="video-player-container"></div>
             <div class="video-information title">
-                <label><?= $block->escapeHtml(
-                        __('Title:')
-                    ); ?> </label><span></span>
+                <label><?= $block->escapeHtml(__('Title:')) ?> </label><span></span>
             </div>
             <div class="video-information uploaded">
-                <label><?= $block->escapeHtml(
-                        __('Uploaded:')
-                    ); ?> </label><span></span>
+                <label><?= $block->escapeHtml(__('Uploaded:')) ?> </label><span></span>
             </div>
             <div class="video-information uploader">
-                <label><?= $block->escapeHtml(
-                        __('Uploader:')
-                    ); ?> </label><span></span>
+                <label><?= $block->escapeHtml(__('Uploader:')) ?> </label><span></span>
             </div>
             <div class="video-information duration">
-                <label><?= $block->escapeHtml(
-                        __('Duration:')
-                    ); ?> </label><span></span>
+                <label><?= $block->escapeHtml(__('Duration:')) ?> </label><span></span>
             </div>
         </div>
     </div>
