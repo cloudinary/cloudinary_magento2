@@ -67,11 +67,11 @@ class CmsBlockLazyloadAbstract
             $modified = 0;
 
             foreach ($dom->getElementsByTagName('img') as $element) {
-                if (strpos($element->getAttribute('class'), "lazyload") === false && strpos($element->getAttribute('class'), "owl-lazy") === false && ($image = $this->_coreRegistry->registry('cloudinary_generated_' . md5($element->getAttribute('src')))) !== null) {
+                if (strpos($element->getAttribute('class'), "lazyload") === false && strpos($element->getAttribute('class'), "owl-lazy") === false && ($image = $this->_coreRegistry->registry('cloudinary_generated_' . hash('sha256', $element->getAttribute('src')))) !== null) {
                     if (!($placeholderUrl = $this->_urlGenerator->generateFor($image, $this->_configuration->getDefaultTransformation()->withFreeform($this->_configuration->getLazyloadPlaceholderFreeform())))) {
                         continue;
                     }
-                    $this->_coreRegistry->unregister('cloudinary_generated_' . md5($element->getAttribute('src')));
+                    $this->_coreRegistry->unregister('cloudinary_generated_' . hash('sha256', $element->getAttribute('src')));
                     $modified++;
                     $element->setAttribute('class', 'cloudinary-lazyload ' . $element->getAttribute('class'));
                     $element->setAttribute('data-original', $element->getAttribute('src'));
