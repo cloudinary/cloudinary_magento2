@@ -337,6 +337,25 @@
                     <comment>Map Cloudinary assets to their original location to prevent duplication in your Cloudinary Media Library. If set to 'No', assets will be synchronized to a new Cloudinary location based on the local Magento path.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="product_gallery_api_queue_enabled" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Process product gallery API requests in the background (add to queue).</label>
+                    <comment>When using the rest/V1/cloudinary/products API endpoint, add the requests to queue and process later using a cronjob.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="product_gallery_api_queue_limit" translate="label comment" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Product gallery API queue - limit</label>
+                    <comment>Maximum queue items to process on each run (0 = no limit).</comment>
+                    <depends>
+                        <field id="product_gallery_api_queue_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="product_gallery_api_queue_max_tryouts" translate="label comment" type="text" sortOrder="7" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Product gallery API queue - maximum tryouts</label>
+                    <comment>How many times to try processing the queued item before stopping and adding error notification on admin (Minimum: 1, Maximum: 20).</comment>
+                    <depends>
+                        <field id="product_gallery_api_queue_enabled">1</field>
+                    </depends>
+                </field>
             </group>
         </section>
     </system>

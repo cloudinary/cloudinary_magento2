@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Model\MediaLibraryMap;
 use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
+use Cloudinary\Cloudinary\Model\ProductGalleryApiQueueFactory;
 use Cloudinary\Cloudinary\Model\ProductImageFinder;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -144,32 +145,38 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     private $mediaLibraryMapFactory;
 
     /**
+     * @var ProductGalleryApiQueueFactory
+     */
+    private $productGalleryApiQueueFactory;
+
+    /**
      * @var AppEmulation
      */
     protected $_appEmulation;
 
     /**
      * @method __construct
-     * @param  ConfigurationInterface     $configuration
-     * @param  Http                       $request
-     * @param  JsonHelper                 $jsonHelper
-     * @param  ProductRepositoryInterface $productRepository
-     * @param  ProductMediaConfig         $mediaConfig
-     * @param  Filesystem                 $fileSystem
-     * @param  ImageAdapterFactory        $imageAdapterFactory
-     * @param  Curl                       $curl
-     * @param  FileUtility                $fileUtility
-     * @param  FileProcessor              $fileProcessor
-     * @param  AllowedProtocols           $protocolValidator
-     * @param  NotProtectedExtension      $extensionValidator
-     * @param  StoreManagerInterface      $storeManager
-     * @param  ProductImageFinder         $productImageFinder
-     * @param  CloudinaryImageManager     $cloudinaryImageManager
-     * @param  ResourcesManagement        $cloudinaryResourcesManagement
-     * @param  TransformationFactory      $transformationFactory
-     * @param  Processor                  $mediaGalleryProcessor
-     * @param  MediaLibraryMapFactory     $mediaLibraryMapFactory
-     * @param  AppEmulation               $appEmulation
+     * @param  ConfigurationInterface        $configuration
+     * @param  Http                          $request
+     * @param  JsonHelper                    $jsonHelper
+     * @param  ProductRepositoryInterface    $productRepository
+     * @param  ProductMediaConfig            $mediaConfig
+     * @param  Filesystem                    $fileSystem
+     * @param  ImageAdapterFactory           $imageAdapterFactory
+     * @param  Curl                          $curl
+     * @param  FileUtility                   $fileUtility
+     * @param  FileProcessor                 $fileProcessor
+     * @param  AllowedProtocols              $protocolValidator
+     * @param  NotProtectedExtension         $extensionValidator
+     * @param  StoreManagerInterface         $storeManager
+     * @param  ProductImageFinder            $productImageFinder
+     * @param  CloudinaryImageManager        $cloudinaryImageManager
+     * @param  ResourcesManagement           $cloudinaryResourcesManagement
+     * @param  TransformationFactory         $transformationFactory
+     * @param  Processor                     $mediaGalleryProcessor
+     * @param  MediaLibraryMapFactory        $mediaLibraryMapFactory
+     * @param  ProductGalleryApiQueueFactory $productGalleryApiQueueFactory
+     * @param  AppEmulation                  $appEmulation
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -191,6 +198,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         TransformationFactory $transformationFactory,
         Processor $mediaGalleryProcessor,
         MediaLibraryMapFactory $mediaLibraryMapFactory,
+        ProductGalleryApiQueueFactory $productGalleryApiQueueFactory,
         AppEmulation $appEmulation
     ) {
         $this->configuration = $configuration;
@@ -212,6 +220,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->transformationFactory = $transformationFactory;
         $this->mediaGalleryProcessor = $mediaGalleryProcessor;
         $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
+        $this->productGalleryApiQueueFactory = $productGalleryApiQueueFactory;
         $this->appEmulation = $appEmulation;
     }
 
@@ -233,12 +242,11 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     __("Cloudinary module is disabled. Please enable it first in order to use this API.")
                 );
             }
-            $this->emulateAdminhtmlArea();
             $urls = (array)$urls;
             foreach ($urls as $i => $url) {
                 try {
                     $url = (array)$url;
-                    $this->addGalleryItem(
+                    $this->processOrQueue(
                         $url["url"],
                         $sku,
                         (isset($url["publicId"])) ? $url["publicId"] : null,
@@ -253,10 +261,13 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $result["failed"]["urls"][] = $url;
                 }
             }
-            $this->stopEnvironmentEmulation();
         } catch (\Exception $e) {
             $result["error"] = 1;
             $result["message"] = $e->getMessage();
+        }
+
+        if ($result["passed"] && !$result["failed"]["count"]) {
+            $result["message"] = $this->configuration->isEnabledProductgalleryApiQueue() ? "All items have been added to queue." : "success";
         }
 
         return $this->jsonHelper->jsonEncode($result);
@@ -293,14 +304,13 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     __("Cloudinary module is disabled. Please enable it first in order to use this API.")
                 );
             }
-            $this->emulateAdminhtmlArea();
             $items = (array)$items;
             foreach ($items as $i => $item) {
                 try {
                     $item = $result["items"][$i] = (array)$item;
                     $result["items"][$i]["error"] = 0;
-                    $result["items"][$i]["message"] = "success";
-                    $this->addGalleryItem(
+                    $result["items"][$i]["message"] = $this->configuration->isEnabledProductgalleryApiQueue() ? "The item was added to the queue." : "success";
+                    $this->processOrQueue(
                         $item["url"],
                         $item["sku"],
                         (isset($item["publicId"])) ? $item["publicId"] : null,
@@ -317,14 +327,13 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     }
                 }
             }
-            $this->stopEnvironmentEmulation();
         } catch (\Exception $e) {
             $result["errors"]++;
             $result["message"] = "\n{$e->getMessage()}";
         }
 
         if (!$result["errors"]) {
-            $result["message"] = "success";
+            $result["message"] = $this->configuration->isEnabledProductgalleryApiQueue() ? "All items have been added to queue." : "success";
         } else {
             $result["message"] = "error" . $result["message"];
         }
@@ -333,7 +342,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     }
 
     /**
-     * @method addGalleryItem
+     * @method processOrQueue
      * @param  string        $url
      * @param  string        $sku
      * @param  string|null   $publicId
@@ -341,91 +350,125 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  string|null   $label
      * @param  bool|int|null $disabled
      */
-    private function addGalleryItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
+    public function processOrQueue($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
     {
-        $this->cldUniqid = $this->mapped = null;
-        $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($url, $publicId);
-
-        if (!$this->parsedRemoteFileUrl["version"] && !$publicId) {
-            throw new LocalizedException(
-                __("The `publicId` field is mandatory for Cloudinary URLs that doesn't contain a version number.")
-            );
-        }
-
-        $roles = ($roles) ? array_map('trim', (is_string($roles) ? explode(',', $roles) : (array) $roles)) : null;
-        $product = $this->productRepository->get($sku);
-
-        $result = $this->retrieveImage($this->parsedRemoteFileUrl['thumbnail_url'] ?: $this->parsedRemoteFileUrl['transformationless_url']);
-        $result["file"] = $this->mediaGalleryProcessor->addImage(
-            $product,
-            $result["tmp_name"],
-            $roles,
-            true,
-            false
-        );
-
-        $mediaGalleryData = $product->getMediaGallery();
-        $galItem = array_pop($mediaGalleryData["images"]);
-
-        if ($this->parsedRemoteFileUrl["type"] === "video") {
-            $videoData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getVideo());
-            $videoData["title"] = $label;
-            $videoData["description"] = "";
-            if (!$videoData["error"]) {
-                $videoData["context"] = new DataObject((isset($videoData["data"]["context"])) ? (array)$videoData["data"]["context"] : []);
-                $videoData["title"] = $videoData["title"] ? $videoData["title"] : ($videoData["context"]->getData('caption') ?: $videoData["context"]->getData('alt'));
-                $videoData["description"] = $videoData["context"]->getData('description') ?: $videoData["context"]->getData('alt');
-            }
-            $videoData["title"] = $videoData["title"] ?: $this->parsedRemoteFileUrl["publicId"];
-            $videoData["description"] = preg_replace('/(&nbsp;|<([^>]+)>)/i', '', $videoData["description"] ?: $videoData["title"]);
-
-            $galItem = array_merge($galItem, [
-                "media_type" => "external-video",
-                "video_provider" => "cloudinary",
-                "disabled" => $disabled ? 1 : 0,
-                "label" => $videoData["title"],
-                "video_url" => $this->parsedRemoteFileUrl["orig_url"],
-                "video_title" => $videoData["title"],
-                "video_description" => $videoData["description"],
-            ]);
-        }
-
-        if ($this->parsedRemoteFileUrl["type"] === "image") {
-            if (!$label) {
-                $imageData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getImage());
-                if (!$imageData["error"]) {
-                    $imageData["context"] = new DataObject((isset($imageData["data"]["context"])) ? (array)$imageData["data"]["context"] : []);
-                    $label = $imageData["context"]->getData('caption') ?: $imageData["context"]->getData('alt');
-                }
-                $label = $label ?: "";
-            }
-            $galItem = array_merge($galItem, [
-                "disabled" => $disabled ? 1 : 0,
+        if ($this->configuration->isEnabledProductgalleryApiQueue()) {
+            $fullItemData = $this->jsonHelper->jsonEncode([
+                "url" => $url,
+                "sku" => $sku,
+                "publicId" => $publicId,
+                "roles" => $roles,
                 "label" => $label,
+                "disabled" => $disabled,
             ]);
-        }
-
-        $mediaGalleryData["images"][] = $galItem;
-        $product->setData('media_gallery', $mediaGalleryData);
-
-        $product->save();
-        $mediaGalleryData = $product->getMediaGallery();
-        $galItem = array_pop($mediaGalleryData["images"]);
-
-        /*foreach ($this->productImageFinder->findNewImages($product) as $image) {
-            $this->cloudinaryImageManager->uploadAndSynchronise($image);
-        }*/
-
-        if ($this->parsedRemoteFileUrl["type"] === "image" && $this->parsedRemoteFileUrl['transformations_string']) {
-            $this->transformationFactory->create()
-                ->setImageName($galItem["file"])
-                ->setFreeTransformation($this->parsedRemoteFileUrl['transformations_string'])
+            return $this->productGalleryApiQueueFactory->create()
+                ->setSku($sku)
+                ->setFullItemData($fullItemData)
                 ->save();
+        } else {
+            return $this->addGalleryItem($url, $sku, $publicId, $roles, $label, $disabled);
+        }
+    }
+    /**
+     * @method addGalleryItem
+     * @param  string        $url
+     * @param  string        $sku
+     * @param  string|null   $publicId
+     * @param  string|null   $roles
+     * @param  string|null   $label
+     * @param  bool|int|null $disabled
+     * @return $this
+     */
+    public function addGalleryItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
+    {
+        try {
+            $this->emulateAdminhtmlArea();
+
+            $this->cldUniqid = $this->mapped = null;
+            $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($url, $publicId);
+
+            if (!$this->parsedRemoteFileUrl["version"] && !$publicId) {
+                throw new LocalizedException(
+                    __("The `publicId` field is mandatory for Cloudinary URLs that doesn't contain a version number.")
+                );
+            }
+
+            $roles = ($roles) ? array_map('trim', (is_string($roles) ? explode(',', $roles) : (array) $roles)) : null;
+            $product = $this->productRepository->get($sku);
+
+            $result = $this->retrieveImage($this->parsedRemoteFileUrl['thumbnail_url'] ?: $this->parsedRemoteFileUrl['transformationless_url']);
+            $result["file"] = $this->mediaGalleryProcessor->addImage(
+                $product,
+                $result["tmp_name"],
+                $roles,
+                true,
+                false
+            );
+
+            $mediaGalleryData = $product->getMediaGallery();
+            $galItem = array_pop($mediaGalleryData["images"]);
+
+            if ($this->parsedRemoteFileUrl["type"] === "video") {
+                $videoData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getVideo());
+                $videoData["title"] = $label;
+                $videoData["description"] = "";
+                if (!$videoData["error"]) {
+                    $videoData["context"] = new DataObject((isset($videoData["data"]["context"])) ? (array)$videoData["data"]["context"] : []);
+                    $videoData["title"] = $videoData["title"] ? $videoData["title"] : ($videoData["context"]->getData('caption') ?: $videoData["context"]->getData('alt'));
+                    $videoData["description"] = $videoData["context"]->getData('description') ?: $videoData["context"]->getData('alt');
+                }
+                $videoData["title"] = $videoData["title"] ?: $this->parsedRemoteFileUrl["publicId"];
+                $videoData["description"] = preg_replace('/(&nbsp;|<([^>]+)>)/i', '', $videoData["description"] ?: $videoData["title"]);
+
+                $galItem = array_merge($galItem, [
+                    "media_type" => "external-video",
+                    "video_provider" => "cloudinary",
+                    "disabled" => $disabled ? 1 : 0,
+                    "label" => $videoData["title"],
+                    "video_url" => $this->parsedRemoteFileUrl["orig_url"],
+                    "video_title" => $videoData["title"],
+                    "video_description" => $videoData["description"],
+                ]);
+            }
+
+            if ($this->parsedRemoteFileUrl["type"] === "image") {
+                if (!$label) {
+                    $imageData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getImage());
+                    if (!$imageData["error"]) {
+                        $imageData["context"] = new DataObject((isset($imageData["data"]["context"])) ? (array)$imageData["data"]["context"] : []);
+                        $label = $imageData["context"]->getData('caption') ?: $imageData["context"]->getData('alt');
+                    }
+                    $label = $label ?: "";
+                }
+                $galItem = array_merge($galItem, [
+                    "disabled" => $disabled ? 1 : 0,
+                    "label" => $label,
+                ]);
+            }
+
+            $mediaGalleryData["images"][] = $galItem;
+            $product->setData('media_gallery', $mediaGalleryData);
+
+            $product->save();
+            $mediaGalleryData = $product->getMediaGallery();
+            $galItem = array_pop($mediaGalleryData["images"]);
+
+            if ($this->parsedRemoteFileUrl["type"] === "image" && $this->parsedRemoteFileUrl['transformations_string']) {
+                $this->transformationFactory->create()
+                    ->setImageName($galItem["file"])
+                    ->setFreeTransformation($this->parsedRemoteFileUrl['transformations_string'])
+                    ->save();
+            }
+
+            if ($this->configuration->isEnabledLocalMapping()) {
+                $this->saveCloudinaryMapping();
+            }
+        } catch (\Exception $e) {
+            $this->stopEnvironmentEmulation();
+            throw $e;
         }
 
-        if ($this->configuration->isEnabledLocalMapping()) {
-            $this->saveCloudinaryMapping();
-        }
+        return $this;
     }
 
     /**
