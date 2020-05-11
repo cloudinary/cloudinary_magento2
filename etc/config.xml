@@ -23,6 +23,9 @@
                 <use_root_path>0</use_root_path>
                 <enable_local_mapping>1</enable_local_mapping>
                 <cloudinary_scheduled_video_data_import_limit>10</cloudinary_scheduled_video_data_import_limit>
+                <product_gallery_api_queue_enabled>1</product_gallery_api_queue_enabled>
+                <product_gallery_api_queue_limit>20</product_gallery_api_queue_limit>
+                <product_gallery_api_queue_tryouts>5</product_gallery_api_queue_tryouts>
             </advanced>
             <product_gallery>
                 <enabled>0</enabled>
