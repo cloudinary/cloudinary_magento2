@@ -48,10 +48,19 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
         if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($multiple, $refresh))) {
             return null;
         }
+
+        try {
+            //Try to add session param on Magento versions prior to 2.3.5
+            $imageUploadUrl = $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
+        } catch (\Exception $e) {
+            //Catch deprecation error on Magento 2.3.5 and above
+            $imageUploadUrl = $this->_urlBuilder->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
+        }
+
         return $this->_jsonEncoder->encode(
             [
             'cldMLid' => 'wysiwyg_media_gallery',
-            'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]),
+            'imageUploaderUrl' => $imageUploadUrl,
             'triggerSelector' => '.media-gallery-modal',
             'triggerEvent' => 'fileuploaddone',
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
