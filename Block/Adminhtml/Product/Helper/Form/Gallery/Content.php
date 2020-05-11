@@ -64,11 +64,20 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
         if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($multiple, $refresh))) {
             return null;
         }
+
+        try {
+            //Try to add session param on Magento versions prior to 2.3.5
+            $imageUploadUrl = $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/ajax/retrieveImage');
+        } catch (\Exception $e) {
+            //Catch deprecation error on Magento 2.3.5 and above
+            $imageUploadUrl = $this->_urlBuilder->getUrl('cloudinary/ajax/retrieveImage');
+        }
+
         return $this->_jsonEncoder->encode(
             [
             'htmlId' => $this->getHtmlId(),
             'cldMLid' => 'product_gallery_' . $this->getHtmlId(),
-            'imageUploaderUrl' => $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/ajax/retrieveImage'),
+            'imageUploaderUrl' => $imageUploadUrl,
             'triggerSelector' => '#media_gallery_content',
             'triggerEvent' => 'addItem',
             'useDerived' => false,
