@@ -54,5 +54,15 @@
                 <custom_free_params>{}</custom_free_params>
             </product_gallery>
         </cloudinary>
+        <csp>
+            <mode>
+                <storefront>
+                    <report_only>1</report_only>
+                </storefront>
+                <admin>
+                    <report_only>1</report_only>
+                </admin>
+            </mode>
+        </csp>
     </default>
 </config>
