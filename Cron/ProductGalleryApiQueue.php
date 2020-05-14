@@ -6,7 +6,6 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Model\Api\ProductGalleryManagement;
 use Cloudinary\Cloudinary\Model\ProductGalleryApiQueueFactory;
 use Cloudinary\Cloudinary\Model\ProductVideoFactory;
-use Magento\Framework\App\State as AppState;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use Magento\Framework\Notification\NotifierInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,11 +48,6 @@ class ProductGalleryApiQueue
     private $productGalleryApiQueueFactory;
 
     /**
-     * @var AppState
-     */
-    private $appState;
-
-    /**
      * @var NotifierInterface
      */
     private $notifierPool;
@@ -65,7 +59,6 @@ class ProductGalleryApiQueue
      * @param  JsonHelper                    $jsonHelper
      * @param  ProductVideoFactory           $productVideoFactory
      * @param  ProductGalleryApiQueueFactory $productGalleryApiQueueFactory
-     * @param  AppState                      $appState
      * @param  NotifierInterface             $notifierPool
      */
     public function __construct(
@@ -74,7 +67,6 @@ class ProductGalleryApiQueue
         JsonHelper $jsonHelper,
         ProductVideoFactory $productVideoFactory,
         ProductGalleryApiQueueFactory $productGalleryApiQueueFactory,
-        AppState $appState,
         NotifierInterface $notifierPool
     ) {
         $this->configuration = $configuration;
@@ -82,7 +74,6 @@ class ProductGalleryApiQueue
         $this->jsonHelper = $jsonHelper;
         $this->productVideoFactory = $productVideoFactory;
         $this->productGalleryApiQueueFactory = $productGalleryApiQueueFactory;
-        $this->appState = $appState;
         $this->notifierPool = $notifierPool;
     }
 
@@ -90,7 +81,6 @@ class ProductGalleryApiQueue
     {
         if ($this->configuration->isEnabled() && $this->configuration->isEnabledProductgalleryApiQueue()) {
             try {
-                $this->setCrontabAreaCode();
                 $queuedItems = $this->productGalleryApiQueueFactory->create()->getCollection()
                     ->addFieldToFilter("success", 0)
                     ->addFieldToFilter("tryouts", ['lt' => $this->configuration->getProductgalleryApiQueueMaxTryouts()])
@@ -198,16 +188,6 @@ class ProductGalleryApiQueue
     {
         $method = 'add' . ucfirst($type);
         $this->notifierPool->{$method}($title, $description);
-        return $this;
-    }
-
-    private function setCrontabAreaCode()
-    {
-        try {
-            $this->appState->setAreaCode(\Magento\Framework\App\Area::AREA_CRONTAB);
-        } catch (\Exception $e) {
-            $this->processOutput("ProductGalleryApiQueue::setCrontabAreaCode() - Exception:  " . $e->getMessage() . "\n" . $e->getTraceAsString(), "debug");
-        }
         return $this;
     }
 }
