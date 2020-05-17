@@ -120,6 +120,10 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                    value="<%- data.label %>"
                    data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
             <input type="hidden"
+                   name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][cldspinset]"
+                   value="<%- data.cldspinset %>"
+                   data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
+            <input type="hidden"
                    name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][disabled]"
                    value="<%- data.disabled %>"
                    data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
@@ -224,6 +228,19 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                       rows="3"
                                       class="admin__control-textarea"
                                       name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][label]"><%- data.label %></textarea>
+                    </div>
+                </div>
+
+                <div class="admin__field field-image-cldspinset">
+                    <label class="admin__field-label" for="image-cldspinset">
+                        <span><?= /* @escapeNotVerified */ __('Cloudinary Spinset Tag') ?></span>
+                    </label>
+
+                    <div class="admin__field-control">
+                            <input data-role="image-cldspinset"
+                                    class="admin__control-text"
+                                    name="<?= /* @escapeNotVerified */ $elementName ?>[<%- data.file_id %>][cldspinset]"
+                                    value="<%- data.cldspinset %>" />
                     </div>
                 </div>
 
