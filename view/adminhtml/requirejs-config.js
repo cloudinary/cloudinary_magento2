@@ -5,7 +5,7 @@ var config = {
             newVideoDialog: 'Cloudinary_Cloudinary/js/new-video-dialog',
             'Magento_ProductVideo/js/get-video-information': 'Cloudinary_Cloudinary/js/get-video-information',
             cloudinaryMediaLibraryModal: 'Cloudinary_Cloudinary/js/cloudinary-media-library-modal',
-            productGallery: 'Cloudinary_Cloudinary/js/product-gallery.js',
+            productGallery: 'Cloudinary_Cloudinary/js/product-gallery',
         }
     },
     paths: {
