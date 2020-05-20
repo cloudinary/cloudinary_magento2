@@ -4,6 +4,7 @@ namespace Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
+use Cloudinary\Cloudinary\Model\ProductSpinsetMapFactory;
 use Magento\Framework\Json\EncoderInterface;
 
 class Gallery
@@ -22,6 +23,11 @@ class Gallery
      * @var ConfigurationInterface
      */
     private $configuration;
+
+    /**
+     * @var ProductSpinsetMapFactory
+     */
+    protected $productSpinsetMapFactory;
 
     /**
      * @var \Magento\Catalog\Block\Product\View\Gallery
@@ -46,11 +52,13 @@ class Gallery
     public function __construct(
         ProductGalleryHelper $productGalleryHelper,
         EncoderInterface $jsonEncoder,
-        ConfigurationInterface $configuration
+        ConfigurationInterface $configuration,
+        ProductSpinsetMapFactory $productSpinsetMapFactory
     ) {
         $this->productGalleryHelper = $productGalleryHelper;
         $this->jsonEncoder = $jsonEncoder;
         $this->configuration = $configuration;
+        $this->productSpinsetMapFactory = $productSpinsetMapFactory;
     }
 
     /**
@@ -105,15 +113,18 @@ class Gallery
             }
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
-                if (isset($value['cldspinset']) && $value['cldspinset']) {
-                    $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
-                        "tag" => $value['cldspinset'],
-                        "mediaType" => 'spin'
-                    ];
-                    continue;
-                }
                 $publicId = $url = $transformation = null;
                 if ($value['type'] === 'image') {
+                    //Check if image is a spinset:
+                    $cldspinset = $this->productSpinsetMapFactory->create()->getCollection()->addFieldToFilter("image_name", $value['file'])->setPageSize(1)->getFirstItem();
+                    if ($cldspinset && ($cldspinset = $cldspinset->getCldspinset())) {
+                        $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
+                            "tag" => $cldspinset,
+                            "mediaType" => 'spin'
+                        ];
+                        continue;
+                    }
+                    //==================================//
                     $url = $value['full'] ?: $value['img'];
                 } elseif ($value['type'] === 'video') {
                     $url = $value['videoUrl'];
