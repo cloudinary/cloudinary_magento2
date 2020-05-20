@@ -29,6 +29,10 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->createProductGalleryApiQueueTable($setup);
         }
 
+        if (version_compare($context->getVersion(), '1.13.0', '<')) {
+            $this->createProductSpinsetMapTable($setup);
+        }
+
         $setup->endSetup();
     }
 
@@ -176,6 +180,50 @@ class UpgradeSchema implements UpgradeSchemaInterface
             ['unsigned' => true, 'nullable' => true, 'default' => '0'],
             'Tryouts'
         );
+        $setup->getConnection()->createTable($table);
+    }
+
+    /**
+     * @param SchemaSetupInterface $setup
+     */
+    private function createProductSpinsetMapTable(SchemaSetupInterface $setup)
+    {
+        $table = $setup->getConnection()->newTable(
+            $setup->getTable('cloudinary_product_spinset_map')
+        )->addColumn(
+            'id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'ID'
+        )->addColumn(
+            'store_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
+            'Store ID'
+        )->addColumn(
+            'image_name',
+            Table::TYPE_TEXT,
+            255,
+            ['nullable' => false],
+            'Relative image path'
+        )->addColumn(
+            'cldspinset',
+            Table::TYPE_TEXT,
+            255,
+            [],
+            'Cloudinary Spinset Tag'
+        )->addIndex(
+            $setup->getIdxName(
+                'cloudinary_product_spinset_map',
+                ['store_id', 'image_name'],
+                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            ['store_id', 'image_name'],
+            ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
+        );
+
         $setup->getConnection()->createTable($table);
     }
 }

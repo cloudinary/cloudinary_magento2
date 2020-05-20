@@ -105,6 +105,13 @@ class Gallery
             }
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
+                if (isset($value['cldspinset']) && $value['cldspinset']) {
+                    $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
+                        "tag" => $value['cldspinset'],
+                        "mediaType" => 'spin'
+                    ];
+                    continue;
+                }
                 $publicId = $url = $transformation = null;
                 if ($value['type'] === 'image') {
                     $url = $value['full'] ?: $value['img'];

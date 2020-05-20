@@ -14,8 +14,10 @@
 namespace Cloudinary\Cloudinary\Block\Adminhtml\Product\Helper\Form\Gallery;
 
 use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
+use Cloudinary\Cloudinary\Model\ProductSpinsetMapFactory;
 use Magento\Backend\Block\Template\Context;
 use Magento\Catalog\Model\Product\Media\Config;
+use Magento\Framework\Json\DecoderInterface;
 use Magento\Framework\Json\EncoderInterface;
 
 /**
@@ -29,27 +31,43 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
     protected $_template = 'Cloudinary_Cloudinary::catalog/product/helper/gallery.phtml';
 
     /**
-     * MediaLibraryHelper
-     * @var array|null
+     * @var DecoderInterface
      */
-    protected $mediaLibraryHelper;
+    protected $_jsonDecoder;
 
     /**
-     * @param Context $context
-     * @param EncoderInterface $jsonEncoder
-     * @param Config $mediaConfig
-     * @param MediaLibraryHelper $mediaLibraryHelper
-     * @param array $data
+     * @var MediaLibraryHelper
+     */
+    protected $_mediaLibraryHelper;
+
+    /**
+     * @var ProductSpinsetMapFactory
+     */
+    protected $_productSpinsetMapFactory;
+
+    /**
+     * @method __construct
+     * @param  Context                  $context
+     * @param  EncoderInterface         $jsonEncoder
+     * @param  DecoderInterface         $jsonDecoder
+     * @param  Config                   $mediaConfig
+     * @param  MediaLibraryHelper       $mediaLibraryHelper
+     * @param  ProductSpinsetMapFactory $productSpinsetMapFactory
+     * @param  array                    $data
      */
     public function __construct(
         Context $context,
         EncoderInterface $jsonEncoder,
+        DecoderInterface $jsonDecoder,
         Config $mediaConfig,
         MediaLibraryHelper $mediaLibraryHelper,
+        ProductSpinsetMapFactory $productSpinsetMapFactory,
         array $data = []
     ) {
         parent::__construct($context, $jsonEncoder, $mediaConfig, $data);
-        $this->mediaLibraryHelper = $mediaLibraryHelper;
+        $this->_jsonDecoder = $jsonDecoder;
+        $this->_mediaLibraryHelper = $mediaLibraryHelper;
+        $this->_productSpinsetMapFactory = $productSpinsetMapFactory;
     }
 
     /**
@@ -61,7 +79,7 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
      */
     public function getCloudinaryMediaLibraryWidgetOptions($multiple = true, $refresh = false)
     {
-        if (!($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions($multiple, $refresh))) {
+        if (!($cloudinaryMLoptions = $this->_mediaLibraryHelper->getCloudinaryMLOptions($multiple, $refresh))) {
             return null;
         }
 
@@ -83,7 +101,7 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
             'useDerived' => false,
             'addTmpExtension' => true,
             'cloudinaryMLoptions' => $cloudinaryMLoptions,
-            'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions(null),
+            'cloudinaryMLshowOptions' => $this->_mediaLibraryHelper->getCloudinaryMLshowOptions(null),
             ]
         );
     }
@@ -105,5 +123,25 @@ class Content extends \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Galle
             return $escaper->escapeHtmlAttr((string) $string);
         }
         return htmlspecialchars((string)$string, ENT_COMPAT, 'UTF-8', false);
+    }
+
+    /**
+     * Returns image json
+     *
+     * @return string
+     */
+    public function getImagesJson()
+    {
+        $images = $this->_jsonDecoder->decode(parent::getImagesJson());
+        if ($images) {
+            foreach ($images as &$image) {
+                if ($image['media_type'] === 'image') {
+                    $cldspinset = $this->_productSpinsetMapFactory->create()->getCollection()->addFieldToFilter("image_name", $image['file'])->setPageSize(1)->getFirstItem();
+                    $image['cldspinset'] = $cldspinset ? $cldspinset->getCldspinset() : "";
+                }
+            }
+            return $this->_jsonEncoder->encode($images);
+        }
+        return '[]';
     }
 }
