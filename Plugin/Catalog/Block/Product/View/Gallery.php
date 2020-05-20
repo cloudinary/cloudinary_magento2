@@ -5,6 +5,7 @@ namespace Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
 use Cloudinary\Cloudinary\Model\ProductSpinsetMapFactory;
+use Magento\Framework\DataObject;
 use Magento\Framework\Json\EncoderInterface;
 
 class Gallery
@@ -92,6 +93,43 @@ class Gallery
     }
 
     /**
+     * Retrieve product images in JSON format
+     *
+     * @return string
+     */
+    protected function getGalleryImagesJson()
+    {
+        $imagesItems = [];
+        /** @var DataObject $image */
+        foreach ($this->productGalleryBlock->getGalleryImages() as $image) {
+            $imageItem = new DataObject(
+                [
+                    'file' => $image->getData('file'),
+                    'thumb' => $image->getData('small_image_url'),
+                    'img' => $image->getData('medium_image_url'),
+                    'full' => $image->getData('large_image_url'),
+                    'caption' => ($image->getLabel() ?: $this->productGalleryBlock->getProduct()->getName()),
+                    'position' => $image->getData('position'),
+                    'isMain'   => $this->productGalleryBlock->isMainImage($image),
+                    'type' => str_replace('external-', '', $image->getMediaType()),
+                    'videoUrl' => $image->getVideoUrl(),
+                ]
+            );
+            foreach ($this->productGalleryBlock->getGalleryImagesConfig()->getItems() as $imageConfig) {
+                $imageItem->setData(
+                    $imageConfig->getData('json_object_key'),
+                    $image->getData($imageConfig->getData('data_object_key'))
+                );
+            }
+            $imagesItems[] = $imageItem->toArray();
+        }
+        if (empty($imagesItems)) {
+            return $this->productGalleryBlock->getGalleryImagesJson();
+        }
+        return $this->jsonEncoder->encode($imagesItems);
+    }
+
+    /**
      * @method getCloudinaryPGOptions
      * @param bool $refresh Refresh options
      * @param bool $ignoreDisabled Get te options even if the module or the product gallery are disabled
@@ -102,7 +140,7 @@ class Gallery
         if (is_null($this->cloudinaryPGoptions) || $refresh) {
             $this->cloudinaryPGoptions = $this->productGalleryHelper->getCloudinaryPGOptions($refresh, $ignoreDisabled);
             $this->cloudinaryPGoptions['container'] = '#' . $this->getCldPGid();
-            $galleryAssets = (array) json_decode($this->productGalleryBlock->getGalleryImagesJson(), true);
+            $galleryAssets = (array) json_decode($this->getGalleryImagesJson(), true);
             if (count($galleryAssets)>1) {
                 usort($galleryAssets, function ($a, $b) {
                     return $a['position'] - $b['position'];
