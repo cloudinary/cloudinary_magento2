@@ -264,13 +264,13 @@
                 <attribute type="expanded">0</attribute>
                 <field id="lazyload_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable Lazyload</label>
-                    <comment><![CDATA[Enable lazyload (using <a href="https://github.com/tuupola/lazyload/tree/1.9.7">Lazy Load Plugin for jQuery</a>)]]></comment>
+                    <comment><![CDATA[Enable lazyload (using <a href="https://github.com/tuupola/lazyload/tree/1.9.7">Lazy Load Plugin for jQuery</a>).]]></comment>
                     <config_path>cloudinary/lazyload/enabled</config_path>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="lazyload_auto_replace_cms_blocks" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Apply on CMS Blocks</label>
-                    <comment>Automatically apply lazyload on CMS blocks</comment>
+                    <comment>Automatically apply lazyload on CMS blocks.</comment>
                     <config_path>cloudinary/lazyload/auto_replace_cms_blocks</config_path>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
