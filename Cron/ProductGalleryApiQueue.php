@@ -84,8 +84,10 @@ class ProductGalleryApiQueue
                 $queuedItems = $this->productGalleryApiQueueFactory->create()->getCollection()
                     ->addFieldToFilter("success", 0)
                     ->addFieldToFilter("tryouts", ['lt' => $this->configuration->getProductgalleryApiQueueMaxTryouts()])
-                    ->setOrder('created_at', 'asc')
-                    ->setPageSize($this->configuration->getProductgalleryApiQueueLimit());
+                    ->setOrder('created_at', 'asc');
+                if (($_limit = $this->configuration->getProductgalleryApiQueueLimit())) {
+                    $queuedItems->setPageSize($_limit);
+                }
 
                 foreach ($queuedItems as $item) {
                     try {
