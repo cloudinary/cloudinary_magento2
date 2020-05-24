@@ -10,7 +10,7 @@
             <tab>cloudinary</tab>
             <resource>Cloudinary_Cloudinary::config_cloudinary</resource>
             <group id="cloud" translate="label" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>Enable Module</label>
+                <label>Enable Extension</label>
                 <attribute type="expanded">1</attribute>
                 <field id="cloudinary_enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable Cloudinary</label>
@@ -86,7 +86,7 @@
                 <attribute type="expanded">0</attribute>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable Cloudinary's Product Gallery</label>
-                    <comment><![CDATA[Enable Cloudinary's product gallery for product detail pages (override Magento's default). Supports Images, Videos and Spinsets. See <a href="https://cloudinary.com/documentation/product_gallery" target="_blank" title="Product Gallery documentation">Product Gallery documentation</a> for information on the configuration options.]]></comment>
+                    <comment><![CDATA[Enable Cloudinary's Product Gallery for product detail pages (override Magento's default). Supports Images, Videos and Spinsets. See <a href="https://cloudinary.com/documentation/product_gallery" target="_blank" title="Product Gallery documentation">Product Gallery documentation</a> for information on the configuration options.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>cloudinary/product_gallery/enabled</config_path>
                 </field>
@@ -319,12 +319,12 @@
                 <attribute type="expanded">0</attribute>
                 <field id="remove_version_number" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Remove version number from URLs</label>
-                    <comment>Remove version number (e.g., ".../v1/...") from URLs</comment>
+                    <comment>Remove version number (e.g., ".../v1/...") from URLs.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="use_root_path" translate="label comment" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Use Root Path</label>
-                    <comment>Remove "/image/upload/" from URLs</comment>
+                    <comment>Remove "/image/upload/" from URLs.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="use_signed_urls" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
