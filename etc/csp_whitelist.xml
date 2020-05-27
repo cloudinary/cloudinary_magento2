@@ -14,6 +14,7 @@
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
+                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
         <policy id="connect-src">
@@ -29,6 +30,7 @@
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
+                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
         <policy id="frame-src">
@@ -44,6 +46,7 @@
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
+                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
         <policy id="form-action">
@@ -58,6 +61,7 @@
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
+                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
         <policy id="img-src">
@@ -72,6 +76,7 @@
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
+                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
         <policy id="style-src">
@@ -86,6 +91,7 @@
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
+                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
     </policies>
