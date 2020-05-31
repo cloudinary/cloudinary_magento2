@@ -167,7 +167,7 @@ class Gallery
                 } elseif ($value['type'] === 'video') {
                     $url = $value['videoUrl'];
                 }
-                if (\strpos($url, '.cloudinary.com/') !== false && strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
+                if (\strpos($url, '.cloudinary.com/') !== false && (strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false || strpos($url, '://' . $this->productGalleryHelper->getCloudName()) !== false)) {
                     $parsed = $this->configuration->parseCloudinaryUrl($url);
                     $publicId = $parsed['publicId'] . '.' . $parsed['extension'];
                     $transformation = \str_replace('/', ',', $parsed['transformations_string']);
