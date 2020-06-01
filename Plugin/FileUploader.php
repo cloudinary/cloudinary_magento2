@@ -5,7 +5,7 @@ namespace Cloudinary\Cloudinary\Plugin;
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
 use Cloudinary\Cloudinary\Core\Image;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\File\Uploader;
+use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 
 class FileUploader
 {
