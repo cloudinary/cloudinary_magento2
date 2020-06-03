@@ -169,7 +169,7 @@ class Gallery
                 }
                 if (\strpos($url, '.cloudinary.com/') !== false && (strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false || strpos($url, '://' . $this->productGalleryHelper->getCloudName()) !== false)) {
                     $parsed = $this->configuration->parseCloudinaryUrl($url);
-                    $publicId = $parsed['publicId'] . '.' . $parsed['extension'];
+                    $publicId = ($value['type'] === 'image') ? $parsed['publicId'] . '.' . $parsed['extension'] : $parsed['publicId'];
                     $transformation = \str_replace('/', ',', $parsed['transformations_string']);
                 }
                 if ($publicId) {
