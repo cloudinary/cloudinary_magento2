@@ -31,6 +31,14 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
                 class="action-secondary add-from-cloudinary-button cloudinary-button-with-logo">
                 <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
             </button>
+            <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                title="<?= $block->escapeHtml(__('Add Spinset from Cloudinary')) ?>"
+                data-role="add-cldspinset-button"
+                type="button"
+                data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                class="action-secondary cloudinary-button-with-logo">
+                <span><?= $block->escapeHtml(__('Add Spinset from Cloudinary')) ?></span>
+            </button>
         <?php endif; ?>
     </div>
 </div>
@@ -326,6 +334,41 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
     </div>
 
     <?= $block->getChildHtml('new-video') ?>
+
+    <div id="cldspinset-modal" style="display:none">
+        <div id="cldspinset-preview-location" class="cldspinset-sidebar">
+            <div class="cldspinset-form-container">
+                <fieldset class="admin__fieldset fieldset-image-panel">
+                    <div class="admin__field field-image-cldspinset">
+                        <label class="admin__field-label" for="image-cldspinset">
+                            <span><?= /* @escapeNotVerified */ __('Cloudinary Spinset Tag') ?></span>
+                        </label>
+                        <div class="admin__field-control">
+                            <input data-role="new-cldspinset"
+                                class="admin__control-text"
+                                name="new_cldspinset"
+                                value="" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="cldspinset-preview-container">
+                <fieldset class="admin__fieldset fieldset-image-panel">
+                    <div class="admin__field field-image-cldspinset">
+                        <label class="admin__field-label" for="image-cldspinset">
+                            <span><?= /* @escapeNotVerified */ __('Preview') ?></span>
+                        </label>
+                        <div class="admin__field-control">
+                            <div id="cldspinset-preview" class="cldspinset-preview" style="">
+                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_vertical_logo_for_white_bg.svg') ?>" alt="Cloudinary spinset preview image"  data-placeholder-src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_vertical_logo_for_white_bg.svg') ?>"/>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
 </div>
 <script>
     jQuery('body').trigger('contentUpdated');

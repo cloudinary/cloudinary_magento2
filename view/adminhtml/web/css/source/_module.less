@@ -71,3 +71,41 @@
 .adminhtml-system_config-edit .colorpicker_hue div {
     background-image: url("Cloudinary_Cloudinary::images/colorpicker_indic.gif");
 }
+
+#cldspinset-modal {
+    input[name="new_cldspinset"] {
+        max-width: 500px;
+    }
+
+    .cldspinset-preview-container {
+        .admin__field-control {
+            max-width: 500px;
+        }
+
+        #cldspinset-preview {
+            border: 1px solid #e3e3e3;
+            height: 0;
+            padding-bottom: 100%;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+
+            #cldspinset-preview-img {
+                transition: all 1s ease;
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                max-height: 90%;
+                max-width: 90%;
+
+                &.placeholder {
+                    transition: all 1s ease;
+                    filter: grayscale(100%);
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
+}

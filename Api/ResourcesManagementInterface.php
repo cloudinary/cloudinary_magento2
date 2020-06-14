@@ -18,4 +18,11 @@ interface ResourcesManagementInterface
      * @return string
      */
     public function getVideo();
+
+    /**
+     * GET for getSpinestFirstImage api
+     *
+     * @return string
+     */
+    public function getResourcesByTag();
 }

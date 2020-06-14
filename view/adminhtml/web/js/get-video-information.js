@@ -681,7 +681,7 @@ define(
                             data: {
                                 format: 'json'
                             },
-                            timeout: 5000,
+                            timeout: 10000,
                             success: $.proxy(_onVimeoLoaded, self),
 
                             /**

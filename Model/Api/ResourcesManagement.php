@@ -13,6 +13,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
 {
     private $initialized;
     private $id;
+    private $maxResults;
     protected $_resourceType = "image";
     protected $_resourceData = [];
 
@@ -68,8 +69,11 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         if (!$this->initialized) {
             $this->initialized = true;
-            if ($this->_request->getParam("id")) {
-                $this->setId($this->_request->getParam("id"));
+            if (($id = $this->_request->getParam("id"))) {
+                $this->setId($id);
+            }
+            if (($maxResults = $this->_request->getParam("max_results"))) {
+                $this->setMaxResults($maxResults);
             }
             if ($this->_configuration->isEnabled()) {
                 Cloudinary::config($this->_configurationBuilder->build());
@@ -90,6 +94,17 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
         return $this->id;
     }
 
+    public function setMaxResults($maxResults)
+    {
+        $this->maxResults = $maxResults;
+        return $this;
+    }
+
+    public function getMaxResults()
+    {
+        return $this->maxResults;
+    }
+
     /**
      * Get details of a single resource
      *
@@ -99,6 +114,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     protected function _getResourceData()
     {
         try {
+            $this->initialize();
             $this->_resourceData = $this->_api->resource(
                 $this->getId(),
                 [
@@ -126,7 +142,6 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
      */
     public function getImage()
     {
-        $this->initialize();
         $this->_resourceType = "image";
         return $this->_getResourceData();
     }
@@ -136,8 +151,37 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
      */
     public function getVideo()
     {
-        $this->initialize();
         $this->_resourceType = "video";
         return $this->_getResourceData();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResourcesByTag()
+    {
+        try {
+            $this->initialize();
+            $resources = $this->_api->resources_by_tag(
+                $this->getId(),
+                [
+                    "resource_type" => $this->_resourceType,
+                    "max_results" => (int) $this->maxResults || null
+                ]
+            )['resources'];
+            return $this->_jsonEncoder->encode(
+                [
+                "error" => 0,
+                "data" => $resources
+                ]
+            );
+        } catch (\Exception $e) {
+            return $this->_jsonEncoder->encode(
+                [
+                "error" => 1,
+                "message" => $e->getMessage()
+                ]
+            );
+        }
     }
 }

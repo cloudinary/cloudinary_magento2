@@ -5,6 +5,8 @@ var config = {
             newVideoDialog: 'Cloudinary_Cloudinary/js/new-video-dialog',
             'Magento_ProductVideo/js/get-video-information': 'Cloudinary_Cloudinary/js/get-video-information',
             cloudinaryMediaLibraryModal: 'Cloudinary_Cloudinary/js/cloudinary-media-library-modal',
+            cloudinarySpinsetModal: 'Cloudinary_Cloudinary/js/cloudinary-spinset-modal',
+            cldspinsetDialog: 'Cloudinary_Cloudinary/js/cloudinary-spinset-dialog',
             productGallery: 'Cloudinary_Cloudinary/js/product-gallery',
         }
     },
