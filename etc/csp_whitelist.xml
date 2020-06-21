@@ -8,6 +8,7 @@
                 <value id="cloudinary_api" type="host">api.cloudinary.com</value>
                 <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
                 <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
+                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
                 <value id="cloudinary_res" type="host">res.cloudinary.com</value>
                 <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
@@ -24,6 +25,7 @@
                 <value id="cloudinary_api" type="host">p.cloudinary.com</value>
                 <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
                 <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
+                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
                 <value id="cloudinary_res" type="host">res.cloudinary.com</value>
                 <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
@@ -40,6 +42,7 @@
                 <value id="cloudinary_api" type="host">p.cloudinary.com</value>
                 <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
                 <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
+                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
                 <value id="cloudinary_res" type="host">res.cloudinary.com</value>
                 <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
@@ -56,6 +59,7 @@
                 <value id="cloudinary_api" type="host">p.cloudinary.com</value>
                 <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
                 <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
+                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
                 <value id="cloudinary_res" type="host">res.cloudinary.com</value>
                 <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
@@ -71,6 +75,7 @@
                 <value id="cloudinary_api" type="host">p.cloudinary.com</value>
                 <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
                 <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
+                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
                 <value id="cloudinary_res" type="host">res.cloudinary.com</value>
                 <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
@@ -86,6 +91,7 @@
                 <value id="cloudinary_api" type="host">p.cloudinary.com</value>
                 <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
                 <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
+                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
                 <value id="cloudinary_res" type="host">res.cloudinary.com</value>
                 <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
                 <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>

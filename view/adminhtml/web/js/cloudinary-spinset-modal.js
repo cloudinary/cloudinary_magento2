@@ -69,7 +69,7 @@ define([
             var aggregatedErrorMessages = [];
             notification().add({
                 error: true,
-                message: $t("Couln't fetch preview for the given tag, please make sure it exists."),
+                message: $t("No spin set exists for the given tag. Ensure you have uploaded it to Cloudinary correctly, or try again with a different tag name."),
                 insertMethod: function(constructedMessage) {
                     aggregatedErrorMessages.push(constructedMessage);
                 }
