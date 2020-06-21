@@ -98,6 +98,7 @@
                 <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
                 <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
                 <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
+                <value id="data" type="host">data:</value>
             </values>
         </policy>
     </policies>
