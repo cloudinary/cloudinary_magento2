@@ -65,7 +65,9 @@ define([
             }
             this.loadedResource = null;
             $('.new-cldspinset-save-button').prop('disabled', true);
-            $('#cldspinset-preview-img').attr('src', $('#cldspinset-preview-img').attr('data-placeholder-src')).addClass('placeholder');
+            if ($('#cldspinset-preview-img').length) {
+                $('#cldspinset-preview-img').remove();
+            }
             var aggregatedErrorMessages = [];
             notification().add({
                 error: true,
@@ -97,7 +99,9 @@ define([
                 var spintetTag = $('#cldspinset-modal [name="new_cldspinset"]').val();
                 if (!spintetTag) {
                     $('.new-cldspinset-save-button').prop('disabled', true);
-                    $('#cldspinset-preview-img').attr('src', $('#cldspinset-preview-img').attr('data-placeholder-src')).addClass('placeholder');
+                    if ($('#cldspinset-preview-img').length) {
+                        $('#cldspinset-preview-img').remove();
+                    }
                     return;
                 } else {
                     try {
@@ -119,7 +123,7 @@ define([
                                     res.data[0].cldspinset = spintetTag;
                                     widget.loadedResource = res.data[0];
                                     $('.new-cldspinset-save-button').prop('disabled', false);
-                                    $('#cldspinset-preview-img').attr('src', res.data[0].secure_url).removeClass('placeholder');
+                                    $('<img id="cldspinset-preview-img" src="" alt="Cloudinary spinset preview image"/>').attr('src', res.data[0].secure_url).prependTo('#cldspinset-preview');
                                 }
                             },
 
@@ -188,7 +192,9 @@ define([
                     this.loadedResource = null;
                     $('.new-cldspinset-save-button').prop('disabled', true);
                     $('#cldspinset-modal [name="new_cldspinset"]').val('');
-                    $('#cldspinset-preview-img').attr('src', $('#cldspinset-preview-img').attr('data-placeholder-src')).addClass('placeholder');
+                    if ($('#cldspinset-preview-img').length) {
+                        $('#cldspinset-preview-img').remove();
+                    }
                 },
 
                 /**
@@ -198,7 +204,9 @@ define([
                     this.loadedResource = null;
                     $('.new-cldspinset-save-button').prop('disabled', true);
                     $('#cldspinset-modal [name="new_cldspinset"]').val('');
-                    $('#cldspinset-preview-img').attr('src', $('#cldspinset-preview-img').attr('data-placeholder-src')).addClass('placeholder');
+                    if ($('#cldspinset-preview-img').length) {
+                        $('#cldspinset-preview-img').remove();
+                    }
                 }
             });
             this.cldspinsetDialog.modal('openModal');

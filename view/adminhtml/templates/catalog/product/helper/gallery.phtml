@@ -23,22 +23,33 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
             <span><?= $block->escapeHtml(__('Add Video')) ?></span>
         </button>
         <?php if ($cloudinaryMLwidgetOprions): ?>
-            <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
-                title="<?= $block->escapeHtml(__('Add from Cloudinary')) ?>"
-                data-role="add-from-cloudinary-button"
-                type="button"
-                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
-                class="action-secondary add-from-cloudinary-button cloudinary-button-with-logo">
-                <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
-            </button>
-            <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
-                title="<?= $block->escapeHtml(__('Add Spinset from Cloudinary')) ?>"
-                data-role="add-cldspinset-button"
-                type="button"
-                data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
-                class="action-secondary cloudinary-button-with-logo">
-                <span><?= $block->escapeHtml(__('Add Spinset from Cloudinary')) ?></span>
-            </button>
+            <div id="gallery_top_cloudinary_buttons_container">
+                <div id="gallery_top_add_from_cloudinary_dd_button"
+                    title="<?= $block->escapeHtml(__('Add from Cloudinary')) ?>"
+                    data-role="add-from-cloudinary-dd-button"
+                    type="button"
+                    class="action-secondary add-from-cloudinary-dd-button cloudinary-button-with-logo">
+                    <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
+                    <div id="gallery_top_add_from_cloudinary_dd">
+                        <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                            title="<?= $block->escapeHtml(__('Add Image/Video')) ?>"
+                            data-role="add-from-cloudinary-button"
+                            type="button"
+                            data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                            class="action-secondary add-from-cloudinary-button">
+                            <span><?= $block->escapeHtml(__('Add Image/Video')) ?></span>
+                        </button>
+                        <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                            title="<?= $block->escapeHtml(__('Add Spinset')) ?>"
+                            data-role="add-cldspinset-button"
+                            type="button"
+                            data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                            class="action-secondary">
+                            <span><?= $block->escapeHtml(__('Add Spinset')) ?></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -160,7 +171,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                    value="<%- data.video_description %>"
                    data-form-part="<?= /* @escapeNotVerified */ $formName ?>"/>
 
-            <div class="product-image-wrapper">
+            <div class="product-image-wrapper <% if (data.cldspinset) { %>cldspinset-overlay<% } %>">
                 <img class="product-image"
                      data-role="image-element"
                      src="<%- data.url %>"
@@ -360,7 +371,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                         </label>
                         <div class="admin__field-control">
                             <div id="cldspinset-preview" class="cldspinset-preview" style="">
-                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_vertical_logo_for_white_bg.svg') ?>" alt="Cloudinary spinset preview image"  data-placeholder-src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_vertical_logo_for_white_bg.svg') ?>"/>
+                                <img id="cldspinset-preview-img-overlay" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview overlay" />
                             </div>
                         </div>
                     </div>
