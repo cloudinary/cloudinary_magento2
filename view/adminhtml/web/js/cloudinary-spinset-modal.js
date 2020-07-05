@@ -65,9 +65,7 @@ define([
             }
             this.loadedResource = null;
             $('.new-cldspinset-save-button').prop('disabled', true);
-            if ($('#cldspinset-preview-img').length) {
-                $('#cldspinset-preview-img').remove();
-            }
+            $('#cldspinset-preview-img').hide().attr('src', $('#cldspinset-preview-img').attr('data-placeholder')).addClass('placeholder').show();
             var aggregatedErrorMessages = [];
             notification().add({
                 error: true,
@@ -99,9 +97,7 @@ define([
                 var spintetTag = $('#cldspinset-modal [name="new_cldspinset"]').val();
                 if (!spintetTag) {
                     $('.new-cldspinset-save-button').prop('disabled', true);
-                    if ($('#cldspinset-preview-img').length) {
-                        $('#cldspinset-preview-img').remove();
-                    }
+                    $('#cldspinset-preview-img').hide().attr('src', $('#cldspinset-preview-img').attr('data-placeholder')).addClass('placeholder').show();
                     return;
                 } else {
                     try {
@@ -123,7 +119,7 @@ define([
                                     res.data[0].cldspinset = spintetTag;
                                     widget.loadedResource = res.data[0];
                                     $('.new-cldspinset-save-button').prop('disabled', false);
-                                    $('<img id="cldspinset-preview-img" src="" alt="Cloudinary spinset preview image"/>').attr('src', res.data[0].secure_url).prependTo('#cldspinset-preview');
+                                    $('#cldspinset-preview-img').hide().attr('src', res.data[0].secure_url).removeClass('placeholder').show();
                                 }
                             },
 
@@ -192,9 +188,7 @@ define([
                     this.loadedResource = null;
                     $('.new-cldspinset-save-button').prop('disabled', true);
                     $('#cldspinset-modal [name="new_cldspinset"]').val('');
-                    if ($('#cldspinset-preview-img').length) {
-                        $('#cldspinset-preview-img').remove();
-                    }
+                    $('#cldspinset-preview-img').hide().attr('src', $('#cldspinset-preview-img').attr('data-placeholder')).addClass('placeholder').show();
                 },
 
                 /**
@@ -204,9 +198,7 @@ define([
                     this.loadedResource = null;
                     $('.new-cldspinset-save-button').prop('disabled', true);
                     $('#cldspinset-modal [name="new_cldspinset"]').val('');
-                    if ($('#cldspinset-preview-img').length) {
-                        $('#cldspinset-preview-img').remove();
-                    }
+                    $('#cldspinset-preview-img').hide().attr('src', $('#cldspinset-preview-img').attr('data-placeholder')).addClass('placeholder').show();
                 }
             });
             this.cldspinsetDialog.modal('openModal');

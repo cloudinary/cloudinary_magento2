@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>spinset-indication</title>
+    <g id="Page-1-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Magento-Spinset-Indication" transform="translate(-1325.000000, -996.000000)">
+            <g id="spinset-indication" transform="translate(1325.000000, 996.000000)">
+                <path d="M100,0 L100,0 L100,0 L100,100 L0,100 C-6.76353751e-15,44.771525 44.771525,1.01453063e-14 100,0 Z" id="Rectangle" fill="#000000"></path>
+                <path d="M60,50 C48.96,50 40,54.48 40,60 C40,64.48 45.88,68.26 54,69.54 L54,76 L62,68 L54,60 L54,65.46 C47.7,64.34 44,61.66 44,60 C44,57.88 50.08,54 60,54 C69.92,54 76,57.88 76,60 C76,61.46 73.08,63.78 68,65.06 L68,69.16 C75.06,67.62 80,64.1 80,60 C80,54.48 71.04,50 60,50 Z" id="icon/maps/360_24px" fill="#FFFFFF" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>
