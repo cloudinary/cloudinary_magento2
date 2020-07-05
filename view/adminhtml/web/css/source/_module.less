@@ -90,9 +90,8 @@
             width: 100%;
             max-width: 500px;
 
-            #cldspinset-preview-img,
-            #cldspinset-preview-img-overlay {
-                transition: all 1s ease;
+            #cldspinset-preview-img {
+                transition: all 0.8s ease;
                 margin: 0;
                 position: absolute;
                 top: 50%;
@@ -100,12 +99,31 @@
                 transform: translate(-50%, -50%);
                 max-height: 90%;
                 max-width: 90%;
-            }
 
-            #cldspinset-preview-img-overlay {
-                opacity: 0.5;
-                max-height: 50%;
-                max-width: 50%;
+                + #cldspinset-indic {
+                    background-image: url("Cloudinary_Cloudinary::images/spinset_indic.svg");
+                    background-repeat: no-repeat;
+                    background-size: contain;
+                    background-position: center;
+                    display: block;
+                    content: "";
+                    z-index: 99;
+                    margin: 0;
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    height: 30px;
+                    width: 30px;
+                }
+
+                &.placeholder {
+                    max-height: 50%;
+                    max-width: 50%;
+
+                    + #cldspinset-indic {
+                        display: none;
+                    }
+                }
             }
         }
     }
@@ -113,23 +131,19 @@
 
 .product-image-wrapper.cldspinset-overlay {
     &:after {
-        background-image: url("Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg");
+        background-image: url("Cloudinary_Cloudinary::images/spinset_indic.svg");
         background-repeat: no-repeat;
         background-size: contain;
         background-position: center;
         display: block;
-        vertical-align: middle;
         content: "";
-        position: absolute;
         z-index: 99;
         margin: 0;
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        height: 62%;
-        width: 62%;
-        opacity: 0.8;
+        bottom: 0;
+        right: 0;
+        height: 22px;
+        width: 22px;
     }
 }
 
@@ -140,26 +154,40 @@
     #gallery_top_add_from_cloudinary_dd {
         display: none;
         position: absolute;
+        z-index: 9;
         top: 100%;
+        width: 105%;
         right: 0;
-        background: #bebdbc;
-        width: 102%;
-        border: 0.5px solid #514943;
-        border-top: 0;
-        margin-right: -2px;
+        margin-right: -5px;
+        background: transparent;
+        box-sizing: border-box;
+        padding: 3px;
 
-        > button.action-secondary {
-            background-color: #f1f1f1;
-            border-width: 0.5px;
+        #gallery_top_add_from_cloudinary_dd_inner {
+            display: block;
+            background: #bebdbc;
+            box-sizing: border-box;
             width: 100%;
-            border: 0.5px solid #514943;
-            border-top: 0;
-            text-shadow: none;
-            color: #514943;
+            border: 1px solid #007bdb;
+            border-radius: 1px;
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+            color: #41362f;
 
-            &:hover {
-                background-color: #dfdfde;
-                box-shadow: none;
+            > button.action-secondary {
+                background-color: #fff;
+                width: 100%;
+                border: none;
+                border-top: 0;
+                text-shadow: none;
+                color: #41362f;
+                font-weight: 400;
+                line-height: 1.36;
+                font-size: 1.4rem;
+
+                &:hover {
+                    background-color: #cacaca;
+                    box-shadow: none;
+                }
             }
         }
     }

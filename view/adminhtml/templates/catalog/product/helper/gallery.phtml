@@ -31,22 +31,24 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
                     class="action-secondary add-from-cloudinary-dd-button cloudinary-button-with-logo">
                     <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
                     <div id="gallery_top_add_from_cloudinary_dd">
-                        <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
-                            title="<?= $block->escapeHtml(__('Add Image/Video')) ?>"
-                            data-role="add-from-cloudinary-button"
-                            type="button"
-                            data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
-                            class="action-secondary add-from-cloudinary-button">
-                            <span><?= $block->escapeHtml(__('Add Image/Video')) ?></span>
-                        </button>
-                        <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
-                            title="<?= $block->escapeHtml(__('Add Spinset')) ?>"
-                            data-role="add-cldspinset-button"
-                            type="button"
-                            data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
-                            class="action-secondary">
-                            <span><?= $block->escapeHtml(__('Add Spinset')) ?></span>
-                        </button>
+                        <div id="gallery_top_add_from_cloudinary_dd_inner">
+                            <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                                title="<?= $block->escapeHtml(__('Add Image/Video')) ?>"
+                                data-role="add-from-cloudinary-button"
+                                type="button"
+                                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                                class="action-secondary add-from-cloudinary-button">
+                                <span><?= $block->escapeHtml(__('Add Image/Video')) ?></span>
+                            </button>
+                            <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
+                                title="<?= $block->escapeHtml(__('Add Spinset')) ?>"
+                                data-role="add-cldspinset-button"
+                                type="button"
+                                data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                                class="action-secondary">
+                                <span><?= $block->escapeHtml(__('Add Spinset')) ?></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -370,8 +372,9 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             <span><?= /* @escapeNotVerified */ __('Preview') ?></span>
                         </label>
                         <div class="admin__field-control">
-                            <div id="cldspinset-preview" class="cldspinset-preview" style="">
-                                <img id="cldspinset-preview-img-overlay" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview overlay" />
+                            <div id="cldspinset-preview" class="cldspinset-preview">
+                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
+                                <div id="cldspinset-indic"></div>
                             </div>
                         </div>
                     </div>
