@@ -100,7 +100,8 @@ class ProductGalleryApiQueue
                             $fullItemData["publicId"],
                             $fullItemData["roles"],
                             $fullItemData["label"],
-                            $fullItemData["disabled"]
+                            $fullItemData["disabled"],
+                            $fullItemData["cldspinset"]
                         );
                         $item->setSuccess(1);
                         $item->setSuccessAt(date('Y-m-d H:i:s'));
