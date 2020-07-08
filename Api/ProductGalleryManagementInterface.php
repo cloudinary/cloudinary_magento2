@@ -15,9 +15,10 @@ interface ProductGalleryManagementInterface
      * @param  string|null   $roles
      * @param  string|null   $label
      * @param  bool|int|null $disabled
+     * @param  string        $cldspinset
      * @return string
      */
-    public function addItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0);
+    public function addItem($url = null, $sku = null, $publicId = null, $roles = null, $label = null, $disabled = 0, $cldspinset = null);
 
     /**
      * Add multiple gallery items to one or more products from Cloudinary URLs.

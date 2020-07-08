@@ -4,6 +4,7 @@ namespace Cloudinary\Cloudinary\Model\Api;
 
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Cloudinary\Cloudinary\Model\MediaLibraryMap;
 use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Cloudinary\Cloudinary\Model\ProductGalleryApiQueueFactory;
@@ -15,9 +16,9 @@ use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\Http;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Image\AdapterFactory as ImageAdapterFactory;
@@ -152,7 +153,12 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * @var AppEmulation
      */
-    protected $_appEmulation;
+    private $appEmulation;
+
+    /**
+     * @var ResourceConnection
+     */
+    private $resourceConnection;
 
     /**
      * @method __construct
@@ -177,6 +183,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  MediaLibraryMapFactory        $mediaLibraryMapFactory
      * @param  ProductGalleryApiQueueFactory $productGalleryApiQueueFactory
      * @param  AppEmulation                  $appEmulation
+     * @param  ResourceConnection            $resourceConnection
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -199,7 +206,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         Processor $mediaGalleryProcessor,
         MediaLibraryMapFactory $mediaLibraryMapFactory,
         ProductGalleryApiQueueFactory $productGalleryApiQueueFactory,
-        AppEmulation $appEmulation
+        AppEmulation $appEmulation,
+        ResourceConnection $resourceConnection
     ) {
         $this->configuration = $configuration;
         $this->request = $request;
@@ -222,6 +230,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
         $this->productGalleryApiQueueFactory = $productGalleryApiQueueFactory;
         $this->appEmulation = $appEmulation;
+        $this->resourceConnection = $resourceConnection;
     }
 
     /**
@@ -247,12 +256,13 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                 try {
                     $url = (array)$url;
                     $this->processOrQueue(
-                        $url["url"],
+                        (isset($url["url"])) ? $url["url"] : null,
                         $sku,
                         (isset($url["publicId"])) ? $url["publicId"] : null,
                         (isset($url["roles"])) ? $url["roles"] : null,
                         (isset($url["label"])) ? $url["label"] : null,
-                        (isset($url["disabled"])) ? $url["disabled"] : null
+                        (isset($url["disabled"])) ? $url["disabled"] : null,
+                        (isset($url["cldspinset"])) ? $url["cldspinset"] : null
                     );
                     $result["passed"]++;
                 } catch (\Exception $e) {
@@ -276,7 +286,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * {@inheritdoc}
      */
-    public function addItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
+    public function addItem($url = null, $sku = null, $publicId = null, $roles = null, $label = null, $disabled = 0, $cldspinset = null)
     {
         return $this->addItems([[
             "url" => $url,
@@ -284,7 +294,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             "publicId" => $publicId,
             "roles" => $roles,
             "label" => $label,
-            "disabled" => $disabled
+            "disabled" => $disabled,
+            "cldspinset" => $cldspinset
         ]]);
     }
 
@@ -311,12 +322,12 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $result["items"][$i]["error"] = 0;
                     $result["items"][$i]["message"] = $this->configuration->isEnabledProductgalleryApiQueue() ? "The item was added to the queue." : "success";
                     $this->processOrQueue(
-                        $item["url"],
-                        $item["sku"],
-                        (isset($item["publicId"])) ? $item["publicId"] : null,
+                        (isset($item["url"])) ? $item["url"] : null,
+                        (isset($item["sku"])) ? $item["sku"] : null(isset($item["publicId"])) ? $item["publicId"] : null,
                         (isset($item["roles"])) ? $item["roles"] : null,
                         (isset($item["label"])) ? $item["label"] : null,
-                        (isset($item["disabled"])) ? $item["disabled"] : null
+                        (isset($item["disabled"])) ? $item["disabled"] : null,
+                        (isset($item["cldspinset"])) ? $item["cldspinset"] : null
                     );
                 } catch (\Exception $e) {
                     $result["errors"]++;
@@ -349,9 +360,20 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  string|null   $roles
      * @param  string|null   $label
      * @param  bool|int|null $disabled
+     * @param  string        $cldspinset
      */
-    public function processOrQueue($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
+    public function processOrQueue($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0, $cldspinset = null)
     {
+        if (!$url && !$cldspinset) {
+            throw new LocalizedException(
+                __("The `url` field is mandatory when not passing `cldspinset`.")
+            );
+        }
+        if (!$sku) {
+            throw new LocalizedException(
+                __("The `sku` field is mandatory.")
+            );
+        }
         if ($this->configuration->isEnabledProductgalleryApiQueue()) {
             $fullItemData = $this->jsonHelper->jsonEncode([
                 "url" => $url,
@@ -360,13 +382,14 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                 "roles" => $roles,
                 "label" => $label,
                 "disabled" => $disabled,
+                "cldspinset" => $cldspinset
             ]);
             return $this->productGalleryApiQueueFactory->create()
                 ->setSku($sku)
                 ->setFullItemData($fullItemData)
                 ->save();
         } else {
-            return $this->addGalleryItem($url, $sku, $publicId, $roles, $label, $disabled);
+            return $this->addGalleryItem($url, $sku, $publicId, $roles, $label, $disabled, $cldspinset);
         }
     }
     /**
@@ -377,14 +400,33 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  string|null   $roles
      * @param  string|null   $label
      * @param  bool|int|null $disabled
+     * @param  string        $cldspinset
      * @return $this
      */
-    public function addGalleryItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0)
+    public function addGalleryItem($url, $sku, $publicId = null, $roles = null, $label = null, $disabled = 0, $cldspinset = null)
     {
         try {
             $this->emulateAdminhtmlArea();
 
             $this->cldUniqid = $this->mapped = null;
+
+            if ($cldspinset) {
+                $imageData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($cldspinset)->setMaxResults(1)->getResourcesByTag());
+                if (!$imageData || $imageData["error"] || !$imageData["data"] || !$imageData["data"][0] || $imageData["data"][0]["resource_type"] !== "image") {
+                    throw new LocalizedException(
+                        __("No spin set exists for the given tag. Ensure you have uploaded it to Cloudinary correctly, or try again with a different tag name.")
+                    );
+                } else {
+                    $imageData["data"] = (array) $imageData["data"][0];
+                    $url = $url ?: $imageData["data"]["secure_url"];
+                }
+            }
+            if (!$url) {
+                throw new LocalizedException(
+                    __("The `url` field is mandatory.")
+                );
+            }
+
             $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($url, $publicId);
 
             if (!$this->parsedRemoteFileUrl["version"] && !$publicId) {
@@ -433,7 +475,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
 
             if ($this->parsedRemoteFileUrl["type"] === "image") {
                 if (!$label) {
-                    $imageData = (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getImage());
+                    $imageData = $imageData ?: (array) $this->jsonHelper->jsonDecode($this->cloudinaryResourcesManagement->setId($this->parsedRemoteFileUrl["publicId"])->getImage());
                     if (!$imageData["error"]) {
                         $imageData["context"] = new DataObject((isset($imageData["data"]["context"])) ? (array)$imageData["data"]["context"] : []);
                         $label = $imageData["context"]->getData('caption') ?: $imageData["context"]->getData('alt');
@@ -443,6 +485,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                 $galItem = array_merge($galItem, [
                     "disabled" => $disabled ? 1 : 0,
                     "label" => $label,
+                    "cldspinset" => $cldspinset,
                 ]);
             }
 
@@ -458,6 +501,14 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     ->setImageName($galItem["file"])
                     ->setFreeTransformation($this->parsedRemoteFileUrl['transformations_string'])
                     ->save();
+            }
+
+            if ($this->parsedRemoteFileUrl["type"] === "image" && $cldspinset) {
+                $this->resourceConnection->getConnection()
+                    ->insertOnDuplicate($this->resourceConnection->getTableName('cloudinary_product_spinset_map'), [
+                        'image_name' => $galItem['file'],
+                        'cldspinset' => $cldspinset
+                    ], ['image_name', 'cldspinset']);
             }
 
             if ($this->configuration->isEnabledLocalMapping()) {
