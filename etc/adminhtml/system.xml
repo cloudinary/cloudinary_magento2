@@ -84,7 +84,7 @@
             <group id="product_gallery" translate="label" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Product Gallery</label>
                 <attribute type="expanded">0</attribute>
-                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="pg_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable Cloudinary's Product Gallery</label>
                     <comment><![CDATA[Enable Cloudinary's Product Gallery for product detail pages (override Magento's default). Supports Images, Videos and Spinsets. See <a href="https://cloudinary.com/documentation/product_gallery" target="_blank" title="Product Gallery documentation">Product Gallery documentation</a> for information on the configuration options.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -93,6 +93,9 @@
                 <group id="themeProps" translate="label" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Theme Colors</label>
                     <attribute type="expanded">1</attribute>
+                    <depends>
+                        <field id="cloudinary/product_gallery/pg_enabled">1</field>
+                    </depends>
                     <field id="themeProps_primary" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                         <label>Primary</label>
                         <config_path>cloudinary/product_gallery/themeProps_primary</config_path>
@@ -121,6 +124,9 @@
                 <group id="main_viewer_parameters" translate="label" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Main Viewer Parameters</label>
                     <attribute type="expanded">1</attribute>
+                    <depends>
+                        <field id="cloudinary/product_gallery/pg_enabled">1</field>
+                    </depends>
                     <field id="transition" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                         <label>Fade Transition</label>
                         <config_path>cloudinary/product_gallery/transition</config_path>
@@ -170,6 +176,9 @@
                 <group id="carousel_parameters" translate="label" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Carousel Parameters</label>
                     <attribute type="expanded">1</attribute>
+                    <depends>
+                        <field id="cloudinary/product_gallery/pg_enabled">1</field>
+                    </depends>
                     <field id="carouselLocation" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                         <label>Carousel Location</label>
                         <config_path>cloudinary/product_gallery/carouselLocation</config_path>
@@ -257,6 +266,9 @@
                     </comment>
                     <config_path>cloudinary/product_gallery/custom_free_params</config_path>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\ProductGalleryCustomFreeParams</backend_model>
+                    <depends>
+                        <field id="cloudinary/product_gallery/pg_enabled">1</field>
+                    </depends>
                 </field>
             </group>
             <group id="lazyload" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
