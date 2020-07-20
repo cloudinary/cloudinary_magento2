@@ -17,6 +17,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\Validator\AllowedProtocols;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
+use Magento\PageBuilder\Controller\Adminhtml\ContentType\Image\Upload as PageBuilderContentTypeUpload;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Theme\Model\Design\Config\FileUploader\FileProcessor;
 
@@ -196,6 +197,9 @@ class RetrieveImage extends \Magento\Backend\App\Action
             case 'design_config_fileUploader':
                 $baseTmpMediaPath = 'tmp/' . FileProcessor::FILE_DIR;
                 break;
+            case 'pagebuilder_contenttype':
+                $baseTmpMediaPath = PageBuilderContentTypeUpload::UPLOAD_DIR;
+                break;
             case 'category_image':
                 $baseTmpMediaPath = 'catalog/tmp/category';
                 break;
@@ -213,6 +217,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
     {
         $localFileName = Uploader::getCorrectFileName(basename($remoteFileUrl));
         switch ($this->getRequest()->getParam('type')) {
+            case 'pagebuilder_contenttype':
             case 'design_config_fileUploader':
             case 'category_image':
                 $localTmpFileName = DIRECTORY_SEPARATOR . $localFileName;
