@@ -49,6 +49,8 @@ class Media
                 $type = 'design_config_fileUploader';
             } elseif (strpos($uploaderConfigUrl, '/category_image/') !== false) {
                 $type = 'category_image';
+            } elseif (strpos($uploaderConfigUrl, '/pagebuilder/contenttype/') !== false) {
+                $type = 'pagebuilder_contenttype';
             } else {
                 $type = null;
             }
