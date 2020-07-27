@@ -8,6 +8,7 @@
                 <item name="cloudinary_upload_images" xsi:type="object">Cloudinary\Cloudinary\Command\UploadImages</item>
                 <item name="cloudinary_upload_stop" xsi:type="object">Cloudinary\Cloudinary\Command\StopMigration</item>
                 <item name="cloudinary_reset" xsi:type="object">Cloudinary\Cloudinary\Command\ResetAll</item>
+                <item name="cloudinary_product_gallery_api_queue" xsi:type="object">Cloudinary\Cloudinary\Command\ProductGalleryApiQueueProcess</item>
             </argument>
         </arguments>
     </type>
@@ -94,4 +95,17 @@
         <plugin name="cloudinary_plugin_block_cms_block_widget_block" type="Cloudinary\Cloudinary\Plugin\Cms\Block\Widget\Block"/>
     </type>
 
+    <type name="Cloudinary\Cloudinary\Model\Logger\CloudinaryHandler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Cloudinary\Cloudinary\Model\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">cloudinaryLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Cloudinary\Cloudinary\Model\Logger\CloudinaryHandler</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

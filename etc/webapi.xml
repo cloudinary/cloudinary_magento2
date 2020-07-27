@@ -19,6 +19,15 @@
 	</route>
 	<!--/ cloudinary/resources/video -->
 
+	<!-- cloudinary/resources/video -->
+	<route method="GET" url="/V1/cloudinary/resources/tag">
+		<service class="Cloudinary\Cloudinary\Api\ResourcesManagementInterface" method="getResourcesByTag"/>
+		<resources>
+			<resource ref="anonymous"/>
+		</resources>
+	</route>
+	<!--/ cloudinary/resources/video -->
+
 	<!-- cloudinary/productGallery/addItem [DEPRECATED, please use: cloudinary/products/:sku/media instead]-->
 	<!-- [!] DEPRECATED, please use: cloudinary/products/:sku/media instead -->
 	<route method="POST" url="/V1/cloudinary/productGallery/addItem">

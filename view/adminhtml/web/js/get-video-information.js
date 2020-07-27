@@ -681,7 +681,7 @@ define(
                             data: {
                                 format: 'json'
                             },
-                            timeout: 5000,
+                            timeout: 10000,
                             success: $.proxy(_onVimeoLoaded, self),
 
                             /**
@@ -829,7 +829,7 @@ define(
                         }
                     } else if (href.host.match(/cloudinary\.com/)) {
                         type = 'cloudinary';
-                        id = href.href.replace(new RegExp('^.*\/video\/(upload\/)?((.*\/)?v[0-9]{1,10}\/)?'), '').replace(new RegExp('\.[^.]+$'), '');
+                        id = href.href.replace(new RegExp('^.*\/video\/(upload\/)?((.*\/)?v[0-9]{1,10}\/)?'), '').replace(/\.[^.\/]+$/, '');
                     }
 
                     if ((!id || !type) && forceVideo) {

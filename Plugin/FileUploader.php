@@ -93,7 +93,7 @@ class FileUploader
      */
     protected function mediaRelativePath($filepath)
     {
-        $mediaPath = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR;
-        return (strpos($filepath, $mediaPath) === 0) ? str_replace($mediaPath, '', $filepath) : $filepath;
+        $pubPath = $this->directoryList->getPath(DirectoryList::PUB) . DIRECTORY_SEPARATOR;
+        return (strpos($filepath, $pubPath) === 0) ? str_replace($pubPath, '', $filepath) : $filepath;
     }
 }
