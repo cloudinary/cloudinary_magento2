@@ -4,5 +4,8 @@
 		<job name="cloudinary_cloudinary_process_video_data_import" instance="Cloudinary\Cloudinary\Cron\VideoDataImport" method="execute">
             <schedule>* * * * *</schedule>
         </job>
+		<job name="cloudinary_cloudinary_product_gallery_api_queue" instance="Cloudinary\Cloudinary\Cron\ProductGalleryApiQueue" method="execute">
+            <schedule>* * * * *</schedule>
+        </job>
 	</group>
 </config>
