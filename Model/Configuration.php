@@ -15,6 +15,7 @@ use Cloudinary\Cloudinary\Core\Image\Transformation\Gravity;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Quality;
 use Cloudinary\Cloudinary\Core\Security\CloudinaryEnvironmentVariable;
 use Cloudinary\Cloudinary\Core\UploadConfig;
+use Cloudinary\Cloudinary\Model\Logger as CloudinaryLogger;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -56,6 +57,9 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_USE_SIGNED_URLS = 'cloudinary/advanced/use_signed_urls';
     const CONFIG_PATH_ENABLE_LOCAL_MAPPING = 'cloudinary/advanced/enable_local_mapping';
     const CONFIG_PATH_SCHEDULED_VIDEO_DATA_IMPORT_LIMIT = 'cloudinary/advanced/cloudinary_scheduled_video_data_import_limit';
+    const CONFIG_PATH_PG_API_QUEUE_ENABLED = 'cloudinary/advanced/product_gallery_api_queue_enabled';
+    const CONFIG_PATH_PG_API_QUEUE_LIMIT = 'cloudinary/advanced/product_gallery_api_queue_limit';
+    const CONFIG_PATH_PG_API_QUEUE_MAX_TRYOUTS = 'cloudinary/advanced/product_gallery_api_queue_max_tryouts';
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -145,6 +149,11 @@ class Configuration implements ConfigurationInterface
     private $productMetadata;
 
     /**
+     * @var CloudinaryLogger
+     */
+    private $cloudinaryLogger;
+
+    /**
      * @method __construct
      * @param  ScopeConfigInterface             $configReader
      * @param  WriterInterface                  $configWriter
@@ -154,6 +163,7 @@ class Configuration implements ConfigurationInterface
      * @param  StoreManagerInterface            $storeManager
      * @param  ModuleListInterface              $moduleList
      * @param  ProductMetadataInterface         $productMetadata
+     * @param  CloudinaryLogger                 $cloudinaryLogger
      */
     public function __construct(
         ScopeConfigInterface $configReader,
@@ -163,7 +173,8 @@ class Configuration implements ConfigurationInterface
         LoggerInterface $logger,
         StoreManagerInterface $storeManager,
         ModuleListInterface $moduleList,
-        ProductMetadataInterface $productMetadata
+        ProductMetadataInterface $productMetadata,
+        CloudinaryLogger $cloudinaryLogger
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
@@ -173,6 +184,7 @@ class Configuration implements ConfigurationInterface
         $this->storeManager = $storeManager;
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
+        $this->cloudinaryLogger = $cloudinaryLogger;
     }
 
     /**
@@ -462,6 +474,41 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isEnabledProductgalleryApiQueue()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_PG_API_QUEUE_ENABLED);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getProductgalleryApiQueueLimit()
+    {
+        $return = (int) $this->configReader->getValue(self::CONFIG_PATH_PG_API_QUEUE_LIMIT);
+        if ($return < 0) {
+            return 0;
+        }
+        return $return;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getProductgalleryApiQueueMaxTryouts()
+    {
+        $return = (int) $this->configReader->getValue(self::CONFIG_PATH_PG_API_QUEUE_MAX_TRYOUTS);
+        if ($return > 20) {
+            return 20;
+        }
+        if ($return < 1) {
+            return 5;
+        }
+        return $return;
+    }
+
+    /**
      * @method getMediaBaseUrl
      * @return string
      */
@@ -560,7 +607,7 @@ class Configuration implements ConfigurationInterface
         if ($parsed["type"] === "video") {
             $parsed["thumbnail_url"] = preg_replace('/\.[^.]+$/', '', $url);
             $parsed["thumbnail_url"] = preg_replace('/\/v[0-9]{1,10}\//', '/', $parsed["thumbnail_url"]);
-            $parsed["thumbnail_url"] = preg_replace('/\/(' . $parsed["publicId"] . ')$/', '/so_auto/$1.jpg', $parsed["thumbnail_url"]);
+            $parsed["thumbnail_url"] = preg_replace('/\/(' . \preg_quote($parsed["publicId"], '/') . ')$/', '/so_auto/$1.jpg', $parsed["thumbnail_url"]);
         }
 
         return $parsed;
@@ -603,5 +650,18 @@ class Configuration implements ConfigurationInterface
     {
         $uniqid = $uniqid ? $uniqid : $this->generateCLDuniqid();
         return dirname($filename) . '/' . $uniqid . basename($filename);
+    }
+
+    /**
+    * Log to var/log/cloudinary_cloudinary.log
+    * @method log
+    * @param  mixed  $message
+    * @param  array  $data
+    * @return $this
+    */
+    public function log($message, $data = [], $prefix = '[Cloudinary Log] ')
+    {
+        $this->cloudinaryLogger->info($prefix . json_encode($message), $data);
+        return $this;
     }
 }

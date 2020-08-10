@@ -4,6 +4,7 @@ namespace Cloudinary\Cloudinary\Model\Observer;
 
 use Cloudinary\Cloudinary\Helper\Product\Free as Helper;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
@@ -20,13 +21,24 @@ class SaveProductTransform implements ObserverInterface
     private $transformationFactory;
 
     /**
-     * @param Helper                $helper
-     * @param TransformationFactory $transformationFactory
+     * @var ResourceConnection
      */
-    public function __construct(Helper $helper, TransformationFactory $transformationFactory)
-    {
+    private $resourceConnection;
+
+    /**
+     * @method __construct
+     * @param  Helper                $helper
+     * @param  TransformationFactory $transformationFactor
+     * @param  ResourceConnection    $resourceConnection
+     */
+    public function __construct(
+        Helper $helper,
+        TransformationFactory $transformationFactory,
+        ResourceConnection $resourceConnection
+    ) {
         $this->helper = $helper;
         $this->transformationFactory = $transformationFactory;
+        $this->resourceConnection = $resourceConnection;
     }
 
     /**
@@ -42,6 +54,15 @@ class SaveProductTransform implements ObserverInterface
             $product->getCloudinaryFreeTransformChanges()
         );
 
+        foreach ($mediaGalleryImages as $gallItemId => $gallItem) {
+            if (isset($gallItem['cldspinset']) && $gallItem['media_type'] === 'image') {
+                $this->resourceConnection->getConnection()
+                    ->insertOnDuplicate($this->resourceConnection->getTableName('cloudinary_product_spinset_map'), [
+                        'image_name' => $gallItem['file'],
+                        'cldspinset' => $gallItem['cldspinset']
+                    ], ['image_name', 'cldspinset']);
+            }
+        }
         foreach ($changedTransforms as $id => $transform) {
             $this->storeFreeTransformation($this->helper->getImageNameForId($id, $mediaGalleryImages), $transform);
         }
