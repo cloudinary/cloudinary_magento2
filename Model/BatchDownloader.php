@@ -12,7 +12,7 @@ use Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\File\Uploader;
+use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Validator\AllowedProtocols;

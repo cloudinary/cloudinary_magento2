@@ -4,6 +4,8 @@ namespace Cloudinary\Cloudinary\Plugin\Catalog\Block\Product\View;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
+use Cloudinary\Cloudinary\Model\ProductSpinsetMapFactory;
+use Magento\Framework\DataObject;
 use Magento\Framework\Json\EncoderInterface;
 
 class Gallery
@@ -22,6 +24,11 @@ class Gallery
      * @var ConfigurationInterface
      */
     private $configuration;
+
+    /**
+     * @var ProductSpinsetMapFactory
+     */
+    protected $productSpinsetMapFactory;
 
     /**
      * @var \Magento\Catalog\Block\Product\View\Gallery
@@ -46,11 +53,13 @@ class Gallery
     public function __construct(
         ProductGalleryHelper $productGalleryHelper,
         EncoderInterface $jsonEncoder,
-        ConfigurationInterface $configuration
+        ConfigurationInterface $configuration,
+        ProductSpinsetMapFactory $productSpinsetMapFactory
     ) {
         $this->productGalleryHelper = $productGalleryHelper;
         $this->jsonEncoder = $jsonEncoder;
         $this->configuration = $configuration;
+        $this->productSpinsetMapFactory = $productSpinsetMapFactory;
     }
 
     /**
@@ -84,6 +93,43 @@ class Gallery
     }
 
     /**
+     * Retrieve product images in JSON format
+     *
+     * @return string
+     */
+    protected function getGalleryImagesJson()
+    {
+        $imagesItems = [];
+        /** @var DataObject $image */
+        foreach ($this->productGalleryBlock->getGalleryImages() as $image) {
+            $imageItem = new DataObject(
+                [
+                    'file' => $image->getData('file'),
+                    'thumb' => $image->getData('small_image_url'),
+                    'img' => $image->getData('medium_image_url'),
+                    'full' => $image->getData('large_image_url'),
+                    'caption' => ($image->getLabel() ?: $this->productGalleryBlock->getProduct()->getName()),
+                    'position' => $image->getData('position'),
+                    'isMain'   => $this->productGalleryBlock->isMainImage($image),
+                    'type' => str_replace('external-', '', $image->getMediaType()),
+                    'videoUrl' => $image->getVideoUrl(),
+                ]
+            );
+            foreach ($this->productGalleryBlock->getGalleryImagesConfig()->getItems() as $imageConfig) {
+                $imageItem->setData(
+                    $imageConfig->getData('json_object_key'),
+                    $image->getData($imageConfig->getData('data_object_key'))
+                );
+            }
+            $imagesItems[] = $imageItem->toArray();
+        }
+        if (empty($imagesItems)) {
+            return $this->productGalleryBlock->getGalleryImagesJson();
+        }
+        return $this->jsonEncoder->encode($imagesItems);
+    }
+
+    /**
      * @method getCloudinaryPGOptions
      * @param bool $refresh Refresh options
      * @param bool $ignoreDisabled Get te options even if the module or the product gallery are disabled
@@ -94,7 +140,7 @@ class Gallery
         if (is_null($this->cloudinaryPGoptions) || $refresh) {
             $this->cloudinaryPGoptions = $this->productGalleryHelper->getCloudinaryPGOptions($refresh, $ignoreDisabled);
             $this->cloudinaryPGoptions['container'] = '#' . $this->getCldPGid();
-            $galleryAssets = (array) json_decode($this->productGalleryBlock->getGalleryImagesJson(), true);
+            $galleryAssets = (array) json_decode($this->getGalleryImagesJson(), true);
             if (count($galleryAssets)>1) {
                 usort($galleryAssets, function ($a, $b) {
                     return $a['position'] - $b['position'];
@@ -107,13 +153,23 @@ class Gallery
             foreach ($galleryAssets as $key => $value) {
                 $publicId = $url = $transformation = null;
                 if ($value['type'] === 'image') {
+                    //Check if image is a spinset:
+                    $cldspinset = $this->productSpinsetMapFactory->create()->getCollection()->addFieldToFilter("image_name", $value['file'])->setPageSize(1)->getFirstItem();
+                    if ($cldspinset && ($cldspinset = $cldspinset->getCldspinset())) {
+                        $this->cloudinaryPGoptions['mediaAssets'][] = (object)[
+                            "tag" => $cldspinset,
+                            "mediaType" => 'spin'
+                        ];
+                        continue;
+                    }
+                    //==================================//
                     $url = $value['full'] ?: $value['img'];
                 } elseif ($value['type'] === 'video') {
                     $url = $value['videoUrl'];
                 }
-                if (\strpos($url, '.cloudinary.com/') !== false && strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false) {
+                if (\strpos($url, '.cloudinary.com/') !== false && (strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false || strpos($url, '://' . $this->productGalleryHelper->getCloudName()) !== false)) {
                     $parsed = $this->configuration->parseCloudinaryUrl($url);
-                    $publicId = $parsed['publicId'] . '.' . $parsed['extension'];
+                    $publicId = ($value['type'] === 'image') ? $parsed['publicId'] . '.' . $parsed['extension'] : $parsed['publicId'];
                     $transformation = \str_replace('/', ',', $parsed['transformations_string']);
                 }
                 if ($publicId) {
