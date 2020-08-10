@@ -28,7 +28,7 @@ define([
 
         initialize: function(options) {
             var widget = this;
-            options = widget.mergeOptions(widget.options, options);
+            options = $.extend({}, widget.options, options || {});
             if ($(".cloudinary-lazyload").length) {
                 try {
                     $(".cloudinary-lazyload").lazyload(widget.options);
@@ -45,24 +45,6 @@ define([
                 }
             }
 
-        },
-
-        /**
-         * @param obj1
-         * @param obj2
-         * @returns object
-         */
-        mergeOptions: function(o1, o2) {
-            var o1 = o1 || {};
-            var o2 = o2 || {};
-            var o3 = {};
-            for (var attr in o1) {
-                o3[attr] = o1[attr];
-            }
-            for (var attr in o2) {
-                o3[attr] = o2[attr];
-            }
-            return o3;
         }
 
     });
