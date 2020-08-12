@@ -618,7 +618,7 @@ class Configuration implements ConfigurationInterface
      *
      * @return array
      */
-    public function mbParseUrl($url, $component=-1)
+    public function mbParseUrl($url, $component = -1)
     {
         $enc_url = preg_replace_callback(
             '%[^:/@?&=#]+%usD',
@@ -653,12 +653,12 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-    * Log to var/log/cloudinary_cloudinary.log
-    * @method log
-    * @param  mixed  $message
-    * @param  array  $data
-    * @return $this
-    */
+     * Log to var/log/cloudinary_cloudinary.log
+     * @method log
+     * @param  mixed  $message
+     * @param  array  $data
+     * @return $this
+     */
     public function log($message, $data = [], $prefix = '[Cloudinary Log] ')
     {
         $this->cloudinaryLogger->info($prefix . json_encode($message), $data);
