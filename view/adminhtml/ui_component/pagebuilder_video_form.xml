@@ -14,7 +14,7 @@
                 </validation>
                 <dataType>text</dataType>
                 <label translate="true">Video URL</label>
-                <notice translate="true">YouTube, Vimeo and Cloudiary are supported</notice>
+                <notice translate="true">YouTube, Vimeo and Cloudinary are supported</notice>
             </settings>
         </field>
     </fieldset>
