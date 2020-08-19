@@ -139,9 +139,10 @@ class ImageFactory
         }
 
         if ($this->configuration->isEnabledLazyload()) {
+            $useOldImageTheme = is_string($imageBlock->getCustomAttributes()) ? 'old_' : '';
             $imageBlock->setTemplate(
                 \preg_match('/\/image_with_borders.phtml$/', $imageBlock->getTemplate()) ?
-                    'Cloudinary_Cloudinary::product/image_with_borders.phtml' : 'Cloudinary_Cloudinary::product/image.phtml'
+                    'Cloudinary_Cloudinary::product/' . $useOldImageTheme . 'image_with_borders.phtml' : 'Cloudinary_Cloudinary::' . $useOldImageTheme . 'product/image.phtml'
             );
             $imageBlock->setLazyloadPlaceholder(Configuration::LAZYLOAD_DATA_PLACEHOLDER);
         }
