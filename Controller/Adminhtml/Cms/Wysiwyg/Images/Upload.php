@@ -118,6 +118,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         Registry $coreRegistry,
         JsonFactory $resultJsonFactory,
         DirectoryResolver $directoryResolver = null,
+        DirectoryList $directoryList,
         Config $mediaConfig,
         Filesystem $fileSystem,
         AdapterFactory $imageAdapterFactory,
