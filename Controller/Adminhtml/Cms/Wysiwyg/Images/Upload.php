@@ -8,6 +8,7 @@ use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Model\Product\Media\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Filesystem\DirectoryResolver;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filesystem;
@@ -100,7 +101,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      * @param  Context                $context
      * @param  Registry               $coreRegistry
      * @param  JsonFactory            $resultJsonFactory
-     * @param  \Magento\Framework\App\Filesystem\DirectoryResolver|null $directoryResolver
+     * @param  DirectoryResolver|null $directoryResolver
      * @param  DirectoryList          $directoryList
      * @param  Config                 $mediaConfig
      * @param  Filesystem             $fileSystem
@@ -116,8 +117,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         Context $context,
         Registry $coreRegistry,
         JsonFactory $resultJsonFactory,
-        $directoryResolver = null,
-        DirectoryList $directoryList,
+        DirectoryResolver $directoryResolver = null,
         Config $mediaConfig,
         Filesystem $fileSystem,
         AdapterFactory $imageAdapterFactory,
@@ -128,10 +128,6 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         ConfigurationInterface $configuration,
         MediaLibraryMapFactory $mediaLibraryMapFactory
     ) {
-        if ($directoryResolver === null && class_exists('\Magento\Framework\App\Filesystem\DirectoryResolver')) {
-            $directoryResolver = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\App\Filesystem\DirectoryResolver::class);
-        }
         parent::__construct($context, $coreRegistry, $resultJsonFactory, $directoryResolver);
         $this->directoryList = $directoryList;
         $this->mediaConfig = $mediaConfig;
