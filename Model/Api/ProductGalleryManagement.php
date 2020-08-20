@@ -323,7 +323,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $result["items"][$i]["message"] = $this->configuration->isEnabledProductgalleryApiQueue() ? "The item was added to the queue." : "success";
                     $this->processOrQueue(
                         (isset($item["url"])) ? $item["url"] : null,
-                        (isset($item["sku"])) ? $item["sku"] : null(isset($item["publicId"])) ? $item["publicId"] : null,
+                        (isset($item["sku"])) ? $item["sku"] : null,
+                        (isset($item["publicId"])) ? $item["publicId"] : null,
                         (isset($item["roles"])) ? $item["roles"] : null,
                         (isset($item["label"])) ? $item["label"] : null,
                         (isset($item["disabled"])) ? $item["disabled"] : null,
