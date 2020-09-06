@@ -199,7 +199,7 @@ class MediaGalleryProcessor
         array $mediaGalleryData,
         array $newMediaValues,
         array $valueToProductId
-        ) {
+    ) {
         $multiInsertData = [];
         $multiInsertDataVideos = [];
         $dataForSkinnyTable = [];
