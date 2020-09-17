@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BatchUploader
 {
-    const ERROR_MIGRATION_ALREADY_RUNNING = 'Cannot start upload - a migration is in progress or was interrupted. If you are sure a migration is not running elsewhere run the cloudinary:upload:stop command before attempting another upload.';
+    const ERROR_MIGRATION_ALREADY_RUNNING = 'Cannot start upload - a migration is in progress or was interrupted. If you are sure a migration is not running elsewhere run the cloudinary:migration:stop command before attempting another upload.';
     const ERROR_AUTO_UPLOAD1 = 'Manual migration is not required when auto upload mapping is enabled.';
     const ERROR_AUTO_UPLOAD2 = 'Please disable auto upload mapping and refresh the configuration cache ' .
                                'if you wish to perform a manual migration.';
