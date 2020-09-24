@@ -3,7 +3,6 @@
   <module name="Cloudinary_Cloudinary" setup_version="1.14.1">
       <sequence>
           <module name="Magento_ProductVideo"/>
-          <module name="Magento_PageBuilder"/>
       </sequence>
   </module>
 </config>
