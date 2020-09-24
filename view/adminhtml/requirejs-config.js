@@ -7,19 +7,12 @@ var config = {
             cloudinaryMediaLibraryModal: 'Cloudinary_Cloudinary/js/cloudinary-media-library-modal',
             cloudinarySpinsetModal: 'Cloudinary_Cloudinary/js/cloudinary-spinset-modal',
             cldspinsetDialog: 'Cloudinary_Cloudinary/js/cloudinary-spinset-dialog',
-            productGallery: 'Cloudinary_Cloudinary/js/product-gallery',
-            cloudinaryLazyload: 'Cloudinary_Cloudinary/js/cloudinary-lazyload'
+            productGallery: 'Cloudinary_Cloudinary/js/product-gallery'
         }
     },
     paths: {
-        'jquery.lazyload': "Cloudinary_Cloudinary/js/jquery.lazyload.min",
         cloudinaryMediaLibraryAll: "//media-library.cloudinary.com/global/all",
         es6Promise: "//cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min"
-    },
-    shim: {
-        'jquery.lazyload': {
-            deps: ['jquery']
-        },
     },
     config: {
         mixins: {

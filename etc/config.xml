@@ -11,13 +11,6 @@
             <configuration>
                 <cloudinary_cdn_subdomain>1</cloudinary_cdn_subdomain>
             </configuration>
-            <lazyload>
-                <enabled>1</enabled>
-                <auto_replace_cms_blocks>0</auto_replace_cms_blocks>
-                <threshold>500</threshold>
-                <effect>fadeIn</effect>
-                <placeholder>blur</placeholder>
-            </lazyload>
             <advanced>
                 <remove_version_number>0</remove_version_number>
                 <use_root_path>0</use_root_path>
