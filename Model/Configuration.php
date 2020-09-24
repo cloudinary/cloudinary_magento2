@@ -43,14 +43,6 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_DEFAULT_FETCH_FORMAT = 'cloudinary/transformations/cloudinary_fetch_format';
     const CONFIG_PATH_GLOBAL_FREEFORM = 'cloudinary/transformations/cloudinary_free_transform_global';
 
-    //= Lazyload
-    const XML_PATH_LAZYLOAD_ENABLED = 'cloudinary/lazyload/enabled';
-    const XML_PATH_LAZYLOAD_AUTO_REPLACE_CMS_BLOCKS = 'cloudinary/lazyload/auto_replace_cms_blocks';
-    const XML_PATH_LAZYLOAD_IGNORED_CMS_BLOCKS = 'cloudinary/lazyload/ignored_cms_blocks';
-    const XML_PATH_LAZYLOAD_THRESHOLD = 'cloudinary/lazyload/threshold';
-    const XML_PATH_LAZYLOAD_EFFECT = 'cloudinary/lazyload/effect';
-    const XML_PATH_LAZYLOAD_PLACEHOLDER = 'cloudinary/lazyload/placeholder';
-
     //= Advanced
     const CONFIG_PATH_REMOVE_VERSION_NUMBER = 'cloudinary/advanced/remove_version_number';
     const CONFIG_PATH_USE_ROOT_PATH = 'cloudinary/advanced/use_root_path';
@@ -100,8 +92,6 @@ class Configuration implements ConfigurationInterface
     const SCOPE_ID_ONE = 1;
     const SCOPE_ID_ZERO = 0;
     const CLD_UNIQID_PREFIX = 'cld_';
-
-    const LAZYLOAD_DATA_PLACEHOLDER = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC';
 
     /**
      * @var ScopeConfigInterface
@@ -373,64 +363,6 @@ class Configuration implements ConfigurationInterface
     public function getProductGalleryAll()
     {
         return (array) $this->configReader->getValue(self::CONFIG_PATH_PG_ALL);
-    }
-
-    public function isEnabledLazyload()
-    {
-        return (bool) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_ENABLED);
-    }
-
-    public function isLazyloadAutoReplaceCmsBlocks()
-    {
-        return (bool) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_AUTO_REPLACE_CMS_BLOCKS);
-    }
-
-    public function getLazyloadIgnoredCmsBlocksArray()
-    {
-        return (array) explode(',', $this->configReader->getValue(self::XML_PATH_LAZYLOAD_IGNORED_CMS_BLOCKS));
-    }
-
-    public function getLazyloadThreshold()
-    {
-        return (int) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_THRESHOLD);
-    }
-
-    public function getLazyloadEffect()
-    {
-        return (string) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_EFFECT);
-    }
-
-    public function getLazyloadPlaceholder()
-    {
-        return (string) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_PLACEHOLDER);
-    }
-
-    /**
-     * @return Freeform
-     */
-    public function getLazyloadPlaceholderFreeform($placeholderType = null)
-    {
-        $placeholderType = $placeholderType ?: $this->getLazyloadPlaceholder();
-        switch ($placeholderType) {
-            case 'pixelate':
-                $freeTransform = 'q_1,e_pixelate';
-                break;
-
-            case 'predominant-color':
-                $freeTransform = '$currWidth_w,$currHeight_h/w_iw_div_2,ar_1,c_pad,b_auto/c_crop,w_10,h_10,g_north_east/w_$currWidth,h_$currHeight,c_fill/q_1';
-                break;
-
-            case 'vectorize':
-                $freeTransform = 'q_1,e_vectorize:3:0.1';
-                break;
-
-            case 'blur':
-            default:
-                $freeTransform = 'q_1,e_blur:2000';
-                break;
-        }
-        return Freeform::fromString($freeTransform);
-        //return Transformation::builder()->withFreeform(Freeform::fromString($freeTransform));
     }
 
     /**

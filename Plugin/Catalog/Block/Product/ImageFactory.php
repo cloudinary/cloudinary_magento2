@@ -138,15 +138,6 @@ class ImageFactory
             return $imageBlock;
         }
 
-        if ($this->configuration->isEnabledLazyload()) {
-            $useOldImageTheme = is_string($imageBlock->getCustomAttributes()) ? 'old_' : '';
-            $imageBlock->setTemplate(
-                \preg_match('/\/image_with_borders.phtml$/', $imageBlock->getTemplate()) ?
-                    'Cloudinary_Cloudinary::product/' . $useOldImageTheme . 'image_with_borders.phtml' : 'Cloudinary_Cloudinary::' . $useOldImageTheme . 'product/image.phtml'
-            );
-            $imageBlock->setLazyloadPlaceholder(Configuration::LAZYLOAD_DATA_PLACEHOLDER);
-        }
-
         //Skip on Magento versions prior to 2.3
         if (is_array($product) || !class_exists('\Magento\Catalog\Model\Product\Image\ParamsBuilder')) {
             return $imageBlock;
@@ -183,14 +174,6 @@ class ImageFactory
                 );
                 $imageBlock->setOriginalImageUrl($imageBlock->setImageUrl());
                 $imageBlock->setImageUrl($generatedImageUrl);
-
-                if ($this->configuration->isEnabledLazyload()) {
-                    $generatedImageUrl = $this->urlGenerator->generateFor(
-                        $image,
-                        $transformations->withFreeform($this->configuration->getLazyloadPlaceholderFreeform())
-                    );
-                    $imageBlock->setLazyloadPlaceholder($generatedImageUrl);
-                }
             }
         } catch (\Exception $e) {
             $imageBlock = $proceed($product, $imageId, $attributes);

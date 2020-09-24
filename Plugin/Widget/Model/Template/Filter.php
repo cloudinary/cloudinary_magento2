@@ -93,10 +93,6 @@ class Filter
 
         $generated = $this->_urlGenerator->generateFor($image);
 
-        if ($this->_configuration->isEnabledLazyload() && $this->_configuration->isLazyloadAutoReplaceCmsBlocks()) {
-            $this->_coreRegistry->register('cloudinary_generated_' . hash('sha256', $generated), $image, true);
-        }
-
         return $generated;
     }
 }
