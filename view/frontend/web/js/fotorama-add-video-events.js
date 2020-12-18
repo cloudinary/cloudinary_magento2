@@ -6,7 +6,7 @@
 define(
     [
         'jquery',
-        'jquery/ui',
+        'jquery-ui-modules/widget',
         'catalogGallery',
         'loadPlayer'
     ],

@@ -3,102 +3,35 @@
     <policies>
         <policy id="script-src">
             <values>
-                <value id="cloudinary_main" type="host">cloudinary.com</value>
-                <value id="cloudinary_main_www" type="host">www.cloudinary.com</value>
-                <value id="cloudinary_api" type="host">api.cloudinary.com</value>
-                <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
-                <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
-                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
-                <value id="cloudinary_res" type="host">res.cloudinary.com</value>
-                <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
-                <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
-                <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
-                <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
-                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
-            </values>
-        </policy>
-        <policy id="connect-src">
-            <values>
-                <value id="cloudinary_main" type="host">cloudinary.com</value>
-                <value id="cloudinary_main_www" type="host">www.cloudinary.com</value>
-                <value id="cloudinary_api" type="host">p.cloudinary.com</value>
-                <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
-                <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
-                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
-                <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
-                <value id="cloudinary_res" type="host">res.cloudinary.com</value>
-                <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
-                <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
-                <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
-                <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
-                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
             </values>
         </policy>
         <policy id="frame-src">
             <values>
-                <value id="cloudinary_main" type="host">cloudinary.com</value>
-                <value id="cloudinary_main_www" type="host">www.cloudinary.com</value>
-                <value id="cloudinary_api" type="host">p.cloudinary.com</value>
-                <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
-                <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
-                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
-                <value id="cloudinary_res" type="host">res.cloudinary.com</value>
-                <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
-                <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
-                <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
-                <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
-                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
             </values>
         </policy>
         <policy id="form-action">
             <values>
-                <value id="cloudinary_main" type="host">cloudinary.com</value>
-                <value id="cloudinary_main_www" type="host">www.cloudinary.com</value>
-                <value id="cloudinary_api" type="host">p.cloudinary.com</value>
-                <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
-                <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
-                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
-                <value id="cloudinary_res" type="host">res.cloudinary.com</value>
-                <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
-                <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
-                <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
-                <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
-                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
             </values>
         </policy>
         <policy id="img-src">
             <values>
-                <value id="cloudinary_main" type="host">cloudinary.com</value>
-                <value id="cloudinary_main_www" type="host">www.cloudinary.com</value>
-                <value id="cloudinary_api" type="host">p.cloudinary.com</value>
-                <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
-                <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
-                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
-                <value id="cloudinary_res" type="host">res.cloudinary.com</value>
-                <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
-                <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
-                <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
-                <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
-                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
                 <value id="data" type="host">data:</value>
             </values>
         </policy>
         <policy id="style-src">
             <values>
-                <value id="cloudinary_main" type="host">cloudinary.com</value>
-                <value id="cloudinary_main_www" type="host">www.cloudinary.com</value>
-                <value id="cloudinary_api" type="host">p.cloudinary.com</value>
-                <value id="cloudinary_media_library" type="host">media-library.cloudinary.com</value>
-                <value id="cloudinary_product_gallery" type="host">product-gallery.cloudinary.com</value>
-                <value id="cloudinary_analytics_api" type="host">analytics-api.cloudinary.com</value>
-                <value id="cloudinary_res" type="host">res.cloudinary.com</value>
-                <value id="cloudinary_res_1" type="host">res-1.cloudinary.com</value>
-                <value id="cloudinary_res_2" type="host">res-2.cloudinary.com</value>
-                <value id="cloudinary_res_3" type="host">res-3.cloudinary.com</value>
-                <value id="cloudinary_res_4" type="host">res-4.cloudinary.com</value>
-                <value id="cloudinary_res_5" type="host">res-5.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
             </values>
         </policy>
     </policies>

@@ -3,13 +3,14 @@
 namespace Cloudinary\Cloudinary\Controller\Adminhtml\Cms\Wysiwyg\Images;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Model\Product\Media\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Filesystem\DirectoryResolver;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
-use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Image\AdapterFactory;
@@ -100,7 +101,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      * @param  Context                $context
      * @param  Registry               $coreRegistry
      * @param  JsonFactory            $resultJsonFactory
-     * @param  \Magento\Framework\App\Filesystem\DirectoryResolver|null $directoryResolver
+     * @param  DirectoryResolver|null $directoryResolver
      * @param  DirectoryList          $directoryList
      * @param  Config                 $mediaConfig
      * @param  Filesystem             $fileSystem
@@ -116,7 +117,7 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         Context $context,
         Registry $coreRegistry,
         JsonFactory $resultJsonFactory,
-        $directoryResolver = null,
+        DirectoryResolver $directoryResolver = null,
         DirectoryList $directoryList,
         Config $mediaConfig,
         Filesystem $fileSystem,
