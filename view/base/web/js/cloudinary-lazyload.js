@@ -28,10 +28,19 @@ define([
 
         initialize: function(options) {
             var widget = this;
-            options = widget.mergeOptions(widget.options, options);
+            options = $.extend({}, widget.options, options || {});
+            this.cldLazyloadInit(options);
+            setInterval(function() {
+                widget.cldLazyloadInit(options);
+            }, 4000);
+        },
+
+        cldLazyloadInit: function(options) {
             if ($(".cloudinary-lazyload").length) {
+                var widget = this;
                 try {
-                    $(".cloudinary-lazyload").lazyload(widget.options);
+                    $(".cloudinary-lazyload").lazyload(options || widget.options);
+                    $(".cloudinary-lazyload").addClass("cloudinary-lazyload-processed").removeClass("cloudinary-lazyload");
                 } catch (err) {
                     console.warn("Notice: An error occured while initializing Lazyload (" + err + "). Trying to fix automatically...");
                     $(".cloudinary-lazyload").each(function() {
@@ -40,29 +49,11 @@ define([
                         } else {
                             $(this).css("background-image", "url('" + $(this).attr("data-original") + "')");
                         }
-                        $(this).removeClass("cloudinary-lazyload");
+                        $(this).addClass("cloudinary-lazyload-processed").removeClass("cloudinary-lazyload");
                     });
                 }
             }
 
-        },
-
-        /**
-         * @param obj1
-         * @param obj2
-         * @returns object
-         */
-        mergeOptions: function(o1, o2) {
-            var o1 = o1 || {};
-            var o2 = o2 || {};
-            var o3 = {};
-            for (var attr in o1) {
-                o3[attr] = o1[attr];
-            }
-            for (var attr in o2) {
-                o3[attr] = o2[attr];
-            }
-            return o3;
         }
 
     });
