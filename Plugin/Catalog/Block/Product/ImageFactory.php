@@ -138,6 +138,10 @@ class ImageFactory
             return $imageBlock;
         }
 
+        if ($imageBlock->getImageUrl() === 'no_selection') {
+            return $imageBlock;
+        }
+
         if ($this->configuration->isEnabledLazyload()) {
             $useOldImageTheme = is_string($imageBlock->getCustomAttributes()) ? 'old_' : '';
             $imageBlock->setTemplate(
