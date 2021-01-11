@@ -138,6 +138,10 @@ class ImageHelper
             return $originalMethod();
         }
 
+        if ($imageBlock->getImageUrl() === 'no_selection') {
+            return $imageBlock;
+        }
+
         $imagePath = $this->imageFile ?: $this->product->getData($helper->getType());
 
         $image = $this->imageFactory->build(sprintf('catalog/product%s', $imagePath), $originalMethod);
