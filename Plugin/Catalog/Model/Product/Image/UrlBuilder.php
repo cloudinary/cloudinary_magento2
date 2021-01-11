@@ -117,6 +117,10 @@ class UrlBuilder
             return $url;
         }
 
+        if ($url === 'no_selection') {
+            return $url;
+        }
+
         if (class_exists('\Magento\Catalog\Model\Product\Image\ParamsBuilder')) {
             $this->imageParamsBuilder = $this->objectManager->get('\Magento\Catalog\Model\Product\Image\ParamsBuilder');
         } else {
