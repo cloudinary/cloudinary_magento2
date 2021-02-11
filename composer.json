@@ -2,10 +2,10 @@
     "name": "cloudinary/cloudinary-magento2",
     "description": "Cloudinary Magento 2 Integration.",
     "type": "magento2-module",
-    "version": "1.14.5",
+    "version": "1.14.6",
     "license": "MIT",
     "require": {
-        "cloudinary/cloudinary_php": "*"
+        "cloudinary/cloudinary_php": "^1.20.0"
     },
     "autoload": {
         "files": [
