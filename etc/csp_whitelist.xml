@@ -3,35 +3,41 @@
     <policies>
         <policy id="script-src">
             <values>
-                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
             </values>
         </policy>
         <policy id="frame-src">
             <values>
-                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
             </values>
         </policy>
         <policy id="connect-src">
             <values>
-                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
             </values>
         </policy>
         <policy id="form-action">
             <values>
-                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
             </values>
         </policy>
         <policy id="img-src">
             <values>
-                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
                 <value id="data" type="host">data:</value>
             </values>
         </policy>
         <policy id="style-src">
             <values>
-                <value id="cloudinary_main" type="host">*.cloudinary.com</value>
+                <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
             </values>
         </policy>
     </policies>
