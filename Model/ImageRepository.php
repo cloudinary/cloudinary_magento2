@@ -18,6 +18,11 @@ class ImageRepository
     private $allowedImgExtensions = ['JPG', 'PNG', 'GIF', 'BMP', 'TIFF', 'EPS', 'PSD', 'SVG', 'WebP'];
 
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * @var ReadInterface
      */
     private $mediaDirectory;
@@ -32,7 +37,7 @@ class ImageRepository
      */
     public function __construct(Filesystem $filesystem, SynchronizationCheck $synchronizationChecker)
     {
-        $this->mediaDirectory = $filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $this->filesystem = $filesystem;
         $this->synchronizationChecker = $synchronizationChecker;
     }
 
@@ -41,11 +46,19 @@ class ImageRepository
      */
     public function findUnsynchronisedImages()
     {
+        $this->mediaDirectory = $filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        if ($this->mediaDirectory->getAbsolutePath() !== ($mediaRealPath = realpath($this->mediaDirectory->getAbsolutePath()))) {
+            $this->mediaDirectory = $this->filesystem->getDirectoryReadByPath($mediaRealPath);
+        }
+
         $images = [];
 
         foreach ($this->getRecursiveIterator($this->mediaDirectory->getAbsolutePath()) as $item) {
             $absolutePath = $item->getRealPath();
-            $relativePath = $this->mediaDirectory->getRelativePath($item->getRealPath());
+            if (strpos(basename($absolutePath), '.') === 0) {
+                continue;
+            }
+            $relativePath = $this->mediaDirectory->getRelativePath($absolutePath);
             if ($this->isValidImageFile($item) && !$this->synchronizationChecker->isSynchronized($relativePath)) {
                 $images[] = Image::fromPath($absolutePath, $relativePath);
             }
