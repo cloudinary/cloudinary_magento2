@@ -98,7 +98,11 @@ class Configuration implements ObserverInterface
 
     protected function cleanConfigCache()
     {
-        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+        try {
+            $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+        } catch (\Exception $e) {
+            $this->messageManager->addNoticeMessage(__('For some reason, Cloudinary couldn\'t clear your config cache, please clear the cache manually. (Exception message: %1)', $e->getMessage()));
+        }
         return $this;
     }
 }
