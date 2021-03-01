@@ -46,7 +46,7 @@ class ImageRepository
      */
     public function findUnsynchronisedImages()
     {
-        $this->mediaDirectory = $filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $this->mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
         if ($this->mediaDirectory->getAbsolutePath() !== ($mediaRealPath = realpath($this->mediaDirectory->getAbsolutePath()))) {
             $this->mediaDirectory = $this->filesystem->getDirectoryReadByPath($mediaRealPath);
         }
