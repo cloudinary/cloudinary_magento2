@@ -72,6 +72,13 @@ class BatchUploader
      */
     public function uploadUnsynchronisedImages(OutputInterface $output = null)
     {
+        if (!$this->configuration->isEnabled(false)) {
+            throw new \Exception("Cloudinary seems to be disabled. Please enable it first or pass -f in order to force it on the CLI");
+        }
+        if (!$this->configuration->hasEnvironmentVariable()) {
+            throw new \Exception("Cloudinary environment variable seems to be missing. Please configure it first or pass it to the command as `-e` in order to use on the CLI");
+        }
+
         if (!$this->validateAutoUploadMapping($output) || !$this->validateMigrationLock($output)) {
             return false;
         }

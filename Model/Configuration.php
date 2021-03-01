@@ -22,6 +22,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Module\ModuleListInterface;
+use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -154,6 +155,11 @@ class Configuration implements ConfigurationInterface
     private $cloudinaryLogger;
 
     /**
+     * @var Registry
+     */
+    private $coreRegistry;
+
+    /**
      * @method __construct
      * @param  ScopeConfigInterface             $configReader
      * @param  WriterInterface                  $configWriter
@@ -164,6 +170,7 @@ class Configuration implements ConfigurationInterface
      * @param  ModuleListInterface              $moduleList
      * @param  ProductMetadataInterface         $productMetadata
      * @param  CloudinaryLogger                 $cloudinaryLogger
+     * @param  registry                         $coreRegistry
      */
     public function __construct(
         ScopeConfigInterface $configReader,
@@ -174,7 +181,8 @@ class Configuration implements ConfigurationInterface
         StoreManagerInterface $storeManager,
         ModuleListInterface $moduleList,
         ProductMetadataInterface $productMetadata,
-        CloudinaryLogger $cloudinaryLogger
+        CloudinaryLogger $cloudinaryLogger,
+        registry $coreRegistry
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
@@ -185,6 +193,7 @@ class Configuration implements ConfigurationInterface
         $this->moduleList = $moduleList;
         $this->productMetadata = $productMetadata;
         $this->cloudinaryLogger = $cloudinaryLogger;
+        $this->coreRegistry = $coreRegistry;
     }
 
     /**
@@ -269,7 +278,7 @@ class Configuration implements ConfigurationInterface
      */
     public function isEnabled($checkEnvVar = true)
     {
-        return ($this->hasEnvironmentVariable() || !$checkEnvVar) && $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED);
+        return ($this->hasEnvironmentVariable() || !$checkEnvVar) && ($this->coreRegistry->registry(self::CONFIG_PATH_ENABLED) || $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED));
     }
 
     public function enable()
@@ -336,7 +345,7 @@ class Configuration implements ConfigurationInterface
      */
     public function hasEnvironmentVariable()
     {
-        return (bool)$this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE);
+        return $this->coreRegistry->registry(self::CONFIG_PATH_ENVIRONMENT_VARIABLE) ?: (bool)$this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE);
     }
 
     /**
@@ -347,6 +356,7 @@ class Configuration implements ConfigurationInterface
         if (is_null($this->environmentVariable)) {
             try {
                 $this->environmentVariable = CloudinaryEnvironmentVariable::fromString(
+                    $this->coreRegistry->registry(self::CONFIG_PATH_ENVIRONMENT_VARIABLE) ?:
                     $this->decryptor->decrypt(
                         $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE)
                     )

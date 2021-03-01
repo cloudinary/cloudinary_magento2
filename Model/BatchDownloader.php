@@ -9,10 +9,10 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Cloudinary\Core\Image\SynchronizationCheck;
 use Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface;
+use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
-use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Validator\AllowedProtocols;
@@ -26,7 +26,7 @@ class BatchDownloader
     const API_REQUESTS_SLEEP_BEFORE_NEXT_CALL = 3; //Seconds
     const API_REQUEST_STOP_ON_REMAINING_RATE_LIMIT = 10;
     const WAIT_FOR_RATE_LIMIT_RESET_MESSAGE = "Cloudinary API - calls rate limit reached, sleeping until %s ...";
-    const ERROR_MIGRATION_ALREADY_RUNNING = 'Cannot start download - a migration is in progress or was interrupted. If you are sure a migration is not running elsewhere run the cloudinary:download:stop command before attempting another download.';
+    const ERROR_MIGRATION_ALREADY_RUNNING = 'Cannot start download - a migration is in progress or was interrupted. If you are sure a migration is not running elsewhere run the cloudinary:migration:stop command before attempting another download.';
     const MESSAGE_DOWNLOAD_INTERRUPTED = 'Download manually stopped.';
     const DONE_MESSAGE = "Done :)";
 
@@ -164,9 +164,14 @@ class BatchDownloader
      */
     public function downloadUnsynchronisedImages(OutputInterface $output = null, $override = false)
     {
-        if ($this->_configuration->isEnabled()) {
-            $this->_authorise();
+        if (!$this->_configuration->isEnabled(false)) {
+            throw new \Exception("Cloudinary seems to be disabled. Please enable it first or pass -f in order to force it on the CLI");
         }
+        if (!$this->_configuration->hasEnvironmentVariable()) {
+            throw new \Exception("Cloudinary environment variable seems to be missing. Please configure it first or pass it to the command as `-e` in order to use on the CLI");
+        }
+
+        $this->_authorise();
 
         //= Config
         $this->_output = $output;
