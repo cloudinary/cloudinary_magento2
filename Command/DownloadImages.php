@@ -3,7 +3,9 @@
 namespace Cloudinary\Cloudinary\Command;
 
 use Cloudinary\Cloudinary\Model\BatchDownloader;
+use Cloudinary\Cloudinary\Model\Configuration;
 use Cloudinary\Cloudinary\Model\Logger\OutputLogger;
+use Magento\Framework\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,6 +18,8 @@ class DownloadImages extends Command
      * Keys and shortcuts for input arguments and options
      */
     const OVERRIDE = 'override';
+    const FORCE = 'force';
+    const ENV = 'env';
     /**#@- */
 
     const OVERRIDE_CONFIRM_MESSAGE = "<question>Are you sure you want to override local files (y/n)[n]?</question>";
@@ -33,14 +37,26 @@ class DownloadImages extends Command
     private $outputLogger;
 
     /**
-     * @param BatchDownloader $batchDownloader
+     * @var Registry
      */
-    public function __construct(BatchDownloader $batchDownloader, OutputLogger $outputLogger)
-    {
+    private $coreRegistry;
+
+    /**
+     * @method __construct
+     * @param  BatchDownloader $batchDownloader
+     * @param  OutputLogger    $outputLogger
+     * @param  Registry        $coreRegistry
+     */
+    public function __construct(
+        BatchDownloader $batchDownloader,
+        OutputLogger $outputLogger,
+        Registry $coreRegistry
+    ) {
         parent::__construct('cloudinary:download:all');
 
         $this->batchDownloader = $batchDownloader;
         $this->outputLogger = $outputLogger;
+        $this->coreRegistry = $coreRegistry;
     }
 
     /**
@@ -59,6 +75,19 @@ class DownloadImages extends Command
                 InputOption::VALUE_NONE,
                 'Override local images if already exists'
             ),
+            new InputOption(
+                self::FORCE,
+                '-f',
+                InputOption::VALUE_NONE,
+                'Force download even if Cloudinary is disabled'
+            ),
+            new InputOption(
+                self::ENV,
+                '-e',
+                InputOption::VALUE_OPTIONAL,
+                'Cloudinary environment variable that will be used during the process',
+                null
+            ),
         ]);
     }
 
@@ -73,6 +102,12 @@ class DownloadImages extends Command
         try {
             if ($input->getOption(self::OVERRIDE) && $this->confirmQuestion(self::OVERRIDE_CONFIRM_MESSAGE, $input, $output)) {
                 $this->_override = true;
+            }
+            if (($env = $input->getOption(self::ENV))) {
+                $this->coreRegistry->register(Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE, $env);
+            }
+            if ($input->getOption(self::FORCE)) {
+                $this->coreRegistry->register(Configuration::CONFIG_PATH_ENABLED, true);
             }
             $this->outputLogger->setOutput($output);
             $this->batchDownloader->downloadUnsynchronisedImages($this->outputLogger, $this->_override);
