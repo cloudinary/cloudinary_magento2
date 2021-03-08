@@ -246,6 +246,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             ]
         ];
         try {
+            $this->checkEnvHeader();
             if (!$this->configuration->isEnabled()) {
                 throw new LocalizedException(
                     __("Cloudinary module is disabled. Please enable it first in order to use this API.")
@@ -310,6 +311,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             "message" => ""
         ];
         try {
+            $this->checkEnvHeader();
             if (!$this->configuration->isEnabled()) {
                 throw new LocalizedException(
                     __("Cloudinary module is disabled. Please enable it first in order to use this API.")
@@ -551,6 +553,19 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             throw $e;
         }
         return $result;
+    }
+
+    /**
+     * @method checkEnvHeader
+     * @return $this
+     */
+    private function checkEnvHeader()
+    {
+        if (($envVar = $this->request->getHeader('CLD-ENV-VAR'))) {
+            $this->configuration->setRegistryEnabled(true);
+            $this->configuration->setRegistryEnvVar($envVar);
+        }
+        return $this;
     }
 
     private function getLocalTmpFileName($remoteFileUrl)

@@ -59,6 +59,9 @@ class ImageRepository
                 continue;
             }
             $relativePath = $this->mediaDirectory->getRelativePath($absolutePath);
+            if (!preg_match("#^" . preg_quote(DirectoryList::MEDIA . DIRECTORY_SEPARATOR, '/') . "#i", $relativePath)) {
+                $relativePath = DirectoryList::MEDIA . DIRECTORY_SEPARATOR . $relativePath;
+            }
             if ($this->isValidImageFile($item) && !$this->synchronizationChecker->isSynchronized($relativePath)) {
                 $images[] = Image::fromPath($absolutePath, $relativePath);
             }

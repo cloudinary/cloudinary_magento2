@@ -305,7 +305,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getMigratedPath($file)
     {
-        return sprintf('%s/%s', DirectoryList::MEDIA, $file);
+        return preg_match("#^" . preg_quote(DirectoryList::MEDIA . DIRECTORY_SEPARATOR, '/') . "#i", $file) ? $file : sprintf('%s/%s', DirectoryList::MEDIA, $file);
     }
 
     /**
@@ -672,6 +672,26 @@ class Configuration implements ConfigurationInterface
     public function log($message, $data = [], $prefix = '[Cloudinary Log] ')
     {
         $this->cloudinaryLogger->info($prefix . json_encode($message), $data);
+        return $this;
+    }
+
+    /**
+     * @method setRegistryEnabled
+     * @param  string|null            $val
+     */
+    public function setRegistryEnabled($val)
+    {
+        $this->coreRegistry->register(self::CONFIG_PATH_ENABLED, $val);
+        return $this;
+    }
+
+    /**
+     * @method setRegistryEnvVar
+     * @param  bool            $val
+     */
+    public function setRegistryEnvVar($val)
+    {
+        $this->coreRegistry->register(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, ($val ? true : false));
         return $this;
     }
 }
