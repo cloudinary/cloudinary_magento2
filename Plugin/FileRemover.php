@@ -3,6 +3,7 @@
 namespace Cloudinary\Cloudinary\Plugin;
 
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image;
 use Magento\Cms\Model\Wysiwyg\Images\Storage;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -22,15 +23,24 @@ class FileRemover
     private $mediaDirectory;
 
     /**
-     * @param CloudinaryImageManager $cloudinaryImageManager
-     * @param Filesystem             $filesystem
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * @method __construct
+     * @param  CloudinaryImageManager $cloudinaryImageManager
+     * @param  Filesystem             $filesystem
+     * @param  ConfigurationInterface $configuration
      */
     public function __construct(
         CloudinaryImageManager $cloudinaryImageManager,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        ConfigurationInterface $configuration
     ) {
         $this->cloudinaryImageManager = $cloudinaryImageManager;
         $this->mediaDirectory = $filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $this->configuration = $configuration;
     }
 
     /**
@@ -41,6 +51,10 @@ class FileRemover
      */
     public function beforeDeleteFile(Storage $storage, $target)
     {
+        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
+            return [$target];
+        }
+
         $this->cloudinaryImageManager->removeAndUnSynchronise(
             Image::fromPath($target, $this->mediaDirectory->getRelativePath($target))
         );
