@@ -98,8 +98,12 @@ class Credentials extends Encrypted
 
         parent::beforeSave();
 
-        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-        $this->appConfig->reinit();
+        try {
+            $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+            $this->appConfig->reinit();
+        } catch (\Exception $e) {
+            //Try to clear the cache & ignore errors
+        }
 
         if ($rawValue || $this->configuration->isEnabled(false)) {
             if (!$rawValue) {
