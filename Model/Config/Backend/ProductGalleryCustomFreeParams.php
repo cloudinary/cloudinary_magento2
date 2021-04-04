@@ -59,12 +59,8 @@ class ProductGalleryCustomFreeParams extends \Magento\Framework\App\Config\Value
 
         parent::beforeSave();
 
-        try {
-            $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-            $this->appConfig->reinit();
-        } catch (\Exception $e) {
-            //Try to clear the cache & ignore errors
-        }
+        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+        $this->appConfig->reinit();
 
         if ($rawValue) {
             $data = json_decode($rawValue);
