@@ -5,6 +5,7 @@ namespace Cloudinary\Cloudinary\Command;
 use Cloudinary\Cloudinary\Model\BatchUploader;
 use Cloudinary\Cloudinary\Model\Configuration;
 use Cloudinary\Cloudinary\Model\Logger\OutputLogger;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,9 +22,9 @@ class UploadImages extends Command
     /**#@- */
 
     /**
-     * @var BatchUploader
+     * @var ObjectManagerInterface
      */
-    private $batchUploader;
+    private $objectManager;
 
     /**
      * @var OutputLogger
@@ -36,19 +37,24 @@ class UploadImages extends Command
     private $coreRegistry;
 
     /**
+     * @var BatchUploader
+     */
+    private $batchUploader;
+
+    /**
      * @method __construct
-     * @param  BatchUploader $batchUploader
-     * @param  OutputLogger  $outputLogger
-     * @param  Registry      $coreRegistry
+     * @param  ObjectManagerInterface $objectManager
+     * @param  OutputLogger           $outputLogger
+     * @param  Registry               $coreRegistry
      */
     public function __construct(
-        BatchUploader $batchUploader,
+        ObjectManagerInterface $objectManager,
         OutputLogger $outputLogger,
         Registry $coreRegistry
     ) {
         parent::__construct('cloudinary:upload:all');
 
-        $this->batchUploader = $batchUploader;
+        $this->objectManager = $objectManager;
         $this->outputLogger = $outputLogger;
         $this->coreRegistry = $coreRegistry;
     }
@@ -88,6 +94,9 @@ class UploadImages extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
+            $this->batchUploader = $this->objectManager
+                ->get(\Cloudinary\Cloudinary\Model\BatchUploader::class);
+
             if (($env = $input->getOption(self::ENV))) {
                 $this->coreRegistry->register(Configuration::CONFIG_PATH_ENVIRONMENT_VARIABLE, $env);
             }

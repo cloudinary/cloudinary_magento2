@@ -3,6 +3,7 @@
 namespace Cloudinary\Cloudinary\Command;
 
 use Cloudinary\Cloudinary\Model\MigrationTask;
+use Magento\Framework\ObjectManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,18 +14,23 @@ class StopMigration extends Command
     const STOPPED_MESSAGE = 'Upload/Download manually stopped.';
 
     /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
      * @var MigrationTask
      */
     private $migrationTask;
 
     /**
-     * @param MigrationTask $migrationTask
+     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(MigrationTask $migrationTask)
+    public function __construct(ObjectManagerInterface $objectManager)
     {
         parent::__construct('cloudinary:migration:stop');
 
-        $this->migrationTask = $migrationTask;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -45,6 +51,9 @@ class StopMigration extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->migrationTask = $this->objectManager
+            ->get(\Cloudinary\Cloudinary\Model\MigrationTask::class);
+
         if ($this->migrationTask->hasStarted()) {
             $this->migrationTask->stop();
             $output->writeln(self::STOPPED_MESSAGE);
