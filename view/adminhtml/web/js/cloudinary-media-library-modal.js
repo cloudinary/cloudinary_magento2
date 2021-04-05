@@ -88,6 +88,13 @@ define([
         },
 
         /**
+         * Escape Regex
+         */
+        escapeRegex: function(string) {
+            return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        },
+
+        /**
          * Fired on trigger "cloudinaryInsertHandler"
          */
         cloudinaryInsertHandler: function(data) {
@@ -108,7 +115,7 @@ define([
                             asset.asset_derived_image_url
                             .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
                             .replace(/\.[^/.]+$/, '')
-                            .replace(new RegExp('\/' + asset.public_id + '$'), '')
+                            .replace(new RegExp('\/' + widget.escapeRegex(encodeURIComponent(asset.public_id)) + '$'), '')
                             .replace(new RegExp('\/v[0-9]{1,10}$'), '')
                             .replace(new RegExp('\/'), ',');
                         if (widget.options.useDerived) {
@@ -116,7 +123,10 @@ define([
                         }
                     }
                     if (asset.resource_type === "video") {
-                        asset.asset_image_url = asset.asset_url.replace(/\.[^/.]+$/, "").replace(new RegExp('\/v[0-9]{1,10}\/'), '/').replace(new RegExp('\/(' + asset.public_id + ')$'), '/so_auto/$1.jpg');
+                        asset.asset_image_url = asset.asset_url
+                            .replace(/\.[^/.]+$/, "")
+                            .replace(new RegExp('\/v[0-9]{1,10}\/'), '/')
+                            .replace(new RegExp('\/(' + widget.escapeRegex(encodeURIComponent(asset.public_id)) + ')$'), '/so_auto/$1.jpg');
                     }
                     $.ajax({
                         url: widget.options.imageUploaderUrl,
