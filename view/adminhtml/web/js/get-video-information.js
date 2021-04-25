@@ -613,6 +613,7 @@ define(
                             context,
                             thumbnail,
                             thumbnail_bytes;
+                        var self = this;
 
                         try {
                             data = JSON.parse(data);
@@ -640,7 +641,20 @@ define(
                         thumbnail = videoInfo.videoSrc
                             .replace(/\.[^/.]+$/, "")
                             .replace(new RegExp('\/v[0-9]{1,10}\/'), '/')
-                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURIComponent(tmp.public_id)) + ')$'), '/so_auto/$1.jpg') || this.options.cloudinaryPlaceholder;
+                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURIComponent(tmp.public_id)) + ')$'), '/so_auto/$1.jpg');
+
+                        //Fallback for video thumbnail image, use placeholder or store logo
+                        $.ajax({
+                            type: "GET",
+                            url: thumbnail,
+                            async: false,
+                            error: function(request, status, error) {
+                                thumbnail = self.options.cloudinaryPlaceholder;
+                                alert({
+                                    content: "Couldn't automatically generate Cloudinary video thumbnail, using fallback placeholder instead. You can always replace that manually later"
+                                });
+                            }
+                        });
 
                         respData = {
                             duration: 'unknown',

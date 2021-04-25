@@ -150,6 +150,15 @@ define([
                                     file.video_url = asset.asset_url;
                                     file.video_title = context.caption || context.alt || asset.public_id || "";
                                     file.video_description = (context.description || context.alt || context.caption || "").replace(/(&nbsp;|<([^>]+)>)/ig, '');
+                                    if (file.using_placeholder_fallback) {
+                                        notification().add({
+                                            error: false,
+                                            message: $t("Couldn't automatically generate Cloudinary video thumbnail, using fallback placeholder instead. You can always replace that manually later"),
+                                            insertMethod: function(constructedMessage) {
+                                                aggregatedErrorMessages.push(constructedMessage);
+                                            }
+                                        });
+                                    }
                                 } else {
                                     file.media_type = "image";
                                     file.label = asset.label = context.alt || context.caption || asset.public_id || "";
