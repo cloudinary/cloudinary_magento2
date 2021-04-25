@@ -70,7 +70,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
         if (!$this->initialized) {
             $this->initialized = true;
             if (($id = $this->_request->getParam("id"))) {
-                $this->setId($id);
+                $this->setId(\rawurldecode($id));
             }
             if (($maxResults = $this->_request->getParam("max_results"))) {
                 $this->setMaxResults($maxResults);
