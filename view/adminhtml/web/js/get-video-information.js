@@ -650,9 +650,9 @@ define(
                             async: false,
                             error: function(request, status, error) {
                                 thumbnail = self.options.cloudinaryPlaceholder;
-                                alert({
+                                /*alert({
                                     content: "Couldn't automatically generate Cloudinary video thumbnail, using fallback placeholder instead. You can always replace that manually later"
-                                });
+                                });*/
                             }
                         });
 

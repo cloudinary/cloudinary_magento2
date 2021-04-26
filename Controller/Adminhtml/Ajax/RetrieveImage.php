@@ -367,10 +367,10 @@ class RetrieveImage extends \Magento\Backend\App\Action
         ];
         foreach ($configPaths as $configPath) {
             if (($path = $this->storeManager->getStore()->getConfig($configPath))) {
-                return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/placeholder/' . $path;
-                break;
+                //return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/placeholder/' . $path;
+                //break;
             }
         }
-        return $this->_view->getLayout()->createBlock("Magento\Theme\Block\Html\Header\Logo")->getLogoSrc();
+        return $this->_view->getLayout()->createBlock("Magento\Theme\Block\Html\Header\Logo")->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_cloud_glyph_blue.png');
     }
 }

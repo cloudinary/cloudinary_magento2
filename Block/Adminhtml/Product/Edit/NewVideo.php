@@ -148,6 +148,7 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
         $configPaths = [
             'catalog/placeholder/image_placeholder',
             'catalog/placeholder/small_image_placeholder',
+            'thumbnail_placeholder',
         ];
         foreach ($configPaths as $configPath) {
             if (($path = $storeManager->getStore()->getConfig($configPath))) {
@@ -155,6 +156,6 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
                 break;
             }
         }
-        return $this->getLayout()->createBlock("Magento\Theme\Block\Html\Header\Logo")->getLogoSrc();
+        return $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_cloud_glyph_blue.png');
     }
 }
