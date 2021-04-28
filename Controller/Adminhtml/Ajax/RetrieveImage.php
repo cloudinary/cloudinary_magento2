@@ -364,7 +364,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
         $configPaths = [
             'catalog/placeholder/image_placeholder',
             'catalog/placeholder/small_image_placeholder',
-            'thumbnail_placeholder',
+            'catalog/placeholder/thumbnail_placeholder',
         ];
         foreach ($configPaths as $configPath) {
             if (($path = $this->storeManager->getStore()->getConfig($configPath))) {
