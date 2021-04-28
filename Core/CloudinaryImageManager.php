@@ -28,17 +28,25 @@ class CloudinaryImageManager
     private $synchronisationRepository;
 
     /**
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
      * CloudinaryImageManager constructor.
      *
      * @param ImageProvider                        $cloudinaryImageProvider
      * @param SynchroniseAssetsRepositoryInterface $synchronisationRepository
+     * @param ConfigurationInterface               $configuration
      */
     public function __construct(
         ImageProvider $cloudinaryImageProvider,
-        SynchroniseAssetsRepositoryInterface $synchronisationRepository
+        SynchroniseAssetsRepositoryInterface $synchronisationRepository,
+        ConfigurationInterface $configuration
     ) {
         $this->cloudinaryImageProvider = $cloudinaryImageProvider;
         $this->synchronisationRepository = $synchronisationRepository;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -48,6 +56,10 @@ class CloudinaryImageManager
      */
     public function uploadAndSynchronise(Image $image, OutputInterface $output = null, $retryAttempt = 0)
     {
+        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
+            return;
+        }
+
         try {
             $this->report($output, sprintf(self::MESSAGE_UPLOADING_IMAGE, $image));
             $this->cloudinaryImageProvider->upload($image);
@@ -78,6 +90,10 @@ class CloudinaryImageManager
      */
     public function removeAndUnSynchronise(Image $image)
     {
+        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
+            return;
+        }
+
         $this->cloudinaryImageProvider->delete($image);
         $this->synchronisationRepository->removeSynchronised($image->getRelativePath());
     }

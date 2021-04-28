@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Command;
 
-use Cloudinary\Cloudinary\Cron\ProductGalleryApiQueue;
 use Magento\Framework\App\State as AppState;
+use Magento\Framework\ObjectManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,28 +11,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ProductGalleryApiQueueProcess extends Command
 {
     /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
      * @var AppState
      */
     private $appState;
 
     /**
-     * @var ProductGalleryApiQueue
-     */
-    private $job;
-
-    /**
      * @method __construct
+     * @param  ObjectManagerInterface $objectManager
      * @param  AppState               $appState
-     * @param  ProductGalleryApiQueue $job
      */
     public function __construct(
-        AppState $appState,
-        ProductGalleryApiQueue $job
+        ObjectManagerInterface $objectManager,
+        AppState $appState
     ) {
         parent::__construct('cloudinary:product-gallery-api-queue:process');
 
+        $this->objectManager = $objectManager;
         $this->appState = $appState;
-        $this->job = $job;
     }
 
     /**
@@ -54,6 +54,9 @@ class ProductGalleryApiQueueProcess extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->job = $this->objectManager
+            ->get(\Cloudinary\Cloudinary\Cron\ProductGalleryApiQueue::class);
+
         $this->appState->setAreaCode(\Magento\Framework\App\Area::AREA_CRONTAB);
         return $this->job
             ->setOutput($output)

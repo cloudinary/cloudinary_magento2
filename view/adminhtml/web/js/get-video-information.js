@@ -613,6 +613,7 @@ define(
                             context,
                             thumbnail,
                             thumbnail_bytes;
+                        var self = this;
 
                         try {
                             data = JSON.parse(data);
@@ -637,7 +638,23 @@ define(
                         context = (tmp.context && tmp.context.custom) ? tmp.context.custom : {};
 
                         tmp.derived = tmp.derived || [];
-                        thumbnail = videoInfo.videoSrc.replace(/\.[^/.]+$/, "").replace(new RegExp('\/v[0-9]{1,10}\/'), '/').replace(new RegExp('\/(' + tmp.public_id + ')$'), '/so_auto/$1.jpg') || this.options.cloudinaryPlaceholder;
+                        thumbnail = videoInfo.videoSrc
+                            .replace(/\.[^/.]+$/, "")
+                            .replace(new RegExp('\/v[0-9]{1,10}\/'), '/')
+                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURIComponent(tmp.public_id)) + ')$'), '/so_auto/$1.jpg');
+
+                        //Fallback for video thumbnail image, use placeholder or store logo
+                        $.ajax({
+                            type: "GET",
+                            url: thumbnail,
+                            async: false,
+                            error: function(request, status, error) {
+                                thumbnail = self.options.cloudinaryPlaceholder;
+                                /*alert({
+                                    content: "Couldn't automatically generate Cloudinary video thumbnail, using fallback placeholder instead. You can always replace that manually later"
+                                });*/
+                            }
+                        });
 
                         respData = {
                             duration: 'unknown',
@@ -779,6 +796,13 @@ define(
                 _fileExtension: function(str) {
                     var re = /(?:\.([^.]+))?$/;
                     return re.exec(str)[1];
+                },
+
+                /**
+                 * @private
+                 */
+                _escapeRegex: function(string) {
+                    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
                 },
 
                 /**

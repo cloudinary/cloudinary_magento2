@@ -84,7 +84,6 @@ class Configuration implements ObserverInterface
         ) > 0
         ) {
             $this->cleanConfigCache();
-            $this->appConfig->reinit();
         }
 
         if (!$this->configuration->isEnabled()) {
@@ -98,11 +97,8 @@ class Configuration implements ObserverInterface
 
     protected function cleanConfigCache()
     {
-        try {
-            $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-        } catch (\Exception $e) {
-            $this->messageManager->addNoticeMessage(__('For some reason, Cloudinary couldn\'t clear your config cache, please clear the cache manually. (Exception message: %1)', $e->getMessage()));
-        }
+        $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+        $this->appConfig->reinit();
         return $this;
     }
 }

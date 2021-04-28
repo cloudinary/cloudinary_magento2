@@ -3,6 +3,7 @@
 namespace Cloudinary\Cloudinary\Plugin;
 
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\File\Uploader;
@@ -22,15 +23,24 @@ class FileUploader
     private $directoryList;
 
     /**
-     * @param CloudinaryImageManager $cloudinaryImageManager
-     * @param DirectoryList          $directoryList
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * @method __construct
+     * @param  CloudinaryImageManager $cloudinaryImageManager
+     * @param  DirectoryList          $directoryList
+     * @param  ConfigurationInterface $configuration
      */
     public function __construct(
         CloudinaryImageManager $cloudinaryImageManager,
-        DirectoryList $directoryList
+        DirectoryList $directoryList,
+        ConfigurationInterface $configuration
     ) {
         $this->cloudinaryImageManager = $cloudinaryImageManager;
         $this->directoryList = $directoryList;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -40,6 +50,10 @@ class FileUploader
      */
     public function afterSave(Uploader $uploader, $result)
     {
+        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
+            return $result;
+        }
+
         $filepath = $this->absoluteFilePath($result);
 
         if ($this->isAllowedImageExtension($filepath) && $this->isMediaFilePath($filepath) && !$this->isMediaTmpFilePath($filepath)) {
