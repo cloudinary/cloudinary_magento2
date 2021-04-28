@@ -5,37 +5,65 @@
  */
 namespace Cloudinary\Cloudinary\Block\Adminhtml\Product\Edit;
 
+use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
+use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Magento\Backend\Block\Template\Context;
+use Magento\Framework\Data\FormFactory;
+use Magento\Framework\Json\EncoderInterface;
+use Magento\Framework\Registry;
+use Magento\Framework\UrlInterface;
+use Magento\ProductVideo\Helper\Media;
+
 /**
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
 class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVideo
 {
+    /**
+     * @var array|null
+     */
     protected $_cloudinaryConfig;
 
     /**
-     * @var \Cloudinary\Cloudinary\Core\ConfigurationBuilder
+     * @var ConfigurationInterface
+     */
+    private $configuration;
+
+    /**
+     * @var ConfigurationBuilder
      */
     protected $_cloudinaryConfigurationBuilder;
 
     /**
-     * @param \Magento\Backend\Block\Template\Context          $context
-     * @param \Magento\Framework\Registry                      $registry
-     * @param \Magento\Framework\Data\FormFactory              $formFactory
-     * @param \Magento\ProductVideo\Helper\Media               $mediaHelper
-     * @param \Magento\Framework\Json\EncoderInterface         $jsonEncoder
-     * @param \Cloudinary\Cloudinary\Core\ConfigurationBuilder $cloudinaryConfigurationBuilder
-     * @param array                                            $data
+     * @method __construct
+     * @param  Context                $context
+     * @param  Registry               $registry
+     * @param  FormFactory            $formFactory
+     * @param  Media                  $mediaHelper
+     * @param  EncoderInterface       $jsonEncoder
+     * @param  ConfigurationInterface $configuration
+     * @param  ConfigurationBuilder   $cloudinaryConfigurationBuilder
+     * @param  array                  $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Data\FormFactory $formFactory,
-        \Magento\ProductVideo\Helper\Media $mediaHelper,
-        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
-        \Cloudinary\Cloudinary\Core\ConfigurationBuilder $cloudinaryConfigurationBuilder,
+        Context $context,
+        Registry $registry,
+        FormFactory $formFactory,
+        Media $mediaHelper,
+        EncoderInterface $jsonEncoder,
+        ConfigurationInterface $configuration,
+        ConfigurationBuilder $cloudinaryConfigurationBuilder,
         array $data = []
     ) {
-        parent::__construct($context, $registry, $formFactory, $mediaHelper, $jsonEncoder, $data);
+        parent::__construct(
+            $context,
+            $registry,
+            $formFactory,
+            $mediaHelper,
+            $jsonEncoder,
+            $data
+        );
+        $this->configuration = $configuration;
         $this->_cloudinaryConfigurationBuilder = $cloudinaryConfigurationBuilder;
     }
 
@@ -67,7 +95,7 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
                 'htmlId' => $this->getHtmlId(),
                 'youTubeApiKey' => $this->mediaHelper->getYouTubeApiKey(),
                 'videoSelector' => $this->videoSelector,
-                'cloudinaryPlaceholder' => $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_vertical_logo_for_white_bg.svg')
+                'cloudinaryPlaceholder' => $this->getPlaceholderUrl(),
             ]
         );
     }
@@ -109,5 +137,25 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
                 'section' => 'cloudinary'
             ]
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPlaceholderUrl()
+    {
+        $storeManager = $this->configuration->getStoreManager();
+        $configPaths = [
+            'catalog/placeholder/image_placeholder',
+            'catalog/placeholder/small_image_placeholder',
+            'thumbnail_placeholder',
+        ];
+        foreach ($configPaths as $configPath) {
+            if (($path = $storeManager->getStore()->getConfig($configPath))) {
+                return $storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/placeholder/' . $path;
+                break;
+            }
+        }
+        return $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_cloud_glyph_blue.png');
     }
 }

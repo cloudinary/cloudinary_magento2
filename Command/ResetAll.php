@@ -2,15 +2,16 @@
 
 namespace Cloudinary\Cloudinary\Command;
 
+use Cloudinary\Cloudinary\Helper\Reset;
+use Magento\Framework\ObjectManagerInterface;
+use Magento\User\Model\User;
+use Magento\User\Model\UserFactory;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Magento\User\Model\UserFactory;
-use Magento\User\Model\User;
-use Cloudinary\Cloudinary\Helper\Reset;
+use Symfony\Component\Console\Question\Question;
 
 class ResetAll extends Command
 {
@@ -37,6 +38,11 @@ class ResetAll extends Command
     const COMPLETE_MESSAGE2 = 'Please clear your configuration cache to ensure changes take effect.';
 
     /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
      * @var UserFactory
      */
     private $userFactory;
@@ -46,12 +52,18 @@ class ResetAll extends Command
      */
     private $resetHelper;
 
-
-    public function __construct(UserFactory $userFactory, Reset $resetHelper)
-    {
+    /**
+     * @method __construct
+     * @param  ObjectManagerInterface $objectManager
+     * @param  UserFactory            $userFactory
+     */
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        UserFactory $userFactory
+    ) {
         parent::__construct('cloudinary:reset');
+        $this->objectManager = $objectManager;
         $this->userFactory = $userFactory;
-        $this->resetHelper = $resetHelper;
     }
 
     protected function configure()
@@ -67,6 +79,9 @@ class ResetAll extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->resetHelper = $this->objectManager
+            ->get(\Cloudinary\Cloudinary\Helper\Reset::class);
+
         $this->displayPreActionMessage($output);
 
         $helper = $this->getHelper('question');

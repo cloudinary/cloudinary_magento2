@@ -111,8 +111,25 @@ define(
                 tableRows: {}
             },
 
+            /**
+             * Called when another element was added to current component.
+             *
+             * @param {Object} elem - Instance of an element that was added.
+             * @returns {Collection} Chainable.
+             */
+            initElement: function(elem) {
+                elem.initContainer(this);
+                this.ajaxUrl = this.ajaxUrl || this.getAjaxUrl();
+                return this;
+            },
+
+
             getTransforms: function() {
                 return registry.get('product_form.product_form_data_source').data.product.cloudinary_transforms;
+            },
+
+            getAjaxUrl: function() {
+                return registry.get('product_form.product_form_data_source').data.product.cloudinary_ajax_url;
             },
 
             createRow: function(params) {

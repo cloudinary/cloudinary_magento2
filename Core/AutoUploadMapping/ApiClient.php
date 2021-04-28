@@ -96,6 +96,7 @@ class ApiClient
      */
     private function parseFetchMappingsResponse(Response $response)
     {
+        $response = (array)$response;
         if (!array_key_exists(self::MAPPINGS_KEY, $response) || !is_array($response[self::MAPPINGS_KEY])) {
             throw new \Exception('Illegal mapping response');
         }

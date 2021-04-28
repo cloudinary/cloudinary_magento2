@@ -5,6 +5,7 @@ namespace Cloudinary\Cloudinary\Command;
 use Cloudinary\Cloudinary\Model\BatchDownloader;
 use Cloudinary\Cloudinary\Model\Configuration;
 use Cloudinary\Cloudinary\Model\Logger\OutputLogger;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,9 +28,9 @@ class DownloadImages extends Command
     private $_override = false;
 
     /**
-     * @var BatchDownloader
+     * @var ObjectManagerInterface
      */
-    private $batchDownloader;
+    private $objectManager;
 
     /**
      * @var OutputLogger
@@ -42,19 +43,24 @@ class DownloadImages extends Command
     private $coreRegistry;
 
     /**
+     * @var BatchDownloader
+     */
+    private $batchDownloader;
+
+    /**
      * @method __construct
-     * @param  BatchDownloader $batchDownloader
+     * @param  ObjectManagerInterface $objectManager
      * @param  OutputLogger    $outputLogger
      * @param  Registry        $coreRegistry
      */
     public function __construct(
-        BatchDownloader $batchDownloader,
+        ObjectManagerInterface $objectManager,
         OutputLogger $outputLogger,
         Registry $coreRegistry
     ) {
         parent::__construct('cloudinary:download:all');
 
-        $this->batchDownloader = $batchDownloader;
+        $this->objectManager = $objectManager;
         $this->outputLogger = $outputLogger;
         $this->coreRegistry = $coreRegistry;
     }
@@ -100,6 +106,9 @@ class DownloadImages extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
+            $this->batchDownloader = $this->objectManager
+                ->get(\Cloudinary\Cloudinary\Model\BatchDownloader::class);
+
             if ($input->getOption(self::OVERRIDE) && $this->confirmQuestion(self::OVERRIDE_CONFIRM_MESSAGE, $input, $output)) {
                 $this->_override = true;
             }

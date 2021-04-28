@@ -32,6 +32,11 @@ class RetrieveImage extends \Magento\Backend\App\Action
     private $remoteFileUrl;
 
     /**
+     * @var bool
+     */
+    private $usingPlaceholderFallback = false;
+
+    /**
      * @var array
      */
     private $parsedRemoteFileUrl = [];
@@ -278,6 +283,8 @@ class RetrieveImage extends \Magento\Backend\App\Action
         $result['url'] = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . $localUniqFilePath;
         $result['tmp_name'] = $this->appendAbsoluteFileSystemPath($localUniqFilePath);
         $result['file'] = $tmpFileName;
+        $result['using_placeholder_fallback'] = (bool) $this->usingPlaceholderFallback;
+
         return $result;
     }
 
@@ -294,7 +301,18 @@ class RetrieveImage extends \Magento\Backend\App\Action
         $this->curl->setConfig(['header' => false]);
         $this->curl->write('GET', $fileUrl);
         $image = $this->curl->read();
+
+        if (empty($image) && $this->getRequest()->getParam('asset')["resource_type"] === 'video') {
+            //Fallback for video thumbnail image, use placeholder or store logo
+            $this->usingPlaceholderFallback = true;
+            $this->curl->close();
+            $this->curl->setConfig(['header' => false, 'verifypeer' => false, 'verifyhost' => 0]);
+            $this->curl->write('GET', $this->getPlaceholderUrl());
+            $image = $this->curl->read();
+        }
+
         if (empty($image)) {
+            $this->usingPlaceholderFallback = false;
             throw new LocalizedException(
                 __('The preview image information is unavailable. Check your connection and try again.')
             );
@@ -336,5 +354,23 @@ class RetrieveImage extends \Magento\Backend\App\Action
             ->setCldPublicId(($this->parsedRemoteFileUrl["type"] === "video") ? $this->parsedRemoteFileUrl["thumbnail_url"] : $this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
             ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
             ->save();
+    }
+
+    /**
+     * @return string
+     */
+    private function getPlaceholderUrl()
+    {
+        $configPaths = [
+            'catalog/placeholder/image_placeholder',
+            'catalog/placeholder/small_image_placeholder',
+        ];
+        foreach ($configPaths as $configPath) {
+            if (($path = $this->storeManager->getStore()->getConfig($configPath))) {
+                //return $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . 'catalog/product/placeholder/' . $path;
+                //break;
+            }
+        }
+        return $this->_view->getLayout()->createBlock("Magento\Theme\Block\Html\Header\Logo")->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_cloud_glyph_blue.png');
     }
 }
