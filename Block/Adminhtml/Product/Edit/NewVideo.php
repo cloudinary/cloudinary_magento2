@@ -148,7 +148,7 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
         $configPaths = [
             'catalog/placeholder/image_placeholder',
             'catalog/placeholder/small_image_placeholder',
-            'thumbnail_placeholder',
+            'catalog/placeholder/thumbnail_placeholder',
         ];
         foreach ($configPaths as $configPath) {
             if (($path = $storeManager->getStore()->getConfig($configPath))) {
