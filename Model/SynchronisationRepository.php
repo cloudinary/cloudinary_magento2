@@ -2,14 +2,12 @@
 
 namespace Cloudinary\Cloudinary\Model;
 
-use Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface;
-
 use Cloudinary\Cloudinary\Api\SynchronisationRepositoryInterface;
-use Cloudinary\Cloudinary\Model\SynchronisationFactory;
-use Cloudinary\Cloudinary\Model\ResourceModel\Synchronisation\CollectionFactory;
-use Cloudinary\Cloudinary\Model\ResourceModel\Synchronisation\Collection as SynchronisationCollection;
 
-use Magento\Framework\Api\AbstractSimpleObject;
+use Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface;
+use Cloudinary\Cloudinary\Model\ResourceModel\Synchronisation\Collection as SynchronisationCollection;
+use Cloudinary\Cloudinary\Model\ResourceModel\Synchronisation\CollectionFactory;
+
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
@@ -98,6 +96,9 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
     }
 
     /**
+     * @deprecated
+     * For checking if image path is synchronized, use isSynchronizedImagePath()
+     *
      * @param string $imagePath
      *
      * @return SearchResultsInterface
@@ -107,6 +108,19 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
         $this->searchCriteriaBuilder->addFilters([$this->createImagePathFilter($imagePath)]);
 
         return $this->getList($this->searchCriteriaBuilder->create());
+    }
+
+    /**
+     * @param string $imagePath
+     *
+     * @return bool
+     */
+    public function isSynchronizedImagePath($imagePath)
+    {
+        return $this->collectionFactory->create()
+            ->addFieldToFilter('image_path', $imagePath)
+            ->setPageSize(1)
+            ->getFirstItem() ? true : false;
     }
 
     /**

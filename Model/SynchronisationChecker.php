@@ -73,6 +73,6 @@ class SynchronisationChecker implements SynchronizationCheck
             }
         }
 
-        return $this->synchronisationRepository->getListByImagePath($imageName)->getTotalCount() > 0;
+        return $this->synchronisationRepository->isSynchronizedImagePath($imageName);
     }
 }

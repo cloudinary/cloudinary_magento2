@@ -33,6 +33,14 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $this->createProductSpinsetMapTable($setup);
         }
 
+        if (version_compare($context->getVersion(), '1.14.9', '<')) {
+            $setup->getConnection()->addIndex(
+                $setup->getTable('cloudinary_synchronisation'),
+                $setup->getIdxName('cloudinary_synchronisation', ['image_path']),
+                ['image_path']
+            );
+        }
+
         $setup->endSetup();
     }
 
