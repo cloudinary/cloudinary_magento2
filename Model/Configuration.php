@@ -170,7 +170,7 @@ class Configuration implements ConfigurationInterface
      * @param  ModuleListInterface              $moduleList
      * @param  ProductMetadataInterface         $productMetadata
      * @param  CloudinaryLogger                 $cloudinaryLogger
-     * @param  registry                         $coreRegistry
+     * @param  Registry                         $coreRegistry
      */
     public function __construct(
         ScopeConfigInterface $configReader,
@@ -182,7 +182,7 @@ class Configuration implements ConfigurationInterface
         ModuleListInterface $moduleList,
         ProductMetadataInterface $productMetadata,
         CloudinaryLogger $cloudinaryLogger,
-        registry $coreRegistry
+        Registry $coreRegistry
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
@@ -202,6 +202,14 @@ class Configuration implements ConfigurationInterface
     public function getStoreManager()
     {
         return $this->storeManager;
+    }
+
+    /**
+     * @return Registry
+     */
+    public function getCoreRegistry()
+    {
+        return $this->coreRegistry;
     }
 
     /**
