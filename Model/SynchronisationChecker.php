@@ -13,7 +13,7 @@ class SynchronisationChecker implements SynchronizationCheck
     /**
      * @var string
      */
-    private $imageNameHash;
+    private $imageNameCacheKey;
 
     /**
      * @var SynchronisationRepositoryInterface
@@ -69,8 +69,8 @@ class SynchronisationChecker implements SynchronizationCheck
      */
     private function cacheResult($result)
     {
-        $this->coreRegistry->unregister($this->imageNameHash);
-        $this->coreRegistry->register($this->imageNameHash, $result);
+        $this->coreRegistry->unregister($this->imageNameCacheKey);
+        $this->coreRegistry->register($this->imageNameCacheKey, $result);
         return $result;
     }
 
@@ -80,7 +80,7 @@ class SynchronisationChecker implements SynchronizationCheck
      */
     private function getFromCache()
     {
-        return $this->coreRegistry->registry($this->imageNameHash);
+        return $this->coreRegistry->registry($this->imageNameCacheKey);
     }
 
     /**
@@ -98,7 +98,7 @@ class SynchronisationChecker implements SynchronizationCheck
             return true;
         }
 
-        $this->imageNameHash = hash('sha256', 'cld_sync_check_' . (string) $imageName);
+        $this->imageNameCacheKey = 'cldsynccheckcachekey_' . (string) $imageName;
         if (!$refresh && ($cacheResult = $this->getFromCache()) !== null) {
             return $cacheResult;
         }
