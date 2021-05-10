@@ -13,6 +13,11 @@ use Magento\Framework\Registry;
 
 class Transformation extends AbstractModel
 {
+    /**
+     * @var string
+     */
+    private $imageNameCacheKey;
+
     private $configuration;
 
     /**
@@ -75,6 +80,27 @@ class Transformation extends AbstractModel
     }
 
     /**
+     * @method cacheResult
+     * @param  bool        $result
+     * @return mixed
+     */
+    private function cacheResult($result)
+    {
+        $this->_registry->unregister($this->imageNameCacheKey);
+        $this->_registry->register($this->imageNameCacheKey, $result);
+        return $result;
+    }
+
+    /**
+     * @method cacheResult
+     * @return mixed
+     */
+    private function getFromCache()
+    {
+        return $this->_registry->registry($this->imageNameCacheKey);
+    }
+
+    /**
      * @param  string $imageFile
      * @return ImageTransformation
      */
@@ -89,13 +115,21 @@ class Transformation extends AbstractModel
     /**
      * @param  ImageTransformation $transformation
      * @param  string              $imageFile
+     * @param  bool                $refresh
      * @return ImageTransformation
      */
-    public function addFreeformTransformationForImage(ImageTransformation $transformation, $imageFile)
+    public function addFreeformTransformationForImage(ImageTransformation $transformation, $imageFile, $refresh = false)
     {
-        $this->load($imageFile);
-        if (($this->getImageName() === $imageFile) && $this->hasFreeTransformation()) {
-            $transformation->withFreeform(Freeform::fromString($this->getFreeTransformation()));
+        $this->imageNameCacheKey = 'cldtransformcachekey_' . (string) $imageFile;
+        if (!$refresh && ($cacheResult = $this->getFromCache()) !== null) {
+            if (($cacheResult->getImageName() === $imageFile) && $cacheResult->hasFreeTransformation()) {
+                $transformation->withFreeform(Freeform::fromString($cacheResult->getFreeTransformation()));
+            }
+        } else {
+            $this->load($imageFile);
+            if (($this->getImageName() === $imageFile) && $this->hasFreeTransformation()) {
+                $transformation->withFreeform(Freeform::fromString($this->getFreeTransformation()));
+            }
         }
 
         return $transformation;
