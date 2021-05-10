@@ -2,10 +2,9 @@
 
 namespace Cloudinary\Cloudinary\Model;
 
-use Cloudinary\Cloudinary\Model\ResourceModel\Transformation as TransformationResourceModel;
-use Cloudinary\Cloudinary\Model\Configuration;
-use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
 use Cloudinary\Cloudinary\Core\Image\Transformation as ImageTransformation;
+use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
+use Cloudinary\Cloudinary\Model\ResourceModel\Transformation as TransformationResourceModel;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\Context;
