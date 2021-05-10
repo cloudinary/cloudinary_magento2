@@ -13,6 +13,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
+use Magento\Framework\App\ResourceConnection;
 
 class SynchronisationRepository implements SynchronisationRepositoryInterface, SynchroniseAssetsRepositoryInterface
 {
@@ -47,6 +48,11 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
     private $synchronisationFactory;
 
     /**
+     * @var ResourceConnection
+     */
+    private $connection;
+
+    /**
      * @param FilterBuilder                 $filterBuilder
      * @param SearchCriteriaBuilder         $searchCriteriaBuilder
      * @param CollectionFactory             $collectionFactory
@@ -60,7 +66,8 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
         CollectionFactory $collectionFactory,
         SearchResultsInterface $searchResult,
         SearchResultsInterfaceFactory $searchResultsFactory,
-        SynchronisationFactory $synchronisationFactory
+        SynchronisationFactory $synchronisationFactory,
+        ResourceConnection $resourceConnection
     ) {
         $this->filterBuilder = $filterBuilder;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -68,6 +75,7 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
         $this->searchResult = $searchResult;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->synchronisationFactory = $synchronisationFactory;
+        $this->connection = $resourceConnection->getConnection();
     }
 
     /**
@@ -117,10 +125,13 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
      */
     public function isSynchronizedImagePath($imagePath)
     {
-        return $this->collectionFactory->create()
-            ->addFieldToFilter('image_path', $imagePath)
-            ->setPageSize(1)
-            ->getFirstItem() ? true : false;
+        return $this->connection->fetchAll($this->connection->select()
+            ->from(
+                $this->connection->getTableName("cloudinary_synchronisation"),
+                ['cloudinary_synchronisation_id']
+            )
+            ->where('image_path = ?', $imagePath)
+            ->limit(1)) ? true : false;
     }
 
     /**
