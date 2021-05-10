@@ -14,10 +14,16 @@ use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Helper\Image as CatalogImageHelper;
 use Magento\Catalog\Model\Product\Image\UrlBuilder as CatalogUrlBuilder;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Registry;
 use Magento\Framework\View\ConfigInterface;
 
 class UrlBuilder
 {
+    /**
+     * @var string
+     */
+    private $imagePathCacheKey;
+
     /**
      * @var ObjectManagerInterface
      */
@@ -74,6 +80,11 @@ class UrlBuilder
     private $transformationModel;
 
     /**
+     * @var Registry
+     */
+    private $coreRegistry;
+
+    /**
      * @param ObjectManagerInterface $objectManager
      * @param ConfigInterface        $presentationConfig
      * @param CloudinaryImageFactory $cloudinaryImageFactory
@@ -98,6 +109,28 @@ class UrlBuilder
         $this->dimensions = null;
         $this->imageFile = null;
         $this->keepFrame = true;
+        $this->coreRegistry = $coreRegistry;
+    }
+
+    /**
+     * @method cacheResult
+     * @param  bool        $result
+     * @return mixed
+     */
+    private function cacheResult($result)
+    {
+        $this->coreRegistry->unregister($this->imagePathCacheKey);
+        $this->coreRegistry->register($this->imagePathCacheKey, $result);
+        return $result;
+    }
+
+    /**
+     * @method cacheResult
+     * @return mixed
+     */
+    private function getFromCache()
+    {
+        return $this->coreRegistry->registry($this->imagePathCacheKey);
     }
 
     /**
@@ -147,12 +180,21 @@ class UrlBuilder
                     }
                 );
 
+                $this->imagePathCacheKey = 'cldtransformcachekey_' . (string) $imagePath . json_encode($imageMiscParams);
+                if (($cacheResult = $this->getFromCache()) !== null) {
+                    $transformations = $cacheResult;
+                } else {
+                    $transformations = $this->cacheResult(
+                        $this->transformationModel->addFreeformTransformationForImage(
+                            $this->createTransformation($imageMiscParams),
+                            $imagePath
+                        )
+                    );
+                }
+
                 $generatedImageUrl = $this->urlGenerator->generateFor(
                     $image,
-                    $this->transformationModel->addFreeformTransformationForImage(
-                        $this->createTransformation($imageMiscParams),
-                        $imagePath
-                    )
+                    $transformations
                 );
 
                 $url = $generatedImageUrl;

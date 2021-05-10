@@ -17,10 +17,16 @@ use Magento\Catalog\Block\Product\ImageFactory as CatalogImageFactory;
 use Magento\Catalog\Helper\Image as CatalogImageHelper;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Registry;
 use Magento\Framework\View\ConfigInterface;
 
 class ImageFactory
 {
+    /**
+     * @var string
+     */
+    private $imagePathCacheKey;
+
     /**
      * @var ObjectManagerInterface
      */
@@ -77,12 +83,18 @@ class ImageFactory
     private $transformationModel;
 
     /**
+     * @var Registry
+     */
+    private $coreRegistry;
+
+    /**
      * @param ObjectManagerInterface $objectManager
      * @param ConfigInterface        $presentationConfig
      * @param CloudinaryImageFactory $cloudinaryImageFactory
      * @param UrlGenerator           $urlGenerator
      * @param ConfigurationInterface $configuration
      * @param TransformationFactory  $transformationFactory
+     * @param Registry               $coreRegistry
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -90,7 +102,8 @@ class ImageFactory
         CloudinaryImageFactory $cloudinaryImageFactory,
         UrlGenerator $urlGenerator,
         ConfigurationInterface $configuration,
-        TransformationFactory $transformationFactory
+        TransformationFactory $transformationFactory,
+        Registry $coreRegistry
     ) {
         $this->objectManager = $objectManager;
         $this->presentationConfig = $presentationConfig;
@@ -101,6 +114,7 @@ class ImageFactory
         $this->dimensions = null;
         $this->imageFile = null;
         $this->keepFrame = true;
+        $this->coreRegistry = $coreRegistry;
     }
 
     /**
@@ -118,6 +132,27 @@ class ImageFactory
             }
         }
         return !empty($result) ? implode(' ', $result) : '';
+    }
+
+    /**
+     * @method cacheResult
+     * @param  bool        $result
+     * @return mixed
+     */
+    private function cacheResult($result)
+    {
+        $this->coreRegistry->unregister($this->imagePathCacheKey);
+        $this->coreRegistry->register($this->imagePathCacheKey, $result);
+        return $result;
+    }
+
+    /**
+     * @method cacheResult
+     * @return mixed
+     */
+    private function getFromCache()
+    {
+        return $this->coreRegistry->registry($this->imagePathCacheKey);
     }
 
     /**
@@ -177,10 +212,18 @@ class ImageFactory
                     }
                 );
 
-                $transformations = $this->transformationModel->addFreeformTransformationForImage(
-                    $this->createTransformation($imageMiscParams),
-                    $imagePath
-                );
+                $this->imagePathCacheKey = 'cldtransformcachekey_' . (string) $imagePath . json_encode($imageMiscParams);
+                if (($cacheResult = $this->getFromCache()) !== null) {
+                    $transformations = $cacheResult;
+                } else {
+                    $transformations = $this->cacheResult(
+                        $this->transformationModel->addFreeformTransformationForImage(
+                            $this->createTransformation($imageMiscParams),
+                            $imagePath
+                        )
+                    );
+                }
+
                 $generatedImageUrl = $this->urlGenerator->generateFor(
                     $image,
                     $transformations
