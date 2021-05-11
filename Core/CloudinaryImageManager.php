@@ -68,18 +68,17 @@ class CloudinaryImageManager
         } catch (\Exception $e) {
             if ($e->getMessage() === FileExists::DEFAULT_MESSAGE) {
                 $this->report($output, sprintf(self::MESSAGE_UPLOADED_EXISTS, $image));
-                return;
-            }
+            } else {
+                if ($retryAttempt < self::MAXIMUM_RETRY_ATTEMPTS) {
+                    $retryAttempt++;
+                    $this->report($output, sprintf(self::MESSAGE_RETRY, $e->getMessage(), $retryAttempt));
+                    usleep(rand(10, 1000) * 1000);
+                    $this->uploadAndSynchronise($image, $output, $retryAttempt);
+                    return;
+                }
 
-            if ($retryAttempt < self::MAXIMUM_RETRY_ATTEMPTS) {
-                $retryAttempt++;
-                $this->report($output, sprintf(self::MESSAGE_RETRY, $e->getMessage(), $retryAttempt));
-                usleep(rand(10, 1000) * 1000);
-                $this->uploadAndSynchronise($image, $output, $retryAttempt);
-                return;
+                throw $e;
             }
-
-            throw $e;
         }
 
         $this->synchronisationRepository->saveAsSynchronized($image->getRelativePath());
