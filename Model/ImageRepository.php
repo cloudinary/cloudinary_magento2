@@ -15,7 +15,7 @@ use Magento\Framework\Filesystem\Directory\ReadInterface;
  */
 class ImageRepository
 {
-    private $allowedImgExtensions = ['JPG', 'PNG', 'GIF', 'BMP', 'TIFF', 'EPS', 'PSD', 'SVG', 'WebP'];
+    private $allowedImgExtensions = ['JPG', 'JPEG', 'PNG', 'GIF', 'BMP', 'TIFF', 'EPS', 'PSD', 'SVG', 'WebP'];
 
     /**
      * @var Filesystem
