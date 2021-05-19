@@ -142,12 +142,18 @@ class ImageHelper
 
         $image = $this->imageFactory->build(sprintf('catalog/product%s', $imagePath), $originalMethod);
 
+        $transformations = $this->createTransformation($helper);
+
+        if ($this->configuration->isEnabledProductFreeTransformations()) {
+            $transformations = $this->transformationModel->addFreeformTransformationForImage(
+                $transformations,
+                $imagePath
+            );
+        }
+
         return $this->urlGenerator->generateFor(
             $image,
-            $this->transformationModel->addFreeformTransformationForImage(
-                $this->createTransformation($helper),
-                $imagePath
-            )
+            $transformations
         );
     }
 
