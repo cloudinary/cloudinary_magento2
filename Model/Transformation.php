@@ -13,6 +13,11 @@ use Magento\Framework\Registry;
 
 class Transformation extends AbstractModel
 {
+    /**
+     * @var string
+     */
+    private $imageNameCacheKey;
+
     private $configuration;
 
     /**
@@ -75,27 +80,34 @@ class Transformation extends AbstractModel
     }
 
     /**
-     * @param  string $imageFile
+     * @param  string $imageName
      * @return ImageTransformation
      */
-    public function transformationForImage($imageFile)
+    public function transformationForImage($imageName)
     {
         return $this->addFreeformTransformationForImage(
             $this->configuration->getDefaultTransformation(),
-            $imageFile
+            $imageName
         );
     }
 
     /**
      * @param  ImageTransformation $transformation
-     * @param  string              $imageFile
+     * @param  string              $imageName
+     * @param  bool                $refresh
      * @return ImageTransformation
      */
-    public function addFreeformTransformationForImage(ImageTransformation $transformation, $imageFile)
+    public function addFreeformTransformationForImage(ImageTransformation $transformation, $imageName, $refresh = false)
     {
-        $this->load($imageFile);
-        if (($this->getImageName() === $imageFile) && $this->hasFreeTransformation()) {
-            $transformation->withFreeform(Freeform::fromString($this->getFreeTransformation()));
+        $this->imageNameCacheKey = 'cldfreetransformcachekey_' . (string) $imageName;
+        if (!$refresh && ($cacheResult = $this->getFromCache()) !== null) {
+            $model = $cacheResult;
+        } else {
+            $model = $this->cacheResult($this->load($imageName));
+        }
+
+        if ($model->getImageName() === $imageName && $model->hasFreeTransformation()) {
+            $transformation->withFreeform(Freeform::fromString($model->getFreeTransformation()));
         }
 
         return $transformation;
@@ -107,5 +119,26 @@ class Transformation extends AbstractModel
     private function hasFreeTransformation()
     {
         return !empty($this->getFreeTransformation());
+    }
+
+    /**
+     * @method cacheResult
+     * @param  bool        $result
+     * @return mixed
+     */
+    private function cacheResult($result)
+    {
+        $this->_registry->unregister($this->imageNameCacheKey);
+        $this->_registry->register($this->imageNameCacheKey, $result);
+        return $result;
+    }
+
+    /**
+     * @method cacheResult
+     * @return mixed
+     */
+    private function getFromCache()
+    {
+        return $this->_registry->registry($this->imageNameCacheKey);
     }
 }
