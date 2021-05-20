@@ -177,14 +177,20 @@ class ImageFactory
                     }
                 );
 
-                $transformations = $this->transformationModel->addFreeformTransformationForImage(
-                    $this->createTransformation($imageMiscParams),
-                    $imagePath
-                );
+                $transformations = $this->createTransformation($imageMiscParams);
+
+                if ($this->configuration->isEnabledProductFreeTransformations()) {
+                    $transformations = $this->transformationModel->addFreeformTransformationForImage(
+                        $transformations,
+                        $imagePath
+                    );
+                }
+
                 $generatedImageUrl = $this->urlGenerator->generateFor(
                     $image,
                     $transformations
                 );
+
                 $imageBlock->setOriginalImageUrl($imageBlock->setImageUrl());
                 $imageBlock->setImageUrl($generatedImageUrl);
 
