@@ -368,6 +368,11 @@
                         <field id="product_gallery_api_queue_enabled">1</field>
                     </depends>
                 </field>
+                <field id="enable_product_free_transformations" translate="label comment" type="select" sortOrder="8" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Product Free Transformations On Store Front</label>
+                    <comment>If not in use on your website, you may spare DB queries on the frontend by setting this to 'No'.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
         </section>
     </system>

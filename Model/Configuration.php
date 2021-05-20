@@ -61,6 +61,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_PG_API_QUEUE_ENABLED = 'cloudinary/advanced/product_gallery_api_queue_enabled';
     const CONFIG_PATH_PG_API_QUEUE_LIMIT = 'cloudinary/advanced/product_gallery_api_queue_limit';
     const CONFIG_PATH_PG_API_QUEUE_MAX_TRYOUTS = 'cloudinary/advanced/product_gallery_api_queue_max_tryouts';
+    const CONFIG_PATH_ENABLE_PRODUCT_FREE_TRANSFORMATIONS = 'cloudinary/advanced/enable_product_free_transformations';
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -481,6 +482,14 @@ class Configuration implements ConfigurationInterface
     public function isEnabledLocalMapping()
     {
         return (bool) $this->configReader->getValue(self::CONFIG_PATH_ENABLE_LOCAL_MAPPING);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabledProductFreeTransformations()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_ENABLE_PRODUCT_FREE_TRANSFORMATIONS);
     }
 
     /**
