@@ -31,11 +31,6 @@
                     </comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
                 </field>
-                <field id="cloudinary_automatic_login_user" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Automatic Login</label>
-                    <comment><![CDATA[Enter the email address of the user to be automatically logged in to the Media Library. If you have multiple users for your Cloudinary account, enter the primary user, or leave blank to prompt each user to login when the Media Library opens.<input name="disable_autofill_envvar" type="text" value="******" style="display:none!important;"><input name="disable_autofill_loginuser" type="password" value="******" style="display:none!important;">]]></comment>
-                    <validate>validate-email</validate>
-                </field>
             </group>
             <group id="configuration" translate="label" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Cloudinary Setup</label>
