@@ -47,6 +47,24 @@
 	</route>
 	<!--/ cloudinary/productGallery/addItems -->
 
+	<!-- cloudinary/products/media -->
+	<route method="POST" url="/V1/cloudinary/products/media/get">
+		<service class="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" method="getProductsMedia"/>
+		<resources>
+			<resource ref="Magento_Catalog::products" />
+		</resources>
+	</route>
+	<!--/ cloudinary/products/media -->
+
+	<!-- cloudinary/products/:sku/media -->
+	<route method="GET" url="/V1/cloudinary/products/:sku/media">
+		<service class="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" method="getProductMedia"/>
+		<resources>
+			<resource ref="Magento_Catalog::products" />
+		</resources>
+	</route>
+	<!--/ cloudinary/products/:sku/media -->
+
 	<!-- cloudinary/products/:sku/media -->
 	<route method="POST" url="/V1/cloudinary/products/:sku/media">
 		<service class="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" method="addProductMedia"/>
