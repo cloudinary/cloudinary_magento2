@@ -81,7 +81,7 @@
                 <attribute type="expanded">0</attribute>
                 <field id="pg_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable Cloudinary's Product Gallery</label>
-                    <comment><![CDATA[Enable Cloudinary's Product Gallery for product detail pages (override Magento's default). Supports Images, Videos and Spinsets. See <a href="https://cloudinary.com/documentation/product_gallery" target="_blank" title="Product Gallery documentation">Product Gallery documentation</a> for information on the configuration options.]]></comment>
+                    <comment><![CDATA[Enable Cloudinary's Product Gallery for product detail pages (override Magento's default). Supports Images, Videos and Spinsets. See <a href="https://cloudinary.com/documentation/product_gallery" target="_blank" title="Product Gallery documentation">Product Gallery documentation</a> for information on the configuration options.<br>*To enable the Product Gallery to access and load your media, ensure that you remove any restrictions on listing resources. To verify this, open the <a href="https://cloudinary.com/console/" title="Cloudinary Console">Cloudinary Console</a>, navigate to Settings and select the Security tab. From here, make sure that “Resource List” is unchecked in the “Restricted Media Types” option group.]]></comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>cloudinary/product_gallery/enabled</config_path>
                 </field>
