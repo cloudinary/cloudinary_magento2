@@ -36,4 +36,20 @@ interface ProductGalleryManagementInterface
      * @return string
      */
     public function addProductMedia($sku, $urls);
+
+    /**
+     * Get product gallery items as Cloudinary URLs.
+     * @method getProductMedia
+     * @param  string  $sku
+     * @return string
+     */
+    public function getProductMedia($sku);
+
+    /**
+     * Get products gallery items as Cloudinary URLs.
+     * @method getProductsMedia
+     * @param  mixed  $skus
+     * @return string
+     */
+    public function getProductsMedia($skus);
 }
