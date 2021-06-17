@@ -247,11 +247,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         ];
         try {
             $this->checkEnvHeader();
-            if (!$this->configuration->isEnabled()) {
-                throw new LocalizedException(
-                    __("Cloudinary module is disabled. Please enable it first in order to use this API.")
-                );
-            }
+            $this->checkEnabled();
             $urls = (array)$urls;
             foreach ($urls as $i => $url) {
                 try {
@@ -287,6 +283,50 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * {@inheritdoc}
      */
+    public function getProductMedia($sku)
+    {
+        return $this->_getProductMedia($sku);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProductsMedia($skus)
+    {
+        return $this->_getProductMedia($skus);
+    }
+
+    /**
+     * [_getProductMedia description]
+     * @method _getProductMedia
+     * @param  mixed           $sku
+     * @return string          (json result)
+     */
+    private function _getProductMedia($sku)
+    {
+        $result = ["data" => []];
+
+        try {
+            $this->checkEnvHeader();
+            $this->checkEnabled();
+            if (is_array($sku) || is_object($sku)) {
+                foreach ($sku as $key => $_sku) {
+                    $result['data'][$_sku] = $this->getProductCldUrlsBySku($_sku);
+                }
+            } else {
+                $result['data'] = $this->getProductCldUrlsBySku($sku);
+            }
+        } catch (\Exception $e) {
+            $result["error"] = 1;
+            $result["message"] = $e->getMessage();
+        }
+
+        return $this->jsonHelper->jsonEncode($result);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function addItem($url = null, $sku = null, $publicId = null, $roles = null, $label = null, $disabled = 0, $cldspinset = null)
     {
         return $this->addItems([[
@@ -312,11 +352,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         ];
         try {
             $this->checkEnvHeader();
-            if (!$this->configuration->isEnabled()) {
-                throw new LocalizedException(
-                    __("Cloudinary module is disabled. Please enable it first in order to use this API.")
-                );
-            }
+            $this->checkEnabled();
             $items = (array)$items;
             foreach ($items as $i => $item) {
                 try {
@@ -568,6 +604,20 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         return $this;
     }
 
+    /**
+     * @method checkEnabled
+     * @return $this
+     */
+    private function checkEnabled()
+    {
+        if (!$this->configuration->isEnabled()) {
+            throw new LocalizedException(
+                __("Cloudinary module is disabled. Please enable it first in order to use this API.")
+            );
+        }
+        return $this;
+    }
+
     private function getLocalTmpFileName($remoteFileUrl)
     {
         $localFileName = Uploader::getCorrectFileName(basename($remoteFileUrl));
@@ -680,6 +730,42 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             ->setCldPublicId(($this->parsedRemoteFileUrl["type"] === "video") ? $this->parsedRemoteFileUrl["thumbnail_url"] : $this->parsedRemoteFileUrl["publicId"] . '.' . $this->parsedRemoteFileUrl["extension"])
             ->setFreeTransformation($this->parsedRemoteFileUrl["transformations_string"])
             ->save();
+    }
+
+    /**
+     * @method getProductMediaBySku
+     * @param  string               $sku
+     * @return array
+     */
+    private function getProductCldUrlsBySku($sku)
+    {
+        $urls = [
+            'image' => null,
+            'small_image' => null,
+            'thumbnail' => null,
+            'media_gallery' => [],
+        ];
+        try {
+            $product = $this->productRepository->get($sku);
+            foreach ($product->getMediaGalleryImages() as $gallItem) {
+                $urls['media_gallery'][] = $gallItem->getUrl();
+                if ($product->getData('image') === $gallItem->getFile()) {
+                    $urls['image'] = $gallItem->getUrl();
+                }
+                if ($product->getData('small_image') === $gallItem->getFile()) {
+                    $urls['small_image'] = $gallItem->getUrl();
+                }
+                if ($product->getData('thumbnail') === $gallItem->getFile()) {
+                    $urls['thumbnail'] = $gallItem->getUrl();
+                }
+            }
+        } catch (\Exception $e) {
+            $urls = [
+                'error' => 1,
+                'message' => $e->getMessage(),
+            ];
+        }
+        return $urls;
     }
 
     ///////////////////////////////
