@@ -78,15 +78,6 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                         'platform' => "{$this->configuration->getMagentoPlatformName()} {$this->configuration->getMagentoPlatformEdition()} {$this->configuration->getMagentoPlatformVersion()}"
                     ]
                 ];
-                if (($this->credentials["username"] = $this->configuration->getAutomaticLoginUser())) {
-                    $this->cloudinaryMLoptions["timestamp"] = $this->timestamp;
-                    $this->cloudinaryMLoptions["username"] = $this->credentials["username"];
-                    $this->cloudinaryMLoptions["signature"] = $this->signature = hash('sha256', urldecode(http_build_query([
-                        'cloud_name' => $this->credentials['cloud_name'],
-                        'timestamp'  => $this->timestamp,
-                        'username'   => $this->credentials['username'],
-                    ])) . $this->credentials['api_secret']);
-                }
             }
         }
         if ($this->cloudinaryMLoptions) {
