@@ -3,6 +3,7 @@
 namespace Cloudinary\Cloudinary\Core\Image;
 
 use Cloudinary\Cloudinary\Core\Image\Transformation\Crop;
+use Cloudinary\Cloudinary\Core\Image\Transformation\DefaultImage;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dimensions;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dpr;
 use Cloudinary\Cloudinary\Core\Image\Transformation\FetchFormat;
@@ -12,6 +13,7 @@ use Cloudinary\Cloudinary\Core\Image\Transformation\Quality;
 
 class Transformation
 {
+    private $defaultImage;
     private $gravity;
     private $dimensions;
     private $crop;
@@ -25,6 +27,12 @@ class Transformation
     {
         $this->crop = 'lpad';
         $this->flags = [];
+    }
+
+    public function withDefaultImage(DefaultImage $defaultImage)
+    {
+        $this->defaultImage = trim((string)$defaultImage);
+        return $this;
     }
 
     public function withGravity(Gravity $gravity)
@@ -93,7 +101,8 @@ class Transformation
                 'width' => $this->dimensions ? $this->dimensions->getWidth() : null,
                 'height' => $this->dimensions ? $this->dimensions->getHeight() : null,
                 'dpr' => (string)$this->dpr,
-                'flags' => $this->flags
+                'flags' => $this->flags,
+                'default_image' => $this->defaultImage,
             ]
         ];
     }
