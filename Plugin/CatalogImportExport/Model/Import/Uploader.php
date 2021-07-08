@@ -152,6 +152,7 @@ class Uploader
             if ($this->parsedRemoteFileUrl['type'] === 'video') {
                 $cloudinaryVideosImportMap = $this->coreRegistry->registry('cloudinary_videos_import_map') ?: [];
                 $cloudinaryVideosImportMap["{$result['file']}"] = $this->parsedRemoteFileUrl["orig_url"];
+                $this->coreRegistry->unregister('cloudinary_videos_import_map');
                 $this->coreRegistry->register('cloudinary_videos_import_map', $cloudinaryVideosImportMap);
             }
         }
