@@ -69,7 +69,11 @@
                     <comment>Set the DPR value for your images. A DPR value of 2.0 will generate and deliver hi-res images for better results on HiDPI devices such as Retina Displays.</comment>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Dpr</source_model>
                 </field>
-                <field id="cloudinary_free_transform_global" translate="label comment" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="cloudinary_default_image" translate="label comment" type="text" sortOrder="5" showInDefault="4" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Default image</label>
+                    <comment>The public ID and file extension of the image to use as a placeholder when an asset no longer exists (e.g. sample.jpg).</comment>
+                </field>
+                <field id="cloudinary_free_transform_global" translate="label comment" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Global Custom Transformation</label>
                     <comment><![CDATA[Add global custom transformations in addition to those selected above.<br>Custom transformations will be added to the default image transformations settings chosen above.<br>For information about the full range of transforms available see the <a href="http://cloudinary.com/documentation/image_transformation_reference" target="_blank" title="Cloudinary documentation">Cloudinary documentation</a>.<br>You may need to clear or rebuild the Magento block and full page caches to see the changes in the front end.]]></comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>

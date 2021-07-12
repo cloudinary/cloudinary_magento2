@@ -8,6 +8,7 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Credentials;
 use Cloudinary\Cloudinary\Core\Exception\InvalidCredentials;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
+use Cloudinary\Cloudinary\Core\Image\Transformation\DefaultImage;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Dpr;
 use Cloudinary\Cloudinary\Core\Image\Transformation\FetchFormat;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
@@ -41,6 +42,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_DEFAULT_QUALITY = 'cloudinary/transformations/cloudinary_image_quality';
     const CONFIG_PATH_DEFAULT_DPR = 'cloudinary/transformations/cloudinary_image_dpr';
     const CONFIG_PATH_DEFAULT_FETCH_FORMAT = 'cloudinary/transformations/cloudinary_fetch_format';
+    const CONFIG_PATH_DEFAULT_IMAGE = 'cloudinary/transformations/cloudinary_default_image';
     const CONFIG_PATH_GLOBAL_FREEFORM = 'cloudinary/transformations/cloudinary_free_transform_global';
 
     //= Lazyload
@@ -238,7 +240,8 @@ class Configuration implements ConfigurationInterface
             ->withQuality(Quality::fromString($this->getImageQuality()))
             ->withFetchFormat(FetchFormat::fromString($this->getFetchFormat()))
             ->withFreeform(Freeform::fromString($this->getDefaultGlobalFreeform()))
-            ->withDpr(Dpr::fromString($this->getImageDpr()));
+            ->withDpr(Dpr::fromString($this->getImageDpr()))
+            ->withDefaultImage(DefaultImage::fromString($this->getCloudinaryDefaultImage()));
     }
 
     /**
@@ -322,6 +325,14 @@ class Configuration implements ConfigurationInterface
     public function getFetchFormat()
     {
         return $this->configReader->isSetFlag(self::CONFIG_PATH_DEFAULT_FETCH_FORMAT) ? FetchFormat::FETCH_FORMAT_AUTO : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCloudinaryDefaultImage()
+    {
+        return (string) $this->configReader->getValue(self::CONFIG_PATH_DEFAULT_IMAGE);
     }
 
     /**
