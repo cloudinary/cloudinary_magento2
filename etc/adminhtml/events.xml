@@ -14,8 +14,4 @@
         <observer name="delete_images_from_cloudinary" instance="Cloudinary\Cloudinary\Model\Observer\DeleteProductImage" />
     </event>
 
-    <event name="admin_system_config_changed_section_cloudinary">
-        <observer name="cloudinary_configuration_observer" instance="Cloudinary\Cloudinary\Model\Observer\Configuration" />
-    </event>
-
 </config>

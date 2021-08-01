@@ -1,0 +1,43 @@
+<?php
+/**
+ * @var $block Cloudinary\Cloudinary\Block\Adminhtml\System\Config\AutoUploadMapping
+ */
+?>
+<?php echo $block->getButtonHtml() ?>
+<div id="auto-upload-mapping-message"></div>
+
+<?php if ($block->isEnabled()): ?>
+    <script>
+        require([
+            'jquery'
+        ], function($){
+            $(document).on('click', '#auto-upload-mapping-btn', function () {
+                $('body').trigger('processStart');
+                $('#auto-upload-mapping-message').html("");
+                $.getJSON('<?php echo $block->getAjaxUrl() ?>')
+                    .done(function(res) {
+                        if(res && !res.error){
+                            $('#auto-upload-mapping-message').html(
+                                '<p><div class="messages"><div class="message message-success success">' + (res.message || res) + '</div></div></p>'
+                            );
+                        }else{
+                            $('#auto-upload-mapping-message').html(
+                                '<p><div class="messages"><div class="message message-error error">' + (res.message || 'Unknown ERROR during the mapping process.') + '</div></div></p>'
+                            );
+                        }
+                    })
+                    .fail(function(e) {
+                        console.error(e);
+                        $('#auto-upload-mapping-message').html(
+                            '<p><div class="messages"><div class="message message-error error">' + (e.message || e || 'Unknown ERROR during the mapping process.') + '</div></div></p>'
+                        );
+                    })
+                    .always(function(res) {
+                        $('body').trigger('processStop');
+                    });
+            });
+        });
+    </script>
+<?php else: ?>
+    <p class="note"><?= __('This button would be available after enabling the module with a valid environment variable.') ?></p>
+<?php endif; ?>

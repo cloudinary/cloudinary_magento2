@@ -42,8 +42,15 @@
                 </field>
                 <field id="cloudinary_auto_upload_mapping_request" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable auto-upload</label>
-                    <comment>Automatically upload your existing Magento images to your Cloudinary account when an image is requested by a user.</comment>
+                    <comment>Automatically upload your existing Magento images to your Cloudinary account when an image is requested by a user. Once enabled, click the button below to map your Magento media directory to your Cloudinary account.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cloudinary_auto_upload_mapping_button" translate="label comment" type="button" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\System\Config\AutoUploadMapping</frontend_model>
+                    <depends>
+                        <field id="cloudinary_enabled">1</field>
+                        <field id="cloudinary_auto_upload_mapping_request">1</field>
+                    </depends>
                 </field>
             </group>
             <group id="transformations" translate="label" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
