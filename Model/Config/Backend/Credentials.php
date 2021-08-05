@@ -7,6 +7,7 @@ use Cloudinary\Api;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Exception\InvalidCredentials;
+use Cloudinary\Cloudinary\Model\Configuration;
 use Magento\Config\Model\Config\Backend\Encrypted;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ReinitableConfigInterface;
@@ -158,7 +159,9 @@ class Credentials extends Encrypted
     private function getCredentialsFromConfig()
     {
         try {
-            return $this->getCredentialsFromEnvironmentVariable($this->configuration->getEnvironmentVariable()->__toString());
+            return $this->getCredentialsFromEnvironmentVariable(
+                $this->configuration->getEnvironmentVariable(($this->getField() === Configuration::CONFIG_PATH_ML_ENVIRONMENT_VARIABLE))->__toString()
+            );
         } catch (InvalidCredentials $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));
         }

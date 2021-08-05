@@ -35,6 +35,7 @@ class Configuration implements ConfigurationInterface
     //= Basics
     const CONFIG_PATH_ENABLED = 'cloudinary/cloud/cloudinary_enabled';
     const CONFIG_PATH_ENVIRONMENT_VARIABLE = 'cloudinary/setup/cloudinary_environment_variable';
+    const CONFIG_PATH_ML_ENVIRONMENT_VARIABLE = 'cloudinary/setup/cloudinary_ml_environment_variable';
     const CONFIG_PATH_CDN_SUBDOMAIN = 'cloudinary/configuration/cloudinary_cdn_subdomain';
 
     //= Transformations
@@ -122,9 +123,9 @@ class Configuration implements ConfigurationInterface
     private $decryptor;
 
     /**
-     * @var CloudinaryEnvironmentVariable
+     * @var array [CloudinaryEnvironmentVariable, ...]
      */
-    private $environmentVariable;
+    private $environmentVariable = [];
 
     /**
      * @var AutoUploadConfigurationInterface
@@ -215,19 +216,21 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @param bool $ml Get the env var for the Media Library, if configured
      * @return Cloud
      */
-    public function getCloud()
+    public function getCloud($ml = false)
     {
-        return $this->getEnvironmentVariable()->getCloud();
+        return $this->getEnvironmentVariable($ml)->getCloud();
     }
 
     /**
+     * @param bool $ml Get the env var for the Media Library, if configured
      * @return Credentials
      */
-    public function getCredentials()
+    public function getCredentials($ml = false)
     {
-        return $this->getEnvironmentVariable()->getCredentials();
+        return $this->getEnvironmentVariable($ml)->getCredentials();
     }
 
     /**
@@ -360,14 +363,32 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasMlEnvironmentVariable()
+    {
+        return $this->coreRegistry->registry(self::CONFIG_PATH_ML_ENVIRONMENT_VARIABLE) ?: (bool)$this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE);
+    }
+
+    /**
+     * @param bool $ml Get the env var for the Media Library, if configured
+     * @param bool $refresh Refresh stored variable
      * @return CloudinaryEnvironmentVariable
      */
-    public function getEnvironmentVariable()
+    public function getEnvironmentVariable($ml = false, $refresh = false)
     {
-        if (is_null($this->environmentVariable)) {
+        $ml = $ml ? 1 : 0;
+        if (empty($this->environmentVariable[$ml]) || $refresh) {
+            $this->environmentVariable[$ml] = $altEnvVar = null;
             try {
-                $this->environmentVariable = CloudinaryEnvironmentVariable::fromString(
-                    $this->coreRegistry->registry(self::CONFIG_PATH_ENVIRONMENT_VARIABLE) ?:
+                if ($ml) {
+                    $altEnvVar = $this->decryptor->decrypt(
+                        $this->configReader->getValue(self::CONFIG_PATH_ML_ENVIRONMENT_VARIABLE)
+                    );
+                }
+                $altEnvVar = $altEnvVar ?: $this->coreRegistry->registry(self::CONFIG_PATH_ENVIRONMENT_VARIABLE);
+                $this->environmentVariable[$ml] = CloudinaryEnvironmentVariable::fromString(
+                    $altEnvVar ?:
                     $this->decryptor->decrypt(
                         $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE)
                     )
@@ -377,7 +398,7 @@ class Configuration implements ConfigurationInterface
             }
         }
 
-        return $this->environmentVariable;
+        return $this->environmentVariable[$ml];
     }
 
     /**
