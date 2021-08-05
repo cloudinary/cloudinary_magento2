@@ -24,10 +24,17 @@
             <group id="setup" translate="label" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Cloudinary Account</label>
                 <attribute type="expanded">1</attribute>
-                <field id="cloudinary_environment_variable" translate="label comment" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                <field id="cloudinary_environment_variable" translate="label comment" type="obscure" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Cloudinary Account Credentials</label>
                     <comment>
                         <![CDATA[Set your Cloudinary account credentials. Copy the "Environment variable" string from the dashboard of <a href="https://cloudinary.com/console" target="_blank" title="Cloudinary's Management Console">Cloudinary's Management Console</a>.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name]]>
+                    </comment>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
+                </field>
+                <field id="cloudinary_ml_environment_variable" translate="label comment" type="obscure" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Cloudinary Account Credentials (to use with the Media Library)</label>
+                    <comment>
+                        <![CDATA[Leave empty for using the main one. Set your Cloudinary account credentials. Copy the "Environment variable" string from the dashboard of <a href="https://cloudinary.com/console" target="_blank" title="Cloudinary's Management Console">Cloudinary's Management Console</a>.<br>Format should be: cloudinary://API_Key:API_Secret@Cloud_Name]]>
                     </comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
                 </field>

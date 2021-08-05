@@ -60,9 +60,9 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
             $this->cloudinaryMLoptions = [];
             $this->timestamp = time();
             $this->credentials = [
-                "cloud_name" => (string)$this->configuration->getCloud(),
-                "api_key" => (string)$this->configuration->getCredentials()->getKey(),
-                "api_secret" => (string)$this->configuration->getCredentials()->getSecret()
+                "cloud_name" => (string)$this->configuration->getCloud(true),
+                "api_key" => (string)$this->configuration->getCredentials(true)->getKey(),
+                "api_secret" => (string)$this->configuration->getCredentials(true)->getSecret()
             ];
             if (!$this->credentials["cloud_name"] || !$this->credentials["api_key"] || !$this->credentials["api_secret"]) {
                 $this->credentials = null;
