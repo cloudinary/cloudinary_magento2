@@ -84,7 +84,20 @@
                     <label>Global Custom Transformation</label>
                     <comment><![CDATA[Add global custom transformations in addition to those selected above.<br>Custom transformations will be added to the default image transformations settings chosen above.<br>For information about the full range of transforms available see the <a href="http://cloudinary.com/documentation/image_transformation_reference" target="_blank" title="Cloudinary documentation">Cloudinary documentation</a>.<br>You may need to clear or rebuild the Magento block and full page caches to see the changes in the front end.]]></comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>
+                    <config_path>cloudinary/transformations/cloudinary_free_transform_global</config_path>
+                </field>
+                <field id="cloudinary_free_transform_global_products" translate="label comment" type="text" sortOrder="7" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Products Custom Transformation</label>
+                    <comment><![CDATA[Same as "Global Custom Transformation" but <b>for products only</b>.<br>
+                    *Set the behavior of this field on the dropdown below.]]></comment>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Free</backend_model>
+                    <config_path>cloudinary/transformations/cloudinary_free_transform_global_products</config_path>
+                </field>
+                <field id="cloudinary_free_transform_global_products_behavior" translate="label comment" type="select" sortOrder="8" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Products Custom Transformation Behavior</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\FreeTransformBehavior</source_model>
                     <frontend_model>Cloudinary\Cloudinary\Block\Adminhtml\Form\Field\Free</frontend_model>
+                    <config_path>cloudinary/transformations/cloudinary_free_transform_global_products_behavior</config_path>
                 </field>
             </group>
             <group id="product_gallery" translate="label" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">

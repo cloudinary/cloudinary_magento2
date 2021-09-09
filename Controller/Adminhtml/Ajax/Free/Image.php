@@ -76,7 +76,7 @@ class Image extends Action
      */
     private function defaultTransformWithFreeTransform($freeTransform)
     {
-        $transformation = $this->configuration->getDefaultTransformation();
+        $transformation = $this->configuration->getDefaultTransformation(true);
 
         if ($freeTransform) {
             $transformation->withFreeform(Freeform::fromString($freeTransform));
