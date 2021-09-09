@@ -10,6 +10,7 @@ define(
 
                 currentTransform: '',
                 currentTransformProducts: '',
+                currentTransformBehavior: '',
 
                 getTransformText: function() {
                     return $(this.options.transformInputFieldId).val() || '';
@@ -55,6 +56,7 @@ define(
 
                     self.currentTransform = self.getTransformText();
                     self.currentTransformProducts = self.getTransformProductsText();
+                    self.currentTransformBehavior = self.getTransformBehavior();
                     self.setPreviewActiveState(false);
 
                     $.ajax({
@@ -69,7 +71,7 @@ define(
                     }).done(
                         function(response) {
                             if ((transformations_string = self.currentTransformProducts)) {
-                                if (self.getTransformBehavior() === 'add') {
+                                if (self.currentTransformBehavior === 'add') {
                                     transformations_string = self.currentTransform + ',' + transformations_string;
                                 }
                                 var globalResURL = response.url;
@@ -106,7 +108,11 @@ define(
                 setPreviewActiveState: function(state) {
                     if (
                         state &&
-                        (this.currentTransform !== this.getTransformText() || self.currentTransformProducts !== this.getTransformProductsText())
+                        (
+                            this.currentTransform !== this.getTransformText() ||
+                            this.currentTransformProducts !== this.getTransformProductsText() ||
+                            (this.getTransformProductsText() && this.currentTransformBehavior !== this.getTransformBehavior())
+                        )
                     ) {
                         $(this.options.previewButtonId).removeClass('disabled');
                     } else {
@@ -135,6 +141,12 @@ define(
                     );
                     $(this.options.transformInputProductsFieldId).on(
                         'change keydown paste input',
+                        function() {
+                            self.setPreviewActiveState(true);
+                        }
+                    );
+                    $(this.options.transformInputProductsBehaviorFieldId).on(
+                        'change',
                         function() {
                             self.setPreviewActiveState(true);
                         }
