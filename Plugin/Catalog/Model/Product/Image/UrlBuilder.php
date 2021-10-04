@@ -182,7 +182,7 @@ class UrlBuilder
         $transform = $this->configuration->getDefaultTransformation(true)->withDimensions($dimensions);
 
         if (isset($imageMiscParams['keep_frame'])) {
-            $this->keepFrame = ($imageMiscParams['keep_frame'] === 'frame') ? true : false;
+            $this->keepFrame = (bool) $imageMiscParams['keep_frame'];
         }
 
         if ($this->keepFrame) {
