@@ -602,11 +602,15 @@ class Configuration implements ConfigurationInterface
      */
     public function parseCloudinaryUrl($url, $publicId = null)
     {
+        $parsedUrlParts = $this->mbParseUrl($url);
+        $url = preg_replace('/\?.*/', '', $url);
+
         $parsed = [
             "orig_url" => $url,
-            "scheme" => null,
-            "host" => null,
-            "path" => null,
+            "scheme" => isset($parsedUrlParts["scheme"]) ? $parsedUrlParts["scheme"] : null,
+            "host" => isset($parsedUrlParts["host"]) ? $parsedUrlParts["host"] : null,
+            "path" => isset($parsedUrlParts["path"]) ? $parsedUrlParts["path"] : null,
+            "query" => isset($parsedUrlParts["query"]) ? $parsedUrlParts["query"] : null,
             "extension" => \pathinfo($url, PATHINFO_EXTENSION),
             "type" => null,
             "cloudName" => null,
@@ -619,10 +623,6 @@ class Configuration implements ConfigurationInterface
             "versionless_transformationless_url" => $url,
             "thumbnail_url" => null,
         ];
-
-        $parsed["scheme"] = $this->mbParseUrl($url, PHP_URL_SCHEME);
-        $parsed["host"] = $this->mbParseUrl($url, PHP_URL_HOST);
-        $parsed["path"] = $this->mbParseUrl($url, PHP_URL_PATH);
 
         $_url = ltrim($parsed["path"], '/');
         $_url = preg_replace('/\.[^.]+$/', '', $_url);

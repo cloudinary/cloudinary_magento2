@@ -134,7 +134,7 @@ class CloudinaryImageProvider implements ImageProvider
             'sign_url' => $this->configuration->getUseSignedUrls(),
             'version' => 1
             ]
-        );
+        ) . '?_i=AB';
 
         if (!$this->configuration->isEnabledProductGallery()) {
             //Handle with use-root-path if necessary:
