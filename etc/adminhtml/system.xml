@@ -42,7 +42,10 @@
                 </field>
                 <field id="cloudinary_auto_upload_mapping_request" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable auto-upload</label>
-                    <comment>Automatically upload your existing Magento images to your Cloudinary account when an image is requested by a user. Once enabled, click the button below to map your Magento media directory to your Cloudinary account.</comment>
+                    <comment><![CDATA[
+                        <p class="note">Automatically upload your existing Magento images to your Cloudinary account when an image is requested by a user. Once enabled, click the button below to map your Magento media directory to your Cloudinary account.</p>
+                        <p class="note"><b>Note:</b> Disabling auto upload mapping from Magento will not remove the configuration from Cloudinary. To completely disable your auto upload mapping, navigate to your Cloudinary <a href="https://cloudinary.com/console/lui/settings/upload" target="_blank" title="Cloudinary Upload settings">Upload settings</a> and clear the <b>Auto upload mapping</b> that corresponds to your Magento URLs.</p>]]>
+                    </comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="cloudinary_auto_upload_mapping_button" translate="label comment" type="button" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
