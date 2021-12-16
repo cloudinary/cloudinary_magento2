@@ -641,7 +641,7 @@ define(
                         thumbnail = videoInfo.videoSrc
                             .replace(/\.[^/.]+$/, "")
                             .replace(new RegExp('\/v[0-9]{1,10}\/'), '/')
-                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURI(tmp.public_id)) + ')$'), '/so_auto/$1.jpg');
+                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURI(decodeURI(tmp.public_id))) + ')$'), '/so_auto/$1.jpg');
 
                         //Fallback for video thumbnail image, use placeholder or store logo
                         $.ajax({
