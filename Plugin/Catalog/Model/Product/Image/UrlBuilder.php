@@ -179,10 +179,10 @@ class UrlBuilder
         $imageMiscParams['image_height'] = (isset($imageMiscParams['image_height'])) ? $imageMiscParams['image_height'] : null;
         $imageMiscParams['image_width'] = (isset($imageMiscParams['image_width'])) ? $imageMiscParams['image_width'] : null;
         $dimensions = $this->dimensions ?: Dimensions::fromWidthAndHeight($imageMiscParams['image_width'], $imageMiscParams['image_height']);
-        $transform = $this->configuration->getDefaultTransformation()->withDimensions($dimensions);
+        $transform = $this->configuration->getDefaultTransformation(true)->withDimensions($dimensions);
 
         if (isset($imageMiscParams['keep_frame'])) {
-            $this->keepFrame = ($imageMiscParams['keep_frame'] === 'frame') ? true : false;
+            $this->keepFrame = (bool) $imageMiscParams['keep_frame'];
         }
 
         if ($this->keepFrame) {

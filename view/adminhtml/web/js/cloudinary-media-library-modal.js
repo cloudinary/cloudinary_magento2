@@ -115,7 +115,7 @@ define([
                             asset.asset_derived_image_url
                             .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
                             .replace(/\.[^/.]+$/, '')
-                            .replace(new RegExp('\/' + widget.escapeRegex(encodeURI(asset.public_id)) + '$'), '')
+                            .replace(new RegExp('\/' + widget.escapeRegex(encodeURI(decodeURI(asset.public_id))) + '$'), '')
                             .replace(new RegExp('\/v[0-9]{1,10}$'), '')
                             .replace(new RegExp('\/'), ',');
                         if (widget.options.useDerived) {
@@ -126,7 +126,7 @@ define([
                         asset.asset_image_url = asset.asset_url
                             .replace(/\.[^/.]+$/, "")
                             .replace(new RegExp('\/v[0-9]{1,10}\/'), '/')
-                            .replace(new RegExp('\/(' + widget.escapeRegex(encodeURI(asset.public_id)) + ')$'), '/so_auto/$1.jpg');
+                            .replace(new RegExp('\/(' + widget.escapeRegex(encodeURI(decodeURI(asset.public_id))) + ')$'), '/so_auto/$1.jpg');
                     }
                     $.ajax({
                         url: widget.options.imageUploaderUrl,

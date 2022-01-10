@@ -216,10 +216,10 @@ class ImageFactory
     private function createTransformation(array $imageMiscParams)
     {
         $dimensions = $this->getDimensions($imageMiscParams);
-        $transform = $this->configuration->getDefaultTransformation()->withDimensions($dimensions);
+        $transform = $this->configuration->getDefaultTransformation(true)->withDimensions($dimensions);
 
         if (isset($imageMiscParams['keep_frame'])) {
-            $this->keepFrame = ($imageMiscParams['keep_frame'] === 'frame') ? true : false;
+            $this->keepFrame = (bool) $imageMiscParams['keep_frame'];
         }
 
         if ($this->keepFrame) {
