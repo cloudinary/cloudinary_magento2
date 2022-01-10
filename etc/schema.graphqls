@@ -1,0 +1,12 @@
+type CloudinaryData {
+    image: String
+    small_image: String
+    thumbnail: String
+    media_gallery: [String]
+}
+
+interface ProductInterface {
+    cld_data: CloudinaryData
+        @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldResolver")
+        @doc(description: "Cloudinary urls generated for product images")
+}

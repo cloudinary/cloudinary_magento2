@@ -44,6 +44,8 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_DEFAULT_FETCH_FORMAT = 'cloudinary/transformations/cloudinary_fetch_format';
     const CONFIG_PATH_DEFAULT_IMAGE = 'cloudinary/transformations/cloudinary_default_image';
     const CONFIG_PATH_GLOBAL_FREEFORM = 'cloudinary/transformations/cloudinary_free_transform_global';
+    const CONFIG_PATH_GLOBAL_FREEFORM_PRODUCTS = 'cloudinary/transformations/cloudinary_free_transform_global_products';
+    const CONFIG_PATH_GLOBAL_FREEFORM_PRODUCTS_BEHAVIOR = 'cloudinary/transformations/cloudinary_free_transform_global_products_behavior';
 
     //= Lazyload
     const XML_PATH_LAZYLOAD_ENABLED = 'cloudinary/lazyload/enabled';
@@ -231,15 +233,24 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @param  bool $isProduct
      * @return Transformation
      */
-    public function getDefaultTransformation()
+    public function getDefaultTransformation($isProduct = false)
     {
+        if ($isProduct && ($globalFreeform = $this->getDefaultGlobalFreeformProducts())) {
+            if ($this->getDefaultGlobalFreeformProductsBehavior() === 'add') {
+                $globalFreeform = $this->getDefaultGlobalFreeform() . ',' . $globalFreeform;
+            }
+        } else {
+            $globalFreeform = $this->getDefaultGlobalFreeform();
+        }
+
         return Transformation::builder()
             ->withGravity(Gravity::fromString($this->getDefaultGravity()))
             ->withQuality(Quality::fromString($this->getImageQuality()))
             ->withFetchFormat(FetchFormat::fromString($this->getFetchFormat()))
-            ->withFreeform(Freeform::fromString($this->getDefaultGlobalFreeform()))
+            ->withFreeform(Freeform::fromString($globalFreeform))
             ->withDpr(Dpr::fromString($this->getImageDpr()))
             ->withDefaultImage(DefaultImage::fromString($this->getCloudinaryDefaultImage()));
     }
@@ -250,6 +261,22 @@ class Configuration implements ConfigurationInterface
     private function getDefaultGlobalFreeform()
     {
         return (string) $this->configReader->getValue(self::CONFIG_PATH_GLOBAL_FREEFORM);
+    }
+
+    /**
+     * @return string
+     */
+    private function getDefaultGlobalFreeformProducts()
+    {
+        return (string) $this->configReader->getValue(self::CONFIG_PATH_GLOBAL_FREEFORM_PRODUCTS);
+    }
+
+    /**
+     * @return string
+     */
+    private function getDefaultGlobalFreeformProductsBehavior()
+    {
+        return (string) $this->configReader->getValue(self::CONFIG_PATH_GLOBAL_FREEFORM_PRODUCTS_BEHAVIOR);
     }
 
     /**
@@ -575,11 +602,15 @@ class Configuration implements ConfigurationInterface
      */
     public function parseCloudinaryUrl($url, $publicId = null)
     {
+        $parsedUrlParts = $this->mbParseUrl($url);
+        $url = preg_replace('/\?.*/', '', $url);
+
         $parsed = [
             "orig_url" => $url,
-            "scheme" => null,
-            "host" => null,
-            "path" => null,
+            "scheme" => isset($parsedUrlParts["scheme"]) ? $parsedUrlParts["scheme"] : null,
+            "host" => isset($parsedUrlParts["host"]) ? $parsedUrlParts["host"] : null,
+            "path" => isset($parsedUrlParts["path"]) ? $parsedUrlParts["path"] : null,
+            "query" => isset($parsedUrlParts["query"]) ? $parsedUrlParts["query"] : null,
             "extension" => \pathinfo($url, PATHINFO_EXTENSION),
             "type" => null,
             "cloudName" => null,
@@ -592,10 +623,6 @@ class Configuration implements ConfigurationInterface
             "versionless_transformationless_url" => $url,
             "thumbnail_url" => null,
         ];
-
-        $parsed["scheme"] = $this->mbParseUrl($url, PHP_URL_SCHEME);
-        $parsed["host"] = $this->mbParseUrl($url, PHP_URL_HOST);
-        $parsed["path"] = $this->mbParseUrl($url, PHP_URL_PATH);
 
         $_url = ltrim($parsed["path"], '/');
         $_url = preg_replace('/\.[^.]+$/', '', $_url);

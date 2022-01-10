@@ -20,6 +20,7 @@ define([
     }
 
     return function(validator) {
+
         validator.addRule(
             'validate-video-url',
             function(href) {
@@ -29,10 +30,35 @@ define([
 
                 href = (href || '').replace(/^\s+/, '').replace(/\s+$/, '');
 
-                return validateIsUrl(href) && (href.match(/youtube\.com|youtu\.be/) || href.match(/vimeo\.com/) || href.match(/cloudinary\.com/));
+                return validateIsUrl(href) && (
+                    href.match(/youtube\.com|youtu\.be/) ||
+                    href.match(/vimeo\.com/) ||
+                    href.match(/cloudinary\.com/) ||
+                    href.match(/\.(mp4|ogv|webm)(?!\w)/)
+                );
             },
-            $.mage.__('Please enter a valid video URL.')
+            $.mage.__('Please enter a valid video URL. Valid URLs have a video file extension (.mp4, .webm, .ogv) or links to videos on YouTube, Vimeo or Cloudinary.')//eslint-disable-line max-len
         );
+
+        validator.addRule(
+            'validate-video-source',
+            function (href) {
+                if (utils.isEmptyNoTrim(href)) {
+                    return true;
+                }
+
+                href = (href || '').replace(/^\s+/, '').replace(/\s+$/, '');
+
+                return validateIsUrl(href) && (
+                    href.match(/youtube\.com|youtu\.be/) ||
+                    href.match(/vimeo\.com/) ||
+                    href.match(/cloudinary\.com/) ||
+                    href.match(/\.(mp4|ogv|webm)(?!\w)/)
+                );
+            },
+            $.mage.__('Please enter a valid video URL. Valid URLs have a video file extension (.mp4, .webm, .ogv) or links to videos on YouTube, Vimeo or Cloudinary.')//eslint-disable-line max-len
+        );
+
         return validator;
     };
 });

@@ -7,6 +7,7 @@
                 <cloudinary_fetch_format>1</cloudinary_fetch_format>
                 <cloudinary_image_quality>auto</cloudinary_image_quality>
                 <cloudinary_image_dpr>2.0</cloudinary_image_dpr>
+                <cloudinary_free_transform_global_products_behavior>add</cloudinary_free_transform_global_products_behavior>
             </transformations>
             <configuration>
                 <cloudinary_cdn_subdomain>1</cloudinary_cdn_subdomain>

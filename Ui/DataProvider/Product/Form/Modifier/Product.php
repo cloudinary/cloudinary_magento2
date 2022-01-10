@@ -2,17 +2,17 @@
 
 namespace Cloudinary\Cloudinary\Ui\DataProvider\Product\Form\Modifier;
 
-use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Cloudinary\Core\CloudinaryImageProvider;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
+use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
 use Cloudinary\Cloudinary\Core\Image\Transformation\Freeform;
-use Magento\Catalog\Model\Locator\LocatorInterface;
-use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier;
-use Magento\Ui\Component\Form;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
+use Magento\Catalog\Model\Locator\LocatorInterface;
 use Magento\Catalog\Model\Product\Gallery\Entry;
+use Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\AbstractModifier;
 use Magento\Framework\UrlInterface;
+use Magento\Ui\Component\Form;
 
 class Product extends AbstractModifier
 {
@@ -102,11 +102,10 @@ class Product extends AbstractModifier
                         'collapsible' => true,
                         'opened' => false,
                         'componentType' => Form\Fieldset::NAME,
-                        'sortOrder' =>
-                            $this->getNextGroupSortOrder(
-                                $meta,
-                                static::GROUP_CONTENT,
-                                static::SORT_ORDER
+                        'sortOrder' => $this->getNextGroupSortOrder(
+                            $meta,
+                            static::GROUP_CONTENT,
+                            static::SORT_ORDER
                             ),
                     ],
                 ],
@@ -223,7 +222,7 @@ class Product extends AbstractModifier
      */
     private function defaultTransformWithFreeTransform($freeTransform)
     {
-        $transformation = $this->configuration->getDefaultTransformation();
+        $transformation = $this->configuration->getDefaultTransformation(true);
 
         if ($freeTransform) {
             $transformation->withFreeform(Freeform::fromString($freeTransform));

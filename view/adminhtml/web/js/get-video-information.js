@@ -110,44 +110,45 @@ define(
                 /**
                  * Abstract play command
                  */
-                play: function() {
+                play: function () {
                     this._player.play();
                 },
 
                 /**
                  * Abstract pause command
                  */
-                pause: function() {
+                pause: function () {
                     this._player.pause();
                 },
 
                 /**
                  * Abstract stop command
                  */
-                stop: function() {
+                stop: function () {
                     this._player.stop();
                 },
 
                 /**
                  * Abstract playing command
                  */
-                playing: function() {
+                playing: function () {
                     return this._player.playing();
                 },
 
                 /**
                  * Abstract destroying command
                  */
-                destroy: function() {
-                    this._player.destroy();
+                destroy: function () {
+                    if (this._player) {
+                        this._player.destroy();
+                    }
                 },
 
                 /**
                  * Calculates ratio for responsive videos
-                 *
                  * @private
                  */
-                _calculateRatio: function() {
+                _calculateRatio: function () {
                     if (!this._responsive) {
                         return;
                     }
@@ -314,43 +315,40 @@ define(
             }
         );
 
-        $.widget(
-            'mage.videoVimeo', $.mage.productVideoLoader, {
+        $.widget('mage.videoVimeo', $.mage.productVideoLoader, {
 
-                /**
-                 * Initialize the Vimeo widget
-                 *
-                 * @private
-                 */
-                _create: function() {
-                    var timestamp,
-                        src,
-                        additionalParams;
+            /**
+             * Initialize the Vimeo widget
+             * @private
+             */
+            _create: function () {
+                var timestamp,
+                    src,
+                    additionalParams;
 
-                    this._initialize();
-                    timestamp = new Date().getTime();
+                this._initialize();
+                timestamp = new Date().getTime();
 
-                    if (this._autoplay) {
-                        additionalParams += '&autoplay=1';
-                    }
+                if (this._autoplay) {
+                    additionalParams += '&autoplay=1';
+                }
 
-                    src = 'https://player.vimeo.com/video/' +
-                        this._code + '?api=1&player_id=vimeo' +
-                        this._code +
-                        timestamp +
-                        additionalParams;
-                    this.element.append(
-                        $('<iframe/>')
+                src = 'https://player.vimeo.com/video/' +
+                    this._code + '?api=1&player_id=vimeo' +
+                    this._code +
+                    timestamp +
+                    additionalParams;
+                this.element.append(
+                    $('<iframe/>')
                         .attr('frameborder', 0)
                         .attr('id', 'vimeo' + this._code + timestamp)
                         .attr('width', this._width)
                         .attr('height', this._height)
                         .attr('src', src)
-                    );
+                );
 
-                }
             }
-        );
+        });
 
         $.widget(
             'mage.videoCloudinary', $.mage.productVideoLoader, {
@@ -384,29 +382,6 @@ define(
                             }
                         )
                     );
-
-                    /*
-                    var fileExtensionrRegex = /(?:\.([^.]+))?$/;
-                    var video = $('<video/>')
-                    .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
-                    .attr('class', 'cld-video-player')
-                    .attr('width', this._width)
-                    .attr('height', this._height)
-                    .attr('controls', true)
-                    .attr('src', this._videoSrc)
-                    .attr('type', "video/" + fileExtensionrRegex.exec(this._videoSrc)[1])
-                    .on("loadstart", function() {
-                    $('body').loader('show');
-                    })
-                    .on("loadeddata", function() {
-                    $('body').loader('hide');
-                    });
-
-                    this.element.append(
-                    video
-                    );
-                    */
-
                 }
             }
         );
@@ -504,7 +479,7 @@ define(
 
                     /**
                      *
-                     * @param   {Object} data
+                     * @param {Object} data
                      * @private
                      */
                     function _onYouTubeLoaded(data) {
@@ -518,7 +493,7 @@ define(
                          *
                          * @returns {String}
                          */
-                        createErrorMessage = function() {
+                        createErrorMessage = function () {
                             var error = data.error,
                                 errors = error.errors,
                                 i,
@@ -582,20 +557,20 @@ define(
                         var tmp,
                             respData;
 
-                        if (data.length < 1) {
+                        if (!data) {
                             this._onRequestError($.mage.__('Video not found'));
 
                             return null;
                         }
-                        tmp = data[0];
+                        tmp = data;
                         respData = {
                             duration: this._formatVimeoDuration(tmp.duration),
-                            channel: tmp['user_name'],
-                            channelId: tmp['user_url'],
+                            channel: tmp['author_name'],
+                            channelId: tmp['author_url'],
                             uploaded: tmp['upload_date'],
                             title: tmp.title,
                             description: tmp.description.replace(/(&nbsp;|<([^>]+)>)/ig, ''),
-                            thumbnail: tmp['thumbnail_large'],
+                            thumbnail: tmp['thumbnail_url'],
                             videoId: videoInfo.id,
                             videoProvider: videoInfo.type
                         };
@@ -641,7 +616,7 @@ define(
                         thumbnail = videoInfo.videoSrc
                             .replace(/\.[^/.]+$/, "")
                             .replace(new RegExp('\/v[0-9]{1,10}\/'), '/')
-                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURI(tmp.public_id)) + ')$'), '/so_auto/$1.jpg');
+                            .replace(new RegExp('\/(' + this._escapeRegex(encodeURI(decodeURI(tmp.public_id))) + ')$'), '/so_auto/$1.jpg');
 
                         //Fallback for video thumbnail image, use placeholder or store logo
                         $.ajax({
@@ -679,32 +654,33 @@ define(
                     if (type === 'youtube') {
                         googleapisUrl = 'https://www.googleapis.com/youtube/v3/videos?id=' +
                             id +
-                            '&part=snippet,contentDetails,statistics,status&key=' +
+                            '&part=snippet,contentDetails&key=' +
                             this.options.youtubeKey + '&alt=json&callback=?';
-                        $.getJSON(
-                            googleapisUrl, {
+                        $.getJSON(googleapisUrl,
+                            {
                                 format: 'json'
                             },
                             $.proxy(_onYouTubeLoaded, self)
                         ).fail(
-                            function() {
+                            function () {
                                 self._onRequestError('Video not found');
                             }
                         );
                     } else if (type === 'vimeo') {
                         $.ajax({
-                            url: 'https://www.vimeo.com/api/v2/video/' + id + '.json',
+                            url: 'https://vimeo.com/api/oembed.json',
                             dataType: 'jsonp',
                             data: {
-                                format: 'json'
+                                format: 'json',
+                                url: 'https://vimeo.com/' + id
                             },
-                            timeout: 10000,
-                            success: $.proxy(_onVimeoLoaded, self),
+                            timeout: 5000,
+                            success:  $.proxy(_onVimeoLoaded, self),
 
                             /**
                              * @private
                              */
-                            error: function() {
+                            error: function () {
                                 self._onRequestError($.mage.__('Video not found'));
                             }
                         });
@@ -842,11 +818,9 @@ define(
                         }
                     } else if (href.host.match(/vimeo\.com/)) {
                         type = 'vimeo';
-                        vimeoRegex = new RegExp(
-                            ['https?:\\/\\/(?:www\\.|player\\.)?vimeo.com\\/(?:channels\\/(?:\\w+\\/)',
-                                '?|groups\\/([^\\/]*)\\/videos\\/|album\\/(\\d+)\\/video\\/|video\\/|)(\\d+)(?:$|\\/|\\?)'
-                            ].join('')
-                        );
+                        vimeoRegex = new RegExp(['https?:\\/\\/(?:www\\.|player\\.)?vimeo.com\\/(?:channels\\/(?:\\w+\\/)',
+                            '?|groups\\/([^\\/]*)\\/videos\\/|album\\/(\\d+)\\/video\\/|video\\/|)(\\d+)(?:$|\\/|\\?)'
+                        ].join(''));
 
                         if (href.href.match(vimeoRegex) != null) {
                             id = href.href.match(vimeoRegex)[3];

@@ -353,7 +353,7 @@ define(
                                                 description: data.description
                                             }
                                         });
-                                        this._loadRemotePreview(data.thumbnail);
+                                        this._loadRemotePreview(data.thumbnail, data.videoProvider);
                                     }
                                     self._onlyVideoPlayer = true;
                                 }, this
@@ -394,14 +394,14 @@ define(
                  * @param   {String} sourceUrl
                  * @private
                  */
-                _loadRemotePreview: function(sourceUrl) {
+                _loadRemotePreview: function(sourceUrl, videoProvider) {
                     var url = this.options.saveRemoteVideoUrl,
                         self = this;
                     this._getPreviewImage().attr('src', sourceUrl).hide();
                     this._blockActionButtons(true, true);
                     $.ajax({
                         url: url,
-                        data: 'remote_image=' + sourceUrl,
+                        data: 'remote_image=' + (videoProvider === 'cloudinary' ? encodeURI(sourceUrl) : sourceUrl),
                         type: 'post',
                         success: $.proxy(
                             function(result) {
