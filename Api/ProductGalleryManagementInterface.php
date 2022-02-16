@@ -43,7 +43,7 @@ interface ProductGalleryManagementInterface
      * @param  string  $sku
      * @return string
      */
-    public function getProductMedia($sku);
+    public function getProductMedia($sku, $onlyUrls = true);
 
     /**
      * Get products gallery items as Cloudinary URLs.

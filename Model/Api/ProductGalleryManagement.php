@@ -283,9 +283,9 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * {@inheritdoc}
      */
-    public function getProductMedia($sku)
+    public function getProductMedia($sku, $onlyUrls = true)
     {
-        return $this->_getProductMedia($sku);
+        return $this->_getProductMedia($sku, $onlyUrls);
     }
 
     /**
@@ -302,7 +302,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      * @param  mixed           $sku
      * @return string          (json result)
      */
-    private function _getProductMedia($sku)
+    private function _getProductMedia($sku, $onlyUrls = true)
     {
         $result = ["data" => []];
 
@@ -311,10 +311,10 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             $this->checkEnabled();
             if (is_array($sku) || is_object($sku)) {
                 foreach ($sku as $key => $_sku) {
-                    $result['data'][$_sku] = $this->getProductCldUrlsBySku($_sku);
+                    $result['data'][$_sku] = ($onlyUrls ? $this->getProductCldUrlsBySku($_sku) : $this->getProductCldDataBySku($_sku));
                 }
             } else {
-                $result['data'] = $this->getProductCldUrlsBySku($sku);
+                $result['data'] = ($onlyUrls ? $this->getProductCldUrlsBySku($sku) : $this->getProductCldDataBySku($sku));
             }
         } catch (\Exception $e) {
             $result["error"] = 1;
@@ -766,6 +766,28 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             ];
         }
         return $urls;
+    }
+
+    /**
+     * @method getProductCldDataBySku
+     * @param  string               $sku
+     * @return array
+     */
+    private function getProductCldDataBySku($sku)
+    {
+        $data = [];
+        try {
+            $product = $this->productRepository->get($sku);
+            foreach ($product->getMediaGalleryImages() as $gallItem) {
+                array_push($data, $gallItem->getData());
+            }
+        } catch (\Exception $e) {
+            $data = [
+                'error' => 1,
+                'message' => $e->getMessage()
+            ];
+        }
+        return $data;
     }
 
     ///////////////////////////////
