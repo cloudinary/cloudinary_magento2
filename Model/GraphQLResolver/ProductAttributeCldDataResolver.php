@@ -34,7 +34,7 @@
         public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
         {
             $productId = $value['sku'];
-            $productMediaStr = $this->productGalleryManagement->getProductMedia($productId, false);
+            $productMediaStr = $this->productGalleryManagement->getProductMediaData($productId);
             $jsonDecoder = new \Magento\Framework\Serialize\Serializer\Json();
             $productMedia = $jsonDecoder->unserialize($productMediaStr);
             return $productMedia['data'];

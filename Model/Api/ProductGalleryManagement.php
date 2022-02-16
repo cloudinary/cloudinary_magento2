@@ -283,9 +283,17 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     /**
      * {@inheritdoc}
      */
-    public function getProductMedia($sku, $onlyUrls = true)
+    public function getProductMedia($sku)
     {
-        return $this->_getProductMedia($sku, $onlyUrls);
+        return $this->_getProductMedia($sku, true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProductMediaData($sku)
+    {
+        return $this->_getProductMedia($sku, false);
     }
 
     /**
