@@ -786,8 +786,16 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $data = [];
         try {
             $product = $this->productRepository->get($sku);
+            $attributes = $product->getAttributes();
             foreach ($product->getMediaGalleryImages() as $gallItem) {
-                array_push($data, $gallItem->getData());
+                foreach ($attributes as $attribute) {
+                   $attrCode = $attribute->getAttributeCode();
+                   if($product->getData($attrCode) === $gallItem->getFile()) {
+                    $gallItemData = $gallItem->getData();
+                    $gallItemData['role'] = $attrCode;
+                    array_push($data, $gallItemData);
+                   }
+                }
             }
         } catch (\Exception $e) {
             $data = [

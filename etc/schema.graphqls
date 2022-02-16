@@ -6,6 +6,7 @@ type CloudinaryData {
 }
 
 type CloudinaryImage {
+    role: String
     disabled: String
     disabled_default: String
     entity_id: String
@@ -35,7 +36,7 @@ interface ProductInterface {
     cld_data: CloudinaryData
         @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldResolver")
         @doc(description: "Cloudinary urls generated for product images")
-    cld_data_all: [CloudinaryImage]
+    cloudinary_images: [CloudinaryImage]
         @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldDataResolver")
         @doc(description: "Cloudinary urls generated for product images")
 }
