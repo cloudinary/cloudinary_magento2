@@ -46,6 +46,11 @@ class Credentials extends Encrypted
      * @var ScopeConfigInterface
      */
     protected $appConfig;
+    
+    /**
+     * @var EncryptorInterface
+     */
+    private $encryptor;
 
     /**
      * @param Context                   $context
@@ -79,7 +84,8 @@ class Credentials extends Encrypted
         $this->configurationBuilder = $configurationBuilder;
         $this->api = $api;
         $this->appConfig = $appConfig;
-
+        $this->encryptor = $encryptor;
+        
         parent::__construct(
             $context,
             $registry,
@@ -107,7 +113,12 @@ class Credentials extends Encrypted
             }
 
             if ($this->isSaveAllowed()) {
-                $this->validate($this->getCredentialsFromEnvironmentVariable($rawValue));
+                if (stripos($rawValue, 'cloudinary://') !== false) {
+                    $this->validate($this->getCredentialsFromEnvironmentVariable($rawValue));
+                } else {
+                    $this->validate($this->getCredentialsFromEnvironmentVariable($this->encryptor->decrypt($rawValue)));
+                }
+                
             } else {
                 $this->validate($this->getCredentialsFromConfig());
             }
