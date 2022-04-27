@@ -30,7 +30,7 @@ class Uploader extends \Magento\Framework\File\Uploader
         $fileName = preg_replace('/[^a-z0-9_\\-\\.]+/i', '_', $fileName);
         $fileInfo = pathinfo($fileName);
         $index = 1;
-        while ($fileExists($fileInfo['dirname'] . '/' . $fileInfo['basename'])) {
+        while (file_exists($fileInfo['dirname'] . '/' . $fileInfo['basename'])) {
             $fileInfo['basename'] = $fileInfo['filename'] . '_' . $index++ . '.' . $fileInfo['extension'];
         }
         // account for excessively long filenames that cannot be stored completely in database
