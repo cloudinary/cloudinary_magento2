@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+  <table name="cloudinary_synchronisation" resource="default" engine="innodb" comment="cloudinary_synchronisation">
+    <column xsi:type="int" name="cloudinary_synchronisation_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Cloudinary Synchronisation ID"/>
+    <column xsi:type="varchar" name="image_path" nullable="false" length="255" comment="Image Path"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="cloudinary_synchronisation_id"/>
+    </constraint>
+    <index referenceId="CLOUDINARY_SYNCHRONISATION_IMAGE_PATH" indexType="btree">
+      <column name="image_path"/>
+    </index>
+  </table>
+  <table name="cloudinary_transformation" resource="default" engine="innodb" comment="cloudinary_transformation">
+    <column xsi:type="varchar" name="image_name" nullable="false" length="255" comment="Relative image path"/>
+    <column xsi:type="varchar" name="free_transformation" nullable="true" length="255" comment="Free transformation"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="image_name"/>
+    </constraint>
+  </table>
+  <table name="cloudinary_media_library_map" resource="default" engine="innodb" comment="cloudinary_media_library_map">
+    <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="ID"/>
+    <column xsi:type="varchar" name="cld_uniqid" nullable="false" length="255" comment="Relative image path"/>
+    <column xsi:type="varchar" name="cld_public_id" nullable="false" length="255" comment="Cloudinary Public ID"/>
+    <column xsi:type="varchar" name="free_transformation" nullable="true" length="255" comment="Free transformation"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="id"/>
+    </constraint>
+    <constraint xsi:type="unique" referenceId="CLOUDINARY_MEDIA_LIBRARY_MAP_CLD_UNIQID">
+      <column name="cld_uniqid"/>
+    </constraint>
+  </table>
+  <table name="cloudinary_product_gallery_api_queue" resource="default" engine="innodb" comment="cloudinary_product_gallery_api_queue">
+    <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="ID"/>
+    <column xsi:type="varchar" name="sku" nullable="false" length="255" comment="Product SKU"/>
+    <column xsi:type="text" name="full_item_data" nullable="true" comment="Prepared Schema"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    <column xsi:type="int" name="success" padding="10" unsigned="true" nullable="false" identity="false" default="0" comment="Success"/>
+    <column xsi:type="datetime" name="success_at" on_update="false" nullable="true" comment="Success At"/>
+    <column xsi:type="text" name="message" nullable="true" comment="Message"/>
+    <column xsi:type="int" name="has_errors" padding="10" unsigned="true" nullable="true" identity="false" default="0" comment="Has Errors"/>
+    <column xsi:type="int" name="tryouts" padding="10" unsigned="true" nullable="true" identity="false" default="0" comment="Tryouts"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="id"/>
+    </constraint>
+  </table>
+  <table name="cloudinary_product_spinset_map" resource="default" engine="innodb" comment="cloudinary_product_spinset_map">
+    <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="ID"/>
+    <column xsi:type="int" name="store_id" padding="10" unsigned="true" nullable="false" identity="false" default="0" comment="Store ID"/>
+    <column xsi:type="varchar" name="image_name" nullable="false" length="255" comment="Relative image path"/>
+    <column xsi:type="varchar" name="cldspinset" nullable="true" length="255" comment="Cloudinary Spinset Tag"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="id"/>
+    </constraint>
+    <constraint xsi:type="unique" referenceId="CLOUDINARY_PRODUCT_SPINSET_MAP_STORE_ID_IMAGE_NAME">
+      <column name="store_id"/>
+      <column name="image_name"/>
+    </constraint>
+  </table>
+</schema>
