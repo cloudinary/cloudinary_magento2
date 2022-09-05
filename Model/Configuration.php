@@ -124,7 +124,7 @@ class Configuration implements ConfigurationInterface
     private $decryptor;
 
     /**
-     * @var CloudinaryEnvironmentVariable
+     * @var
      */
     private $environmentVariable;
 
@@ -225,11 +225,44 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return Credentials
+     * @return (array) Credentials
      */
     public function getCredentials()
     {
-        return $this->getEnvironmentVariable()->getCredentials();
+        $rawValue =  $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $value = $this->decryptor->decrypt($rawValue);
+        $environmentVariable = str_replace('CLOUDINARY_URL=', '', $value);
+        $uri = parse_url($environmentVariable);
+        if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
+            throw new InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
+        }
+        $q_params = [];
+        if (isset($uri["query"])) {
+            parse_str($uri["query"], $q_params);
+        }
+        $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
+        $config = array_merge(
+            $q_params,
+            [
+                "cloud_name" => $uri["host"],
+                "api_key" => $uri["user"],
+                "api_secret" => $uri["pass"],
+                "private_cdn" => $private_cdn,
+            ]
+        );
+        if ($private_cdn) {
+            $config["secure_distribution"] = substr($uri["path"], 1);
+        }
+        $credentials = [
+            "cloud_name" => $config['cloud_name'],
+            "api_key" => $config['api_key'],
+            "api_secret" => $config['api_secret']
+        ];
+        if (isset($config['private_cdn'])) {
+            $credentials["private_cdn"] = $config['private_cdn'];
+        }
+
+        return $credentials;
     }
 
     /**
@@ -393,12 +426,12 @@ class Configuration implements ConfigurationInterface
     {
         if (is_null($this->environmentVariable)) {
             try {
+                $field = $this->coreRegistry->registry(self::CONFIG_PATH_ENVIRONMENT_VARIABLE);
                 $this->environmentVariable = CloudinaryEnvironmentVariable::fromString(
-                    $this->coreRegistry->registry(self::CONFIG_PATH_ENVIRONMENT_VARIABLE) ?:
+                    $field ?:
                     $this->decryptor->decrypt(
                         $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE)
-                    )
-                );
+                ));
             } catch (InvalidCredentials $invalidConfigException) {
                 $this->logger->critical($invalidConfigException);
             }
@@ -615,7 +648,7 @@ class Configuration implements ConfigurationInterface
             "type" => null,
             "cloudName" => null,
             "version" => null,
-            "publicId" => ltrim($publicId, '/') ?: null,
+            "publicId" => ltrim((string) $publicId, '/') ?: null,
             "transformations_string" => null,
             "transformations" => [],
             "transformationless_url" => $url,
@@ -636,7 +669,7 @@ class Configuration implements ConfigurationInterface
             $parsed["publicId"] = preg_replace('/.+\/v[0-9]{1,10}\//', '', $_url);
         }
 
-        $_url = preg_replace('/(\/|\/v[0-9]{1,10}\/)' . \preg_quote($parsed["publicId"], '/') . '$/', '', $_url);
+        $_url = preg_replace('/(\/|\/v[0-9]{1,10}\/)' . \preg_quote( (string) $parsed["publicId"], '/') . '$/', '', $_url);
         $_url = explode('/', $_url);
 
         $slug = \array_shift($_url);
@@ -663,7 +696,7 @@ class Configuration implements ConfigurationInterface
         if ($parsed["type"] === "video") {
             $parsed["thumbnail_url"] = preg_replace('/\.[^.]+$/', '', $url);
             $parsed["thumbnail_url"] = preg_replace('/\/v[0-9]{1,10}\//', '/', $parsed["thumbnail_url"]);
-            $parsed["thumbnail_url"] = preg_replace('/\/(' . \preg_quote($parsed["publicId"], '/') . ')$/', '/so_auto/$1.jpg', $parsed["thumbnail_url"]);
+            $parsed["thumbnail_url"] = preg_replace('/\/(' . \preg_quote( (string) $parsed["publicId"], '/') . ')$/', '/so_auto/$1.jpg', $parsed["thumbnail_url"]);
         }
 
         return $parsed;

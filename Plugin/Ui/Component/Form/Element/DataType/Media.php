@@ -5,6 +5,7 @@ namespace Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType;
 use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\State;
+use Magento\Framework\App\ProductMetadataInterface;
 
 /**
  * Plugin for UiComponent Media DataType
@@ -23,15 +24,23 @@ class Media
     protected $appState;
 
     /**
+     * @var ProductMetadataInterface
+     */
+    protected $productMetadata;
+
+    /**
      * @param MediaLibraryHelper $mediaLibraryHelper
      * @param State $appState
+     * @param ProductMetadataInterface $productMetadata
      */
     public function __construct(
         MediaLibraryHelper $mediaLibraryHelper,
-        State $appState
+        State $appState,
+        ProductMetadataInterface $productMetadata
     ) {
         $this->mediaLibraryHelper = $mediaLibraryHelper;
         $this->appState = $appState;
+        $this->productMetadata = $productMetadata;
     }
 
     /**
@@ -66,6 +75,7 @@ class Media
                                 'addTmpExtension' => false,
                                 'cloudinaryMLoptions' => $cloudinaryMLoptions,
                                 'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
+                                'magentoVersion' => $this->productMetadata->getVersion()
                             ]
                         ]
                     ]
