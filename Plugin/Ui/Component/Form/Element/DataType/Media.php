@@ -4,14 +4,16 @@ namespace Cloudinary\Cloudinary\Plugin\Ui\Component\Form\Element\DataType;
 
 use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
 use Magento\Framework\App\Area;
-use Magento\Framework\App\State;
 use Magento\Framework\App\ProductMetadataInterface;
+use Magento\Framework\App\State;
 
 /**
  * Plugin for UiComponent Media DataType
  */
 class Media
 {
+    const GALLERY_SUPPORTED_BELOW_VER = '2.4.4';
+
     /**
      * MediaLibraryHelper
      * @var array|null
@@ -43,6 +45,14 @@ class Media
         $this->productMetadata = $productMetadata;
     }
 
+    protected function isGallerySupported()
+    {
+        if (version_compare($this->productMetadata->getVersion(), self::GALLERY_SUPPORTED_BELOW_VER, '>=')) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Prepare component configuration
      *
@@ -64,21 +74,25 @@ class Media
                 $type = null;
             }
             if ($type) {
-                $component->setData(array_replace_recursive(
-                    $component->getData(),
-                    [
-                        'config' => [
-                            'template' => 'Cloudinary_Cloudinary/form/element/uploader/uploader',
-                            'component' => 'Cloudinary_Cloudinary/js/form/element/file-uploader',
-                            'cloudinaryMLoptions' => [
-                                'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/ajax/retrieveImage', ['_secure' => true, 'type' => $type]),
-                                'addTmpExtension' => false,
-                                'cloudinaryMLoptions' => $cloudinaryMLoptions,
-                                'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image"),
-                                'magentoVersion' => $this->productMetadata->getVersion()
-                            ]
+                $config = [
+                    'config' => [
+                        'template' => 'Cloudinary_Cloudinary/form/element/uploader/uploader',
+                        'component' => 'Cloudinary_Cloudinary/js/form/element/file-uploader',
+                        'cloudinaryMLoptions' => [
+                            'imageUploaderUrl' => $component->getContext()->getUrl('cloudinary/ajax/retrieveImage', ['_secure' => true, 'type' => $type]),
+                            'addTmpExtension' => false,
+                            'cloudinaryMLoptions' => $cloudinaryMLoptions,
+                            'cloudinaryMLshowOptions' => $this->mediaLibraryHelper->getCloudinaryMLshowOptions("image")
                         ]
                     ]
+                ];
+                if ($type == 'category_image') {
+                    $config['config']['cloudinaryMLoptions']['isGallerySupported'] = $this->isGallerySupported();
+                }
+
+                $component->setData(array_replace_recursive(
+                    $component->getData(),
+                    $config
                 ));
             }
         }
