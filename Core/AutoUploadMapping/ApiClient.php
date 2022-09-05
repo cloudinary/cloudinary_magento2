@@ -2,9 +2,9 @@
 
 namespace Cloudinary\Cloudinary\Core\AutoUploadMapping;
 
-use Cloudinary;
-use Cloudinary\Api;
-use Cloudinary\Api\Response;
+use Cloudinary\Cloudinary;
+use Cloudinary\Api\Admin\AdminApi;
+use Cloudinary\Api\ApiResponse;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 
@@ -35,15 +35,14 @@ class ApiClient
     private $errors = [];
 
     /**
-     * ApiClient constructor.
-     *
      * @param ConfigurationInterface $configuration
-     * @param ConfigurationBuilder   $configurationBuilder
+     * @param ConfigurationBuilder $configurationBuilder
+     * @param AdminApi $api
      */
     public function __construct(
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
-        Api $api
+        AdminApi $api
     ) {
         $this->configuration = $configuration;
         $this->configurationBuilder = $configurationBuilder;
@@ -59,7 +58,7 @@ class ApiClient
         return new ApiClient(
             $configuration,
             new ConfigurationBuilder($configuration),
-            new Api()
+            new AdminApi()
         );
     }
 
@@ -90,11 +89,11 @@ class ApiClient
     }
 
     /**
-     * @param  Response $response
+     * @param  ApiResponse $response
      * @return array
      * @throws \Exception
      */
-    private function parseFetchMappingsResponse(Response $response)
+    private function parseFetchMappingsResponse(ApiResponse $response)
     {
         $response = (array)$response;
         if (!array_key_exists(self::MAPPINGS_KEY, $response) || !is_array($response[self::MAPPINGS_KEY])) {

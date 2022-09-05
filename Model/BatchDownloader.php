@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Model;
 
-use Cloudinary;
-use Cloudinary\Api;
+use Cloudinary\Cloudinary;
+use Cloudinary\Api\Admin\AdminApi;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image;
@@ -46,7 +46,7 @@ class BatchDownloader
     private $_migrationTask;
 
     /**
-     * @var Cloudinary\Api
+     * @var Cloudinary\Api\Admin\AdminApi;
      */
     private $_api;
 
@@ -110,7 +110,7 @@ class BatchDownloader
      * @param  ConfigurationInterface               $configuration
      * @param  ConfigurationBuilder                 $configurationBuilder
      * @param  MigrationTask                        $migrationTask
-     * @param  Api                                  $api
+     * @param  AdminApi                                  $api
      * @param  DirectoryList                        $directoryList
      * @param  Curl                                 $curl
      * @param  Filesystem                           $fileSystem
@@ -124,7 +124,7 @@ class BatchDownloader
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
         MigrationTask $migrationTask,
-        Api $api,
+        AdminApi $api,
         DirectoryList $directoryList,
         Curl $curl,
         Filesystem $fileSystem,

@@ -15,7 +15,19 @@ define([
             this.cloudinaryMLoptions.cldMLid = this.cloudinaryMLoptions.imageParamName + '_' + this.uid;
             this.cloudinaryMLoptions.callbackHandler = this;
             this.cloudinaryMLoptions.callbackHandlerMethod = 'addFile';
+            this.unsupportedFromVersion = '2.4.0';
+        },
+        /*
+        *  hide the 'Upload from Gallery' button for Magento version above 2.4.0
+        * */
+        showGalleryUploader: function() {
+            return (!this.isNewVersion())
         },
 
+        isNewVersion: function () {
+            let currentVersion = this.cloudinaryMLoptions.magentoVersion.split('.');
+            let unsupported = this.unsupportedFromVersion.split('.');
+            return  ( currentVersion[1] >= unsupported[1] );
+        }
     });
 });

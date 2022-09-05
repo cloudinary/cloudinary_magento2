@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Model\Api;
 
-use Cloudinary;
-use Cloudinary\Api;
+use Cloudinary\Cloudinary;
+use Cloudinary\Api\Admin\AdminApi;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Magento\Framework\App\Request\Http;
@@ -28,7 +28,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     private $_configurationBuilder;
 
     /**
-     * @var Cloudinary\Api
+     * @var Cloudinary\Api\Admin\AdminApi
      */
     private $_api;
 
@@ -47,14 +47,14 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
      *
      * @param ConfigurationInterface $configuration
      * @param ConfigurationBuilder   $configurationBuilder
-     * @param Api                    $api
+     * @param AdminApi               $api
      * @param Http                   $request
      * @param EncoderInterface       $jsonEncoder
      */
     public function __construct(
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
-        Api $api,
+        AdminApi $api,
         Http $request,
         EncoderInterface $jsonEncoder
     ) {
