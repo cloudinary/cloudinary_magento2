@@ -86,9 +86,7 @@ class Media
                         ]
                     ]
                 ];
-                if ($type == 'category_image') {
-                    $config['config']['cloudinaryMLoptions']['isGallerySupported'] = $this->isGallerySupported();
-                }
+
 
                 $component->setData(array_replace_recursive(
                     $component->getData(),
