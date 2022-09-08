@@ -2,9 +2,10 @@
 
 namespace Cloudinary\Cloudinary\Core\AutoUploadMapping;
 
-use Cloudinary\Cloudinary;
 use Cloudinary\Api\Admin\AdminApi;
 use Cloudinary\Api\ApiResponse;
+use Cloudinary\Api\BaseApiClient;
+use Cloudinary\Cloudinary;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 
@@ -13,6 +14,10 @@ class ApiClient
     const MAPPINGS_KEY = 'mappings';
     const FOLDER_KEY = 'folder';
     const URL_KEY = 'template';
+
+    private $cloudinarySDK;
+
+    private $api;
 
     /**
      * @var bool
@@ -37,16 +42,13 @@ class ApiClient
     /**
      * @param ConfigurationInterface $configuration
      * @param ConfigurationBuilder $configurationBuilder
-     * @param AdminApi $api
      */
     public function __construct(
         ConfigurationInterface $configuration,
-        ConfigurationBuilder $configurationBuilder,
-        AdminApi $api
+        ConfigurationBuilder $configurationBuilder
     ) {
         $this->configuration = $configuration;
         $this->configurationBuilder = $configurationBuilder;
-        $this->api = $api;
     }
 
     /**
@@ -71,14 +73,15 @@ class ApiClient
     {
         try {
             $this->authorise();
-            $existingMappings = $this->parseFetchMappingsResponse($this->api->upload_mappings());
+            $existingMappings = $this->parseFetchMappingsResponse($this->api->uploadMappings());
+
 
             if ($this->hasMapping($existingMappings, $folder)) {
                 if (!$this->mappingMatches($existingMappings, $folder, $url)) {
-                    $this->api->update_upload_mapping($folder, [self::URL_KEY => $url]);
+                    $this->api->updateUploadMapping($folder, [self::URL_KEY => $url]);
                 }
             } else {
-                $this->api->create_upload_mapping($folder, [self::URL_KEY => $url]);
+                $this->api->createUploadMapping($folder, [self::URL_KEY => $url]);
             }
 
             return true;
@@ -137,21 +140,26 @@ class ApiClient
     private function mappingMatches(array $existingMappings, $folder, $url)
     {
         return count(
-            array_filter(
-                $this->filterMappings($existingMappings, $folder),
-                function (array $mapping) use ($url) {
-                    return $mapping[self::URL_KEY] == $url;
-                }
-            )
-        ) > 0;
+                array_filter(
+                    $this->filterMappings($existingMappings, $folder),
+                    function (array $mapping) use ($url) {
+                        return $mapping[self::URL_KEY] == $url;
+                    }
+                )
+            ) > 0;
     }
 
     private function authorise()
     {
         if (!$this->_authorised && $this->configuration->isEnabled()) {
-            Cloudinary::config($this->configurationBuilder->build());
-            Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+            // $config = new Configuration($this->configurationBuilder->build());
+            $this->cloudinarySDK = new Cloudinary($this->configurationBuilder->build());
+            $this->api = $this->cloudinarySDK->adminApi();
+
+            BaseApiClient::$userPlatform = $this->configuration->getUserPlatform();
             $this->_authorised = true;
+
+            return $this;
         }
     }
 

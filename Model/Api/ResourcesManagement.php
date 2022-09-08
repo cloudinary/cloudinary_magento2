@@ -2,6 +2,7 @@
 
 namespace Cloudinary\Cloudinary\Model\Api;
 
+use Cloudinary\Api\BaseApiClient;
 use Cloudinary\Cloudinary;
 use Cloudinary\Api\Admin\AdminApi;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
@@ -21,6 +22,9 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
      * @var ConfigurationInterface
      */
     private $_configuration;
+
+
+    private $_cloudinarySDK;
 
     /**
      * @var ConfigurationBuilder
@@ -54,13 +58,11 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     public function __construct(
         ConfigurationInterface $configuration,
         ConfigurationBuilder $configurationBuilder,
-        AdminApi $api,
         Http $request,
         EncoderInterface $jsonEncoder
     ) {
         $this->_configuration = $configuration;
         $this->_configurationBuilder = $configurationBuilder;
-        $this->_api = $api;
         $this->_request = $request;
         $this->_jsonEncoder = $jsonEncoder;
     }
@@ -76,8 +78,9 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
                 $this->setMaxResults($maxResults);
             }
             if ($this->_configuration->isEnabled()) {
-                Cloudinary::config($this->_configurationBuilder->build());
-                Cloudinary::$USER_PLATFORM = $this->_configuration->getUserPlatform();
+                $this->_cloudinarySDK = new Cloudinary($this->_configurationBuilder->build());
+                $this->_api = $this->_cloudinarySDK->adminApi();
+                BaseApiClient::$userPlatform = $this->_configuration->getUserPlatform();
             }
         }
         return $this;
@@ -115,23 +118,23 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         try {
             $this->initialize();
-            $this->_resourceData = $this->_api->resource(
-                $this->getId(),
+            $this->_resourceData = $this->_api->assets(
+
                 [
-                "resource_type" => $this->_resourceType
+                    "resource_type" => $this->_resourceType
                 ]
             );
             return $this->_jsonEncoder->encode(
                 [
-                "error" => 0,
-                "data" => $this->_resourceData
+                    "error" => 0,
+                    "data" => $this->_resourceData
                 ]
             );
         } catch (\Exception $e) {
             return $this->_jsonEncoder->encode(
                 [
-                "error" => 1,
-                "message" => $e->getMessage()
+                    "error" => 1,
+                    "message" => $e->getMessage()
                 ]
             );
         }
@@ -162,7 +165,7 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         try {
             $this->initialize();
-            $resources = $this->_api->resources_by_tag(
+            $resources = $this->_api->assetsByTag(
                 $this->getId(),
                 [
                     "resource_type" => $this->_resourceType,
@@ -171,15 +174,15 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
             )['resources'];
             return $this->_jsonEncoder->encode(
                 [
-                "error" => 0,
-                "data" => $resources
+                    "error" => 0,
+                    "data" => $resources
                 ]
             );
         } catch (\Exception $e) {
             return $this->_jsonEncoder->encode(
                 [
-                "error" => 1,
-                "message" => $e->getMessage()
+                    "error" => 1,
+                    "message" => $e->getMessage()
                 ]
             );
         }
