@@ -118,8 +118,8 @@ class ResourcesManagement implements \Cloudinary\Cloudinary\Api\ResourcesManagem
     {
         try {
             $this->initialize();
-            $this->_resourceData = $this->_api->assets(
-
+            $this->_resourceData = $this->_api->asset(
+                $this->getId(),
                 [
                     "resource_type" => $this->_resourceType
                 ]
