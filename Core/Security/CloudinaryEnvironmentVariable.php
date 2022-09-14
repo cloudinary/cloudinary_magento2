@@ -49,6 +49,9 @@ class CloudinaryEnvironmentVariable implements EnvironmentVariable
     public function getCloud()
     {
         if (!$this->configuration) {
+            if (!$this->environmentVariable) {
+                return false;
+            }
             $this->configuration = new Configuration($this->environmentVariable);
         }
         return $this->configuration->cloud->cloudName;
