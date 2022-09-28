@@ -1,6 +1,7 @@
 <?php
 
 namespace Cloudinary\Cloudinary\Core;
+use Cloudinary\Configuration\Configuration;
 
 class ConfigurationBuilder
 {
@@ -14,16 +15,19 @@ class ConfigurationBuilder
         $this->configuration = $configuration;
     }
 
+    /**
+     * @return Configuration instance
+     */
     public function build()
     {
-        $config = [
-            "cloud_name" => (string)$this->configuration->getCloud(),
-            "api_key" => (string)$this->configuration->getCredentials()->getKey(),
-            "api_secret" => (string)$this->configuration->getCredentials()->getSecret()
-        ];
+
+        $reg = $this->configuration->getCoreRegistry();
+
+
+        $config = array('cloud' => $this->configuration->getCredentials());
 
         if ($this->configuration->getCdnSubdomainStatus()) {
-            $config['cdn_subdomain'] = true;
+            $config['cloud']['cdn_subdomain'] = true;
         }
 
         return $config;
