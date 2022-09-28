@@ -2,7 +2,7 @@
 
 namespace Cloudinary\Cloudinary\Core\Security;
 
-use Cloudinary;
+use Cloudinary\Cloudinary;
 
 class ApiSignature
 {

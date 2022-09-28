@@ -16,6 +16,11 @@ define([
             this.cloudinaryMLoptions.callbackHandler = this;
             this.cloudinaryMLoptions.callbackHandlerMethod = 'addFile';
         },
-
+        /**
+         *  hides the 'Upload from Gallery' button at category page.
+         * */
+        showGalleryUploader: function() {
+            return (this.cloudinaryMLoptions.isGallerySupported)
+        }
     });
 });

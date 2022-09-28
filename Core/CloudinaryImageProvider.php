@@ -2,11 +2,13 @@
 
 namespace Cloudinary\Cloudinary\Core;
 
-use Cloudinary;
+use Cloudinary\Api\BaseApiClient;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Asset\Media;
 use Cloudinary\Cloudinary\Core\Exception\ApiError;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
 use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
-use Cloudinary\Uploader;
+use Cloudinary\Configuration\Configuration;
 use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
 
 class CloudinaryImageProvider implements ImageProvider
@@ -42,12 +44,16 @@ class CloudinaryImageProvider implements ImageProvider
     private $mediaLibraryMapFactory;
 
     /**
-     * @method __construct
-     * @param  ConfigurationInterface  $configuration
-     * @param  ConfigurationBuilder    $configurationBuilder
-     * @param  UploadResponseValidator $uploadResponseValidator
-     * @param  ProductMediaConfig      $productMediaConfig
-     * @param  MediaLibraryMapFactory  $mediaLibraryMapFactory
+     * @var $uploader
+     */
+    protected $uploader;
+
+    /**
+     * @param ConfigurationInterface $configuration
+     * @param ConfigurationBuilder $configurationBuilder
+     * @param UploadResponseValidator $uploadResponseValidator
+     * @param ProductMediaConfig $productMediaConfig
+     * @param MediaLibraryMapFactory $mediaLibraryMapFactory
      */
     public function __construct(
         ConfigurationInterface $configuration,
@@ -88,7 +94,8 @@ class CloudinaryImageProvider implements ImageProvider
         }
 
         try {
-            $uploadResult = Uploader::upload(
+            $this->uploader = new UploadApi($this->configuration->getCredentials());
+            $uploadResult = $this->uploader->upload(
                 (string)$image,
                 $this->configuration->getUploadConfig()->toArray() + [ "folder" => $image->getRelativeFolder()]
             );
@@ -126,7 +133,7 @@ class CloudinaryImageProvider implements ImageProvider
         }
 
         //Generate the CLD URL:
-        $imagePath = \cloudinary_url(
+        $imagePath = Media::fromParams(
             $imageId,
             [
             'transformation' => $transformation->build(),
@@ -174,7 +181,8 @@ class CloudinaryImageProvider implements ImageProvider
     {
         $this->authorise();
         if ($this->configuration->isEnabled()) {
-            Uploader::destroy($image->getIdWithoutExtension());
+            $this->uploader = new UploadApi($this->configuration->getCredentials());
+            return $this->uploader->destroy($image->getIdWithoutExtension());
         }
     }
 
@@ -200,8 +208,8 @@ class CloudinaryImageProvider implements ImageProvider
     private function authorise()
     {
         if (!$this->_authorised && $this->configuration->isEnabled()) {
-            Cloudinary::config($this->configurationBuilder->build());
-            Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+            Configuration::instance($this->configurationBuilder->build());
+            BaseApiClient::$userPlatform =  $this->configuration->getUserPlatform();
             $this->_authorised = true;
         }
     }

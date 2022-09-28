@@ -2,8 +2,8 @@
 
 namespace Cloudinary\Cloudinary\Model\Config\Backend;
 
-use Cloudinary;
-use Cloudinary\Api;
+use Cloudinary\Api\BaseApiClient;
+use Cloudinary\Cloudinary;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Exception\InvalidCredentials;
@@ -31,12 +31,17 @@ class Credentials extends Encrypted
     private $configuration;
 
     /**
+     * @var Cloudinary
+     */
+    private $cloudinarySdk;
+
+    /**
      * @var ConfigurationBuilder
      */
     private $configurationBuilder;
 
     /**
-     * @var Cloudinary\Api
+     * @var Cloudinary\Api\Admin\AdminApi
      */
     private $api;
 
@@ -46,7 +51,7 @@ class Credentials extends Encrypted
      * @var ScopeConfigInterface
      */
     protected $appConfig;
-    
+
     /**
      * @var EncryptorInterface
      */
@@ -62,7 +67,6 @@ class Credentials extends Encrypted
      * @param AbstractResource          $resource
      * @param AbstractDb                $resourceCollection
      * @param ConfigurationBuilder      $configurationBuilder
-     * @param Api                       $api
      * @param ReinitableConfigInterface $appConfig
      * @param array                     $data
      */
@@ -76,16 +80,14 @@ class Credentials extends Encrypted
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         ConfigurationBuilder $configurationBuilder,
-        Api $api,
         ReinitableConfigInterface $appConfig,
         array $data = []
     ) {
         $this->configuration = $configuration;
         $this->configurationBuilder = $configurationBuilder;
-        $this->api = $api;
         $this->appConfig = $appConfig;
         $this->encryptor = $encryptor;
-        
+
         parent::__construct(
             $context,
             $registry,
@@ -98,6 +100,10 @@ class Credentials extends Encrypted
         );
     }
 
+    /**
+     * @return void
+     * @throws ValidatorException
+     */
     public function beforeSave()
     {
         $rawValue = $this->getValue();
@@ -105,7 +111,7 @@ class Credentials extends Encrypted
         parent::beforeSave();
 
         $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
-        $this->appConfig->reinit();
+        $this->appConfig->reinit();// $decrypted = $this->encryptor->decrypt($var);
 
         if ($rawValue || $this->configuration->isEnabled(false)) {
             if (!$rawValue) {
@@ -118,21 +124,21 @@ class Credentials extends Encrypted
                 } else {
                     $this->validate($this->getCredentialsFromEnvironmentVariable($this->encryptor->decrypt($rawValue)));
                 }
-                
             } else {
-                $this->validate($this->getCredentialsFromConfig());
+                $field = $this->configuration->getCredentials();
+                $this->validate($field);
             }
         }
     }
 
     /**
-     * @param  array $credentials
+     * @param  $credentials
      * @throws ValidatorException
      */
-    private function validate(array $credentials)
+    private function validate($credentials)
     {
         $this->_authorise($credentials);
-        $pingValidation = $this->api->ping();
+        $pingValidation = $this->cloudinarySdk->adminApi()->ping();
         if (!(isset($pingValidation["status"]) && $pingValidation["status"] === "ok")) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_UNSURE));
         }
@@ -146,14 +152,36 @@ class Credentials extends Encrypted
     private function getCredentialsFromEnvironmentVariable($environmentVariable)
     {
         try {
-            Cloudinary::config_from_url(str_replace('CLOUDINARY_URL=', '', $environmentVariable));
+            // Cloudinary::config_from_url(str_replace('CLOUDINARY_URL=', '', $environmentVariable));
+            $environmentVariable = str_replace('CLOUDINARY_URL=', '', $environmentVariable);
+            $uri = parse_url($environmentVariable);
+            if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
+                throw new InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
+            }
+            $q_params = [];
+            if (isset($uri["query"])) {
+                parse_str($uri["query"], $q_params);
+            }
+            $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
+            $config = array_merge(
+                $q_params,
+                [
+                    "cloud_name" => $uri["host"],
+                    "api_key" => $uri["user"],
+                    "api_secret" => $uri["pass"],
+                    "private_cdn" => $private_cdn,
+                ]
+            );
+            if ($private_cdn) {
+                $config["secure_distribution"] = substr($uri["path"], 1);
+            }
             $credentials = [
-                "cloud_name" => Cloudinary::config_get('cloud_name'),
-                "api_key" => Cloudinary::config_get('api_key'),
-                "api_secret" => Cloudinary::config_get('api_secret')
+                "cloud_name" => $config['cloud_name'],
+                "api_key" => $config['api_key'],
+                "api_secret" => $config['api_secret']
             ];
-            if (Cloudinary::config_get('private_cdn')) {
-                $credentials["private_cdn"] = Cloudinary::config_get('private_cdn');
+            if (isset($config['private_cdn'])) {
+                $credentials["private_cdn"] = $config['private_cdn'];
             }
 
             return $credentials;
@@ -169,7 +197,7 @@ class Credentials extends Encrypted
     private function getCredentialsFromConfig()
     {
         try {
-            return $this->getCredentialsFromEnvironmentVariable($this->configuration->getEnvironmentVariable()->__toString());
+            return $this->getCredentialsFromEnvironmentVariable($this->cloudinarySdk->toString());
         } catch (InvalidCredentials $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));
         }
@@ -184,11 +212,12 @@ class Credentials extends Encrypted
     }
 
     /**
-     * @param array $credentials
+     * @param $credentials
      */
-    private function _authorise(array $credentials)
+    private function _authorise($credentials)
     {
-        Cloudinary::config($credentials);
-        Cloudinary::$USER_PLATFORM = $this->configuration->getUserPlatform();
+        $this->cloudinarySdk = new Cloudinary($credentials);
+        BaseApiClient::$userPlatform =  $this->configuration->getUserPlatform();
+        return $this;
     }
 }
