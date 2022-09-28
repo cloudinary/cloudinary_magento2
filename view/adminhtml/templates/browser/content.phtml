@@ -22,7 +22,9 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
             </div>
         </div>
     </div>
-    <div class="side-col"><?= $block->getChildHtml('wysiwyg_images.tree') ?></div>
+    <div class="side-col">
+        <div><?= $block->getChildHtml('wysiwyg_images.tree') ?></div>
+    </div>
     <div class="main-col">
         <div id="error-message" data-action="show-error"></div>
         <?php if ($cloudinaryMLwidgetOprions): ?>
