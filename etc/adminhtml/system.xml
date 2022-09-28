@@ -173,12 +173,13 @@
                         <label>Zoom Type</label>
                         <config_path>cloudinary/product_gallery/zoomProps_type</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomType</source_model>
+                        <comment>NOTICE: Popup type supports only 'click' trigger type.</comment>
                         <depends>
                             <field id="zoom">1</field>
                         </depends>
                     </field>
                     <field id="zoomProps_viewerPosition" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                        <label>Zoom Trigger</label>
+                        <label>Zoom Viewer Position</label>
                         <config_path>cloudinary/product_gallery/zoomProps_viewerPosition</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomViewerPosition</source_model>
                         <depends>
@@ -187,7 +188,7 @@
                         </depends>
                     </field>
                     <field id="zoomProps_trigger" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                        <label>Zoom Viewer Position</label>
+                        <label>Zoom Trigger</label>
                         <config_path>cloudinary/product_gallery/zoomProps_trigger</config_path>
                         <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\ProductGallery\ZoomTrigger</source_model>
                         <depends>

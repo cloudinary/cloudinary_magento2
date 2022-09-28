@@ -6,7 +6,6 @@ define([
     'mage/translate',
     'jquery/ui',
     'Magento_Ui/js/modal/modal',
-    'mage/backend/tree-suggest',
     'mage/backend/validation',
     'cloudinaryMediaLibraryAll',
     'es6Promise'
