@@ -71,14 +71,14 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
     {
         if (is_null($this->_cloudinaryConfig)) {
             $this->_cloudinaryConfig = $this->_cloudinaryConfigurationBuilder->build();
-            if (!$this->_cloudinaryConfig['api_key'] || !$this->_cloudinaryConfig['api_secret'] || !$this->_cloudinaryConfig['cloud_name']) {
+            if (!$this->_cloudinaryConfig['cloud']['api_key'] || !$this->_cloudinaryConfig['cloud']['api_secret'] || !$this->_cloudinaryConfig['cloud']['cloud_name']) {
                 $this->_cloudinaryConfig = false;
             } else {
-                $this->_cloudinaryConfig['api_url'] = "https://api.cloudinary.com/v1_1/{$this->_cloudinaryConfig['cloud_name']}/";
+                $this->_cloudinaryConfig['cloud']['api_url'] = "https://api.cloudinary.com/v1_1/{$this->_cloudinaryConfig['cloud']['cloud_name']}/";
             }
         }
 
-        return $this->_cloudinaryConfig;
+        return $this->_cloudinaryConfig['cloud'];
     }
 
     /**
