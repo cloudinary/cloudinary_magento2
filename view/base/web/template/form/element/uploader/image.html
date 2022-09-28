@@ -6,14 +6,14 @@
 -->
 <div class="admin__field" visible="visible" css="$data.additionalClasses">
     <label class="admin__field-label" if="$data.label" attr="for: uid">
-        <span translate="label" attr="'data-config-scope': $data.scopeLabel" />
+        <span translate="label" attr="'data-config-scope': $data.scopeLabel"></span>
     </label>
     <div class="admin__field-control" css="'_with-tooltip': $data.tooltip">
         <div class="file-uploader image-uploader" data-role="drop-zone" css="_loading: isLoading">
             <div class="file-uploader-area">
+                <label class="file-uploader-button action-default" attr="for: uid, disabled: disabled" disable="disabled" translate="'Upload'"></label>
                 <input type="file" afterRender="onElementRender" attr="id: uid, name: inputName, multiple: isMultipleFiles" disable="disabled" />
-                <label class="file-uploader-button action-default" attr="for: uid, disabled: disabled" disable="disabled" translate="'Upload'" />
-                <label data-bind="event: {change: addFileFromMediaGallery, click: openMediaBrowserDialog}" class="file-uploader-button action-default" attr="id: mediaGalleryUid, disabled: disabled" data-force_static_path="1" translate="'Select from Gallery'" />
+                <label data-bind="event: {change: addFileFromMediaGallery, click: openMediaBrowserDialog}" class="file-uploader-button action-default" attr="id: mediaGalleryUid, disabled: disabled" data-force_static_path="1" translate="'Select from Gallery'"></label>
 
                 <!-- Cloudinary Media Library Button -->
                 <button data-role="add-from-cloudinary-button" type="button" class="action-secondary add-from-cloudinary-button cloudinary-button-with-logo sm-top-bottom-margin" data-bind="
@@ -25,30 +25,30 @@
                             cloudinaryMediaLibraryModal: $data.cloudinaryMLoptions
                         }
                     ">
-                    <span translate="'Add from Cloudinary'" />
+                    <span translate="'Add from Cloudinary'"></span>
                 </button>
                 <!--/ Cloudinary Media Library Button -->
 
-                <render args="fallbackResetTpl" if="$data.showFallbackReset && $data.isDifferedFromDefault" />
+                <render args="fallbackResetTpl" if="$data.showFallbackReset && $data.isDifferedFromDefault" ></render>
                 <p class="image-upload-requirements">
                     <span if="$data.maxFileSize">
-                        <span translate="'Maximum file size'" />: <text args="formatSize($data.maxFileSize)" />.
+                        <span translate="'Maximum file size'" ></span>: <text args="formatSize($data.maxFileSize)" ></text>.
                     </span>
                     <span if="$data.allowedExtensions">
-                        <span translate="'Allowed file types'" />: <text args="getAllowedFileExtensionsInCommaDelimitedFormat()" />.
+                        <span translate="'Allowed file types'" ></span>: <text args="getAllowedFileExtensionsInCommaDelimitedFormat()" ></text>.
                     </span>
                 </p>
             </div>
 
-            <render args="tooltipTpl" if="$data.tooltip" />
+            <render args="tooltipTpl" if="$data.tooltip"></render>
 
             <div class="admin__field-note" if="$data.notice" attr="id: noticeId">
-                <span html="notice" />
+                <span html="notice"></span>
             </div>
 
-            <label class="admin__field-error" if="error" attr="for: uid" text="error" />
+            <label class="admin__field-error" if="error" attr="for: uid" text="error"></label>
 
-            <each args="data: value, as: '$file'" render="$parent.getPreviewTmpl($file)" />
+            <each args="data: value, as: '$file'" render="$parent.getPreviewTmpl($file)"></each>
 
             <!-- Cloudinary Media Library Button -->
             <div if="!hasData()" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-bind="
@@ -61,19 +61,19 @@
                     }
                 ">
                 <div class="product-image-wrapper">
-                    <p class="image-placeholder-text" translate="'Add from Cloudinary'" />
+                    <p class="image-placeholder-text" translate="'Add from Cloudinary'"></p>
                 </div>
             </div>
             <!--/ Cloudinary Media Library Button -->
 
             <div if="!hasData()" class="image image-placeholder" click="triggerImageUpload">
                 <div class="file-uploader-summary product-image-wrapper">
-                    <div class="file-uploader-spinner image-uploader-spinner" />
-                    <p class="image-placeholder-text" translate="'Browse to find or drag image here'" />
+                    <div class="file-uploader-spinner image-uploader-spinner"></div>
+                    <p class="image-placeholder-text" translate="'Browse to find or drag image here'"> </p>
                 </div>
             </div>
 
         </div>
-        <render args="$data.service.template" if="$data.hasService()" />
+        <render args="$data.service.template" if="$data.hasService()"></render>
     </div>
 </div>

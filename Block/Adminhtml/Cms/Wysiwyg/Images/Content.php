@@ -50,6 +50,7 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
         }
 
         try {
+
             //Try to add session param on Magento versions prior to 2.3.5
             $imageUploadUrl = $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
         } catch (\Exception $e) {
