@@ -74,4 +74,13 @@
 	</route>
 	<!--/ cloudinary/products/:sku/media -->
 
+    <!-- cloudinary/products/:sku/mediaremove -->
+    <route method="POST" url="/V1/cloudinary/products/:sku/mediaremove">
+        <service class="Cloudinary\Cloudinary\Api\ProductGalleryManagementInterface" method="removeProductMedia"/>
+        <resources>
+            <resource ref="Magento_Catalog::products" />
+        </resources>
+    </route>
+    <!--/ cloudinary/products/:sku/mediaremove -->
+
 </routes>
