@@ -19,6 +19,7 @@ use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Image\AdapterFactory as ImageAdapterFactory;
@@ -231,6 +232,88 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->productGalleryApiQueueFactory = $productGalleryApiQueueFactory;
         $this->appEmulation = $appEmulation;
         $this->resourceConnection = $resourceConnection;
+    }
+
+
+    /**
+     * Remove Gallery Item
+     * @param $product
+     * @param $url
+     * @param $removeAllGallery
+     * @return int|void
+     * @throws NoSuchEntityException .
+     */
+    private function removeGalleryItem($product, $url, $removeAllGallery)
+    {
+        $unlinked = 0;
+        if ($product) {
+            $mediaGalleryEntries = $product->getMediaGalleryEntries();
+
+            if (is_array($mediaGalleryEntries)) {
+                foreach ($mediaGalleryEntries as $key => $entry) {
+                    $image = $entry->getFile();
+                    $url = preg_replace('/\?.*/', '', $url);
+                    $image = $this->storeManager->getStore()->getBaseUrl() . 'pub/media/catalog/product' . $image;
+                    $basename = basename($image);
+                    $ext = pathinfo($image, PATHINFO_EXTENSION);
+                    // removing unique id from original filename
+                    $pattern = '/^' . $this->configuration::CLD_UNIQID_PREFIX . '.*?_/';
+                    $basename = preg_replace($pattern, '', $basename);
+                    $filename = basename($url);
+                    $filename = preg_replace($pattern, '', $filename);
+                    // $filename = $url . '.' . $ext;
+
+                    if ($basename == $filename || $removeAllGallery) {
+                        unset($mediaGalleryEntries[$key]);
+                        $this->mediaGalleryProcessor->removeImage($product, $image);
+                        $unlinked++;
+                    }
+                }
+            }
+            if ($unlinked) {
+                $product->setMediaGalleryEntries($mediaGalleryEntries);
+                try {
+                    $product = $this->productRepository->save($product);
+                } catch (\Exception $e) {
+                    $message = ['type' => 'error', 'message' => 'Falied Delete Image Error: ' . $e->getMessage() . ' line ' . $e->getLine()];
+                }
+            }
+            return $unlinked;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeProductMedia($sku, $urls, $delete_all_gallery = 0)
+    {
+        $result = [
+            "passed" => 0,
+            "failed" => [
+                "count" => 0,
+                "urls" => []
+            ]
+        ];
+
+        $urls = (array) $urls;
+
+        try {
+            $product = $this->productRepository->get($sku);
+            $this->checkEnvHeader();
+            $this->checkEnabled();
+
+            foreach ($urls as $i => $url) {
+                $unlinked =  $this->removeGalleryItem($product, $url, $delete_all_gallery);
+            }
+
+            $result["passed"] = $unlinked;
+        } catch (\Exception $e) {
+            $result["failed"]["count"]++;
+            $result["error"] = $e->getMessage();
+            $result["failed"]["public_id"][] = $url;
+        }
+
+        return $this->jsonHelper->jsonEncode($result);
     }
 
     /**
@@ -487,6 +570,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             );
 
             $mediaGalleryData = $product->getMediaGallery();
+            // last gallery value from array
             $galItem = array_pop($mediaGalleryData["images"]);
 
             if ($this->parsedRemoteFileUrl["type"] === "video") {
@@ -812,4 +896,6 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->startEnvironmentEmulation(0, Area::AREA_ADMINHTML, $force);
         return $this;
     }
+
+
 }
