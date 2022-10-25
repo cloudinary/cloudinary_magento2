@@ -2,7 +2,7 @@
 ​
 The Cloudinary Magento extension links your Magento website to your Cloudinary account, allowing you to serve all your product, category, and content management system (CMS) images directly from Cloudinary.
 ​
-Before you install the extension, make sure you have a Cloudinary account. You can start by [signing up](https://cloudinary.com/users/register_free?utm_source=magento-2-marketplace&utm_medium=affiliate&utm_content=sign-up&utm_campaign=1975) for a free plan. When your requirements grow, you can upgrade to a [plan](https://cloudinary.com/pricing) that best fits your needs.
+Before you install the extension, make sure you have a Cloudinary account. You can start by [signing up](https://cloudinary.com/users/register_free?utm_source=magento-2-git-page&utm_medium=affiliate&utm_content=sign-up&utm_campaign=1975) for a free plan. When your requirements grow, you can upgrade to a [plan](https://cloudinary.com/pricing) that best fits your needs.
 ​
 For more information on using the Cloudinary Magento 2 extension, take a look at our [documentation](https://cloudinary.com/documentation/magento_integration).
 ​
