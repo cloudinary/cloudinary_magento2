@@ -317,6 +317,7 @@
                     <comment>List of CMS blocks to exclude from Lazyloading. Use this if there are conflicts on some of the blocks.</comment>
                     <config_path>cloudinary/lazyload/ignored_cms_blocks</config_path>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\CmsBlocks</source_model>
+                    <can_be_empty>1</can_be_empty>
                     <depends>
                         <field id="lazyload_enabled">1</field>
                         <field id="lazyload_auto_replace_cms_blocks">1</field>
