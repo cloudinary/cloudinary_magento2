@@ -52,4 +52,13 @@ interface ProductGalleryManagementInterface
      * @return string
      */
     public function getProductsMedia($skus);
+
+
+    /** Remove Product images by publicIds
+     * @param string $sku
+     * @param mixed $urls
+     * @param bool | int | null $delete_all_gallery
+     * @return string
+     */
+    public function removeProductMedia($sku, $urls, $delete_all_gallery = 0);
 }
