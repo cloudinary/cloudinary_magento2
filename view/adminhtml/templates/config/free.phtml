@@ -12,7 +12,9 @@
         title="Preview"
         type="button"
         class="scalable"
-        style="margin-top: 10px;">
+        style="margin-top: 10px;"
+    <?= (!$this->isCanPreviewTransformations()) ? ' disabled' : '' ?>
+>
     <span><span><span>Preview custom transformation</span></span></span>
 </button>
 
