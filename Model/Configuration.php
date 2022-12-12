@@ -472,13 +472,13 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     public function getLazyloadIgnoredCmsBlocksArray()
     {
         $value = ($this->configReader->getValue(self::XML_PATH_LAZYLOAD_IGNORED_CMS_BLOCKS))
             ? (array) explode(',', $this->configReader->getValue(self::XML_PATH_LAZYLOAD_IGNORED_CMS_BLOCKS))
-            : null;
+            : [];
 
         return $value;
     }

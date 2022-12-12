@@ -10,6 +10,7 @@ use Cloudinary\Cloudinary\Model\Config\Backend\Free as FreeBackendModel;
 
 class Free extends Field
 {
+    const XML_PATH_GLOBAL_TRANSFORMATION = 'cloudinary/transformations/cloudinary_free_transform_global';
     /**
      * @var ConfigurationInterface
      */
@@ -45,6 +46,10 @@ class Free extends Field
     {
         $this->setTemplate('Cloudinary_Cloudinary::config/free.phtml');
         return $this;
+    }
+
+    public function isCanPreviewTransformations() {
+        return $this->_scopeConfig->getValue(self::XML_PATH_GLOBAL_TRANSFORMATION);
     }
 
     /**
