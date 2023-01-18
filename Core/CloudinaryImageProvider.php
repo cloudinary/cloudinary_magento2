@@ -99,6 +99,11 @@ class CloudinaryImageProvider implements ImageProvider
                 (string)$image,
                 $this->configuration->getUploadConfig()->toArray() + [ "folder" => $image->getRelativeFolder()]
             );
+            if (isset($uploadResult['public_id'])) {
+                $publicIds = [$uploadResult['public_id']];
+                $metadata = "cld_mag_plugin=1";
+                $this->uploader->addContext($metadata, $publicIds);
+            }
             return $this->uploadResponseValidator->validateResponse($image, $uploadResult);
         } catch (\Exception $e) {
             ApiError::throwWith($image, $e->getMessage());
