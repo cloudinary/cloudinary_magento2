@@ -62,8 +62,11 @@ class Media
      */
     public function afterPrepare(\Magento\Ui\Component\Form\Element\DataType\Media $component, $result = null)
     {
-        if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions(false))) {
-            $uploaderConfigUrl = $component->getData('config/uploaderConfig/url');
+        if ($this->appState->getAreaCode() === Area::AREA_ADMINHTML
+            && ($cloudinaryMLoptions = $this->mediaLibraryHelper->getCloudinaryMLOptions(false))
+            && ($uploaderConfigUrl = $component->getData('config/uploaderConfig/url'))
+        ) {
+
             if (strpos($uploaderConfigUrl, '/design_config_fileUploader/') !== false) {
                 $type = 'design_config_fileUploader';
             } elseif (strpos($uploaderConfigUrl, '/category_image/') !== false) {
