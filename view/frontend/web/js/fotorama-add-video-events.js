@@ -362,8 +362,8 @@ define(
                     closeVideo = this.fotoramaItem.find('.' + this.FTVC);
                     this._closeVideoSetEvents(closeVideo, fotorama);
 
-                    if (isBase 
-                        && this.options.videoData[fotorama.activeIndex].isBase 
+                    if (isBase
+                        && this.options.videoData[fotorama.activeIndex].isBase
                         && $(window).width() > this.MobileMaxWidth
                     ) {
                         this._showCloseVideo();
@@ -481,7 +481,7 @@ define(
                         key = allVideoDataKeys[i];
                         videoItem = allVideoData[key];
 
-                        if (videoItem.mediaType === this.VID && videoItem.isBase 
+                        if (videoItem.mediaType === this.VID && videoItem.isBase
                             && this.options.videoSettings[0].playIfBase && allowBase
                         ) {
                             this.Base = true;
@@ -503,7 +503,7 @@ define(
                         scriptTag = document.getElementsByTagName('script')[0];
 
                     element.async = true;
-                    element.src = 'https://f.vimeocdn.com/js/froogaloop2.min.js';
+                    element.src = 'https://player.vimeo.com/api/player.js';
 
                     /**
                      * Vimeo js framework on load callback.
@@ -571,8 +571,8 @@ define(
                         elem.removeClass(this.TI);
                     }
 
-                    if (this.options.videoData[i].mediaType === this.VID 
-                        && fotorama.data[i].type === this.VID 
+                    if (this.options.videoData[i].mediaType === this.VID
+                        && fotorama.data[i].type === this.VID
                         && fotorama.options.nav === 'thumbs'
                     ) {
                         elem.addClass(this.TI);
