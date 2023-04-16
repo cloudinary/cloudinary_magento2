@@ -172,19 +172,26 @@ class Credentials extends Encrypted
                     "private_cdn" => $private_cdn,
                 ]
             );
-            if ($private_cdn) {
-                $config["secure_distribution"] = substr($uri["path"], 1);
-            }
             $credentials = [
                 "cloud_name" => $config['cloud_name'],
                 "api_key" => $config['api_key'],
                 "api_secret" => $config['api_secret']
             ];
+            $credentials = array_merge($credentials, $q_params);
+
+            if ($private_cdn) {
+                $config["secure_distribution"] = substr($uri["path"], 1);
+                $credentials['secure_distribution'] =  substr($uri["path"], 1);
+            } else {
+                unset($credentials['secure_distribution']);
+            }
+
             if (isset($config['private_cdn'])) {
                 $credentials["private_cdn"] = $config['private_cdn'];
             }
 
             return $credentials;
+
         } catch (\Exception $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));
         }
