@@ -17,7 +17,6 @@ class ConfigurationBuilder
 
     /**
      * @return Configuration instance
-     * CLOUDINARY_URL=cloudinary://667623344116464:cKLIAxkU1_iPW8OCjumZ4E2i51A@m2clduat
      */
     public function build()
     {
