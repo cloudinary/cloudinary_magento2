@@ -11,12 +11,12 @@ use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Exception\ValidatorException;
-use Magento\Framework\HTTP\ZendClient;
+use Magento\Framework\HTTP\LaminasClient;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
-use Zend_Http_Response;
+use Laminas\Http\Response as LaminasResponse;
 
 class Free extends \Magento\Framework\App\Config\Value
 {
@@ -34,9 +34,9 @@ class Free extends \Magento\Framework\App\Config\Value
     private $cloudinaryImageProvider;
 
     /**
-     * @var ZendClient
+     * @var LaminasClient
      */
-    private $zendClient;
+    private $laminasClient;
 
     /**
      * @param Context                 $context
@@ -45,7 +45,7 @@ class Free extends \Magento\Framework\App\Config\Value
      * @param TypeListInterface       $cacheTypeList
      * @param ConfigurationInterface  $configuration,
      * @param CloudinaryImageProvider $cloudinaryImageProvider
-     * @param ZendClient              $zendClient
+     * @param LaminasClient           $laminasClient
      * @param AbstractResource        $resource
      * @param AbstractDb              $resourceCollection
      * @param array                   $data
@@ -57,14 +57,14 @@ class Free extends \Magento\Framework\App\Config\Value
         TypeListInterface $cacheTypeList,
         ConfigurationInterface $configuration,
         CloudinaryImageProvider $cloudinaryImageProvider,
-        ZendClient $zendClient,
+        LaminasClient $laminasClient,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configuration = $configuration;
         $this->cloudinaryImageProvider = $cloudinaryImageProvider;
-        $this->zendClient = $zendClient;
+        $this->laminasClient = $laminasClient;
 
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
@@ -102,10 +102,10 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param  Zend_Http_Response $response
+     * @param  LaminasResponse $response
      * @return Phrase
      */
-    public function formatError(Zend_Http_Response $response)
+    public function formatError(LaminasResponse $response)
     {
         return __(
             self::ERROR_FORMAT,
@@ -114,12 +114,13 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param  string $url
-     * @return Zend_Http_Response
+     * @param $url
+     * @return mixed
      */
     public function httpRequest($url)
     {
-        return $this->zendClient->setUri($url)->request(ZendClient::GET);
+
+        return $this->laminasClient->setUri($url)->request(\Laminas\Http\Request::METHOD_GET);
     }
 
     /**
