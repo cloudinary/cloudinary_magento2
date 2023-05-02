@@ -11,17 +11,23 @@ use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Exception\ValidatorException;
-use Magento\Framework\HTTP\LaminasClient;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
 use Laminas\Http\Response as LaminasResponse;
 
+
 class Free extends \Magento\Framework\App\Config\Value
 {
     const ERROR_FORMAT = 'Incorrect custom transform - %1';
     const ERROR_DEFAULT = 'please update';
+
+    /**
+     * @var ProductMetadataInterface
+     */
+    protected $productMetadata;
 
     /**
      * @var ConfigurationInterface
@@ -34,21 +40,21 @@ class Free extends \Magento\Framework\App\Config\Value
     private $cloudinaryImageProvider;
 
     /**
-     * @var LaminasClient
+     * @var LaminasClient|\Magento\Framework\HTTP\ZendClient
      */
-    private $laminasClient;
+    private $httpClient;
 
     /**
-     * @param Context                 $context
-     * @param Registry                $registry
-     * @param ScopeConfigInterface    $config
-     * @param TypeListInterface       $cacheTypeList
-     * @param ConfigurationInterface  $configuration,
+     * @param Context $context
+     * @param Registry $registry
+     * @param ScopeConfigInterface $config
+     * @param TypeListInterface $cacheTypeList
+     * @param ConfigurationInterface $configuration
      * @param CloudinaryImageProvider $cloudinaryImageProvider
-     * @param LaminasClient           $laminasClient
-     * @param AbstractResource        $resource
-     * @param AbstractDb              $resourceCollection
-     * @param array                   $data
+     * @param ProductMetadataInterface $productMetadata
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
      */
     public function __construct(
         Context $context,
@@ -57,14 +63,20 @@ class Free extends \Magento\Framework\App\Config\Value
         TypeListInterface $cacheTypeList,
         ConfigurationInterface $configuration,
         CloudinaryImageProvider $cloudinaryImageProvider,
-        LaminasClient $laminasClient,
+        ProductMetadataInterface $productMetadata,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configuration = $configuration;
         $this->cloudinaryImageProvider = $cloudinaryImageProvider;
-        $this->laminasClient = $laminasClient;
+        // fix for magento versions 2.4.6 or newer
+        if (version_compare($productMetadata->getVersion(), '2.4.6', '>=')) {
+            $this->httpClient = new \Magento\Framework\HTTP\LaminasClient();
+        } else {
+            $this->httpClient = new \Magento\Framework\HTTP\ZendClient();
+        }
+
 
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
@@ -120,7 +132,7 @@ class Free extends \Magento\Framework\App\Config\Value
     public function httpRequest($url)
     {
 
-        return $this->laminasClient->setUri($url)->request(\Laminas\Http\Request::METHOD_GET);
+        return $this->httpClient->setUri($url)->request(\Laminas\Http\Request::METHOD_GET);
     }
 
     /**
