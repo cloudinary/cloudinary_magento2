@@ -246,6 +246,14 @@ class Configuration implements ConfigurationInterface
             parse_str($uri["query"], $q_params);
         }
         $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
+        $cloud = [
+            "cloud_name" => $uri["host"],
+            "api_key" => $uri["user"],
+            "api_secret" => $uri["pass"]
+        ];
+        $url = [
+
+        ];
         $credentials = array_merge(
             $q_params,
             [
@@ -255,6 +263,11 @@ class Configuration implements ConfigurationInterface
                 "private_cdn" => $private_cdn,
             ]
         );
+
+        if (isset($credentials['cname'])) {
+            $credentials['secure'] = true;
+            $credentials['secure_distribution'] = $credentials['cname'];
+        }
 
         return $credentials;
     }
