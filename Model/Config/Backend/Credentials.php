@@ -173,6 +173,11 @@ class Credentials extends Encrypted
                 ]
             );
 
+            if (isset($credentials['cname'])) {
+                $credentials['secure'] = true;
+                $credentials['secure_distribution'] = $credentials['cname'];
+            }
+
             return $credentials;
 
         } catch (\Exception $e) {
