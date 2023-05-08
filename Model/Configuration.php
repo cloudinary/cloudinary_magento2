@@ -246,14 +246,7 @@ class Configuration implements ConfigurationInterface
             parse_str($uri["query"], $q_params);
         }
         $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
-        $cloud = [
-            "cloud_name" => $uri["host"],
-            "api_key" => $uri["user"],
-            "api_secret" => $uri["pass"]
-        ];
-        $url = [
 
-        ];
         $credentials = array_merge(
             $q_params,
             [
