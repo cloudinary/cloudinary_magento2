@@ -29,6 +29,8 @@ class Free extends \Magento\Framework\App\Config\Value
      */
     protected $productMetadata;
 
+    protected $clientType;
+
     /**
      * @var ConfigurationInterface
      */
@@ -70,16 +72,20 @@ class Free extends \Magento\Framework\App\Config\Value
     ) {
         $this->configuration = $configuration;
         $this->cloudinaryImageProvider = $cloudinaryImageProvider;
+        $this->productMetadata = $productMetadata;
         // fix for magento versions 2.4.6 or newer
         if (version_compare($productMetadata->getVersion(), '2.4.6', '>=')) {
             $this->httpClient = new \Magento\Framework\HTTP\LaminasClient();
+            $this->clientType = 'laminas';
         } else {
             $this->httpClient = new \Magento\Framework\HTTP\ZendClient();
+            $this->clientType = 'zend';
         }
 
 
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
+
 
     public function beforeSave()
     {
@@ -108,9 +114,16 @@ class Free extends \Magento\Framework\App\Config\Value
             throw new ValidatorException(__(self::ERROR_FORMAT, self::ERROR_DEFAULT));
         }
 
-        if ($response->isError()) {
+        $isError = ($this->clientType == 'laminas') ? (!$response->isSuccess()) : $response->isError();
+
+        if ($isError) {
             throw new ValidatorException($this->formatError($response));
         }
+    }
+
+
+    protected function getHeader($response) {
+        return ($this->clientType == 'laminas') ? $response->getHeaders()->get('x-cld-error') : $response->getHeader('x-cld-error');
     }
 
     /**
@@ -119,9 +132,11 @@ class Free extends \Magento\Framework\App\Config\Value
      */
     public function formatError(LaminasResponse $response)
     {
+        $status = ($this->clientType == 'laminas') ? $response->getStatusCode() : $response->getStatus();
+
         return __(
             self::ERROR_FORMAT,
-            $response->getStatus() == 400 ? $response->getHeader('x-cld-error') : self::ERROR_DEFAULT
+            $status == 400 ? $this->getHeader() : self::ERROR_DEFAULT
         );
     }
 
@@ -131,8 +146,13 @@ class Free extends \Magento\Framework\App\Config\Value
      */
     public function httpRequest($url)
     {
+        if ($this->clientType == 'laminas') {
+            $client = $this->httpClient->setUri($url)->setMethod(\Laminas\Http\Request::METHOD_GET);
+            return $client->send();
+        } else {
+            return $this->httpClient->setUri($url)->request('GET');
+        }
 
-        return $this->httpClient->setUri($url)->request(\Laminas\Http\Request::METHOD_GET);
     }
 
     /**

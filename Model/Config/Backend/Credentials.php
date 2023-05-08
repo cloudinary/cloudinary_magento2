@@ -156,7 +156,7 @@ class Credentials extends Encrypted
             $environmentVariable = str_replace('CLOUDINARY_URL=', '', $environmentVariable);
             $uri = parse_url($environmentVariable);
             if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
-                throw new InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
+                throw new \InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
             }
             $q_params = [];
             if (isset($uri["query"])) {
