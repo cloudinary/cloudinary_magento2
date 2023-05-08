@@ -17,6 +17,7 @@ use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
 use Laminas\Http\Response as LaminasResponse;
+use Magento\Tests\NamingConvention\true\mixed;
 
 
 class Free extends \Magento\Framework\App\Config\Value
@@ -127,10 +128,10 @@ class Free extends \Magento\Framework\App\Config\Value
     }
 
     /**
-     * @param  LaminasResponse $response
+     * @param  mixed
      * @return Phrase
      */
-    public function formatError(LaminasResponse $response)
+    public function formatError($response)
     {
         $status = ($this->clientType == 'laminas') ? $response->getStatusCode() : $response->getStatus();
 
