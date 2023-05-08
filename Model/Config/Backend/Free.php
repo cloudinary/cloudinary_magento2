@@ -132,10 +132,10 @@ class Free extends \Magento\Framework\App\Config\Value
     public function formatError($response)
     {
         $status = ($this->clientType == 'laminas') ? $response->getStatusCode() : $response->getStatus();
-
+        $res = $this->getHeader($response);
         return __(
             self::ERROR_FORMAT,
-            $status == 400 ? $this->getHeader() : self::ERROR_DEFAULT
+            $status == 400 ? $res : self::ERROR_DEFAULT
         );
     }
 
