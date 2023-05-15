@@ -4,6 +4,7 @@
       <sequence>
           <module name="Magento_ProductVideo"/>
           <module name="Magento_PageBuilder"/>
+          <module name="Magento_MediaGalleryUi"/>
       </sequence>
   </module>
 </config>

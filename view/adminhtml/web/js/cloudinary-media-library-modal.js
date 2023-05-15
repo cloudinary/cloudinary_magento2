@@ -1,15 +1,20 @@
 define([
     'jquery',
+    'mageUtils',
+    'uiRegistry',
     'productGallery',
     'Magento_Ui/js/modal/alert',
     'mage/backend/notification',
     'mage/translate',
+    'Magento_MediaGalleryUi/js/image-uploader',
     'jquery/ui',
     'Magento_Ui/js/modal/modal',
     'mage/backend/validation',
     'cloudinaryMediaLibraryAll',
-    'es6Promise'
-], function($, productGallery, uiAlert, notification, $t) {
+    'es6Promise',
+
+
+], function($, mageUtils, registry, productGallery, uiAlert, notification, $t, imageUploader) {
     'use strict';
 
     $.widget('mage.cloudinaryMediaLibraryModal', {
@@ -62,14 +67,27 @@ define([
             this._bind();
 
             var widget = this;
+            var uiRegistry = registry;
+
+
             window.cloudinary_ml = window.cloudinary_ml || [];
             this.options.cldMLid = this.options.cldMLid || 0;
+
             if (typeof window.cloudinary_ml[this.options.cldMLid] === "undefined") {
                 this.cloudinary_ml = window.cloudinary_ml[this.options.cldMLid] = cloudinary.createMediaLibrary(
                     this.options.cloudinaryMLoptions, {
                         insertHandler: function(data) {
                             $('body').first().css('overflow', 'initial');
-                            return widget.cloudinaryInsertHandler(data);
+                            if (widget.isMediaBrowser()) {
+                                return widget.cloudinaryInsertHandler(data);
+                            } else {
+                                // new media gallery
+                                data['newGalleryMode'] = 1;
+                                widget.cloudinaryInsertHandler(data);
+                                if (uiRegistry.get('media_gallery_listing.media_gallery_listing_data_source')) {
+                                    $(window).trigger('reload.MediaGallery');
+                                }
+                            }
                         }
                     }
                 );
@@ -78,14 +96,33 @@ define([
             }
 
         },
+        getMageMediaBrowserData: function () {
+            return $('.media-gallery-modal').data('mageMediabrowser');
+        },
 
+        isMediaBrowser: function () {
+            return typeof this.getMageMediaBrowserData() !== 'undefined';
+        },
+
+        selectImageInNewMediaGallery: function (record) {
+            this.uploadHandler(record);
+        },
         /**
          * Fired on trigger "openMediaLibrary"
          */
         openMediaLibrary: function() {
             this.cloudinary_ml.show(this.options.cloudinaryMLshowOptions);
         },
+        showLoader: function () {
+            this.loader(true);
+        },
 
+        /**
+         * Hides spinner loader
+         */
+        hideLoader: function () {
+            this.loader(false);
+        },
         /**
          * Escape Regex
          */
@@ -112,11 +149,11 @@ define([
                         asset.free_transformation = (asset.derived[0].hasOwnProperty('raw_transformation')) ?
                             asset.derived[0].raw_transformation :
                             asset.asset_derived_image_url
-                            .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
-                            .replace(/\.[^/.]+$/, '')
-                            .replace(new RegExp('\/' + widget.escapeRegex(encodeURI(decodeURI(asset.public_id))) + '$'), '')
-                            .replace(new RegExp('\/v[0-9]{1,10}$'), '')
-                            .replace(new RegExp('\/'), ',');
+                                .replace(new RegExp('^.*cloudinary.com/(' + this.options.cloudinaryMLoptions.cloud_name + '/)?' + asset.resource_type + '/' + asset.type + '/'), '')
+                                .replace(/\.[^/.]+$/, '')
+                                .replace(new RegExp('\/' + widget.escapeRegex(encodeURI(decodeURI(asset.public_id))) + '$'), '')
+                                .replace(new RegExp('\/v[0-9]{1,10}$'), '')
+                                .replace(new RegExp('\/'), ',');
                         if (widget.options.useDerived) {
                             asset.asset_url = asset.asset_image_url = asset.derived[0].secure_url;
                         }
