@@ -789,7 +789,10 @@ define(
                         type,
                         ampersandPosition,
                         vimeoRegex,
-                        useYoutubeNocookie = false;
+                        useYoutubeNocookie = false,
+                        cname;
+
+                    cname = $('#cld_domain_cname').data('value');
 
                     if (typeof href !== 'string') {
                         return href;
@@ -825,12 +828,12 @@ define(
                         if (href.href.match(vimeoRegex) != null) {
                             id = href.href.match(vimeoRegex)[3];
                         }
-                    } else if (href.host.match(/cloudinary\.com/)) {
+                    } else if (href.host.match(/cloudinary/) || href.href.includes(cname)) {
                         type = 'cloudinary';
                         id = href.href.replace(new RegExp('^.*\/video\/(upload\/)?((.*\/)?v[0-9]{1,10}\/)?'), '').replace(/\.[^.\/]+$/, '');
                     }
 
-                    if ((!id || !type) && forceVideo) {
+                    if ((!id || !type)) {
                         id = href.href;
                         type = 'custom';
                     }

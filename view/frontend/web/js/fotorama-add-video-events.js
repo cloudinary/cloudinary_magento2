@@ -60,7 +60,10 @@ define(
                 type,
                 ampersandPosition,
                 vimeoRegex,
-                useYoutubeNocookie = false;
+                useYoutubeNocookie = false,
+                cname;
+
+            cname = $('#cld_domain_cname').data('value');
 
             /**
              * Get youtube ID
@@ -89,6 +92,8 @@ define(
 
             href = parseHref(href);
 
+
+
             if (href.host.match(/youtube\.com/) && href.search) {
                 id = href.search.split('v=')[1];
 
@@ -111,7 +116,7 @@ define(
                     ].join('')
                 );
                 id = href.href.match(vimeoRegex)[3];
-            } else if (href.host.match(/cloudinary\.com/)) {
+            } else if (href.host.match(/cloudinary\.com/) || href.href.includes(cname)) {
                 type = 'cloudinary';
                 id = _baseName(href.href);
             }

@@ -33,7 +33,7 @@ define([
                 return validateIsUrl(href) && (
                     href.match(/youtube\.com|youtu\.be/) ||
                     href.match(/vimeo\.com/) ||
-                    href.match(/cloudinary\.com/) ||
+                    href.match(/cloudinary/) ||
                     href.match(/\.(mp4|ogv|webm)(?!\w)/)
                 );
             },
@@ -52,7 +52,7 @@ define([
                 return validateIsUrl(href) && (
                     href.match(/youtube\.com|youtu\.be/) ||
                     href.match(/vimeo\.com/) ||
-                    href.match(/cloudinary\.com/) ||
+                    href.match(/cloudinary/) ||
                     href.match(/\.(mp4|ogv|webm)(?!\w)/)
                 );
             },
