@@ -107,6 +107,10 @@ class NewVideo extends \Magento\ProductVideo\Block\Adminhtml\Product\Edit\NewVid
      */
     protected function getNoteVideoUrl()
     {
+        if (!$this->configuration->isModuleEnabled()) {
+            return parent::getNoteVideoUrl();
+        }
+
         $result = __('Supported: Vimeo');
         $messages = "";
         if ($this->mediaHelper->getYouTubeApiKey() === null) {
