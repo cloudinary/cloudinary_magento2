@@ -5,6 +5,7 @@ namespace Cloudinary\Cloudinary\Block\Adminhtml\Cms\Wysiwyg\Images;
 use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
 use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\Json\EncoderInterface;
+use Magento\Framework\App\ProductMetadataInterface;
 
 /**
  * Wysiwyg Images content block
@@ -20,6 +21,9 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
      */
     protected $mediaLibraryHelper;
 
+
+    protected $productMetadata;
+
     /**
      * @param Context $context
      * @param EncoderInterface $jsonEncoder
@@ -30,10 +34,12 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
         Context $context,
         EncoderInterface $jsonEncoder,
         MediaLibraryHelper $mediaLibraryHelper,
+        ProductMetadataInterface $productMetadata,
         array $data = []
     ) {
         parent::__construct($context, $jsonEncoder, $data);
         $this->mediaLibraryHelper = $mediaLibraryHelper;
+        $this->productMetadata = $productMetadata;
     }
 
     /**
@@ -50,12 +56,17 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
         }
 
         try {
+            if (version_compare($this->productMetadata->getVersion(), '2.3.5', '<=')) {
+                $imageUploadUrl = $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
+            } else {
+                $imageUploadUrl = $this->_urlBuilder->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
+            }
 
             //Try to add session param on Magento versions prior to 2.3.5
-            $imageUploadUrl = $this->_urlBuilder->addSessionParam()->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
+
         } catch (\Exception $e) {
             //Catch deprecation error on Magento 2.3.5 and above
-            $imageUploadUrl = $this->_urlBuilder->getUrl('cloudinary/cms_wysiwyg_images/upload', ['type' => $this->_getMediaType()]);
+            throw new \Exception($e->getMessage());
         }
 
         return $this->_jsonEncoder->encode(

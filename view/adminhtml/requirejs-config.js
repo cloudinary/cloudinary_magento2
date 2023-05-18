@@ -14,10 +14,14 @@ var config = {
     paths: {
         'jquery.lazyload': "Cloudinary_Cloudinary/js/jquery.lazyload.min",
         cloudinaryMediaLibraryAll: "//media-library.cloudinary.com/global/all",
-        es6Promise: "//cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min"
+        es6Promise: "//cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min",
+        'uiComponent': 'Magento_Ui/js/core/app',
     },
     shim: {
         'jquery.lazyload': {
+            deps: ['jquery']
+        },
+        'uiComponent': {
             deps: ['jquery']
         },
     },
