@@ -39,7 +39,20 @@ class UploadProductImage implements ObserverInterface
         $product = $observer->getEvent()->getProduct();
 
         foreach ($this->productImageFinder->findNewImages($product) as $image) {
-            $this->cloudinaryImageManager->uploadAndSynchronise($image);
+            if (!$this->isCloudinaryImage($image)) {
+                $this->cloudinaryImageManager->uploadAndSynchronise($image);
+            }
         }
+    }
+    /**
+     * Check if image sourced from Cloudinary media
+     * @param $image
+     * return bool
+     */
+    protected function isCloudinaryImage($image)
+    {
+        $file = $image->getRelativePath();
+        $cld_prefix = 'c/l/cld_';
+        return strpos($file,$cld_prefix);
     }
 }

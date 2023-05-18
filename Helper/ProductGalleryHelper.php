@@ -94,6 +94,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 unset($this->cloudinaryPGoptions['custom_free_params']);
             }
             $this->cloudinaryPGoptions['cloudName'] = $this->getCloudName();
+            $this->cloudinaryPGoptions['cname'] = $this->getCname();
             $this->cloudinaryPGoptions['queryParam'] = 'AB';
         }
 
@@ -108,6 +109,16 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
     {
         return (string)$this->configuration->getCloud();
     }
+
+
+    public function getCname()
+    {
+        $config = $this->configuration->getCredentials();
+        return ($config['cname']) ?? '';
+    }
+
+
+
 
     /**
      * @return bool

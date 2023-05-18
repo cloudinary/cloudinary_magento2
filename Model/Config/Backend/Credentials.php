@@ -156,14 +156,14 @@ class Credentials extends Encrypted
             $environmentVariable = str_replace('CLOUDINARY_URL=', '', $environmentVariable);
             $uri = parse_url($environmentVariable);
             if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
-                throw new InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
+                throw new \InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
             }
             $q_params = [];
             if (isset($uri["query"])) {
                 parse_str($uri["query"], $q_params);
             }
             $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
-            $config = array_merge(
+            $credentials = array_merge(
                 $q_params,
                 [
                     "cloud_name" => $uri["host"],
@@ -172,19 +172,14 @@ class Credentials extends Encrypted
                     "private_cdn" => $private_cdn,
                 ]
             );
-            if ($private_cdn) {
-                $config["secure_distribution"] = substr($uri["path"], 1);
-            }
-            $credentials = [
-                "cloud_name" => $config['cloud_name'],
-                "api_key" => $config['api_key'],
-                "api_secret" => $config['api_secret']
-            ];
-            if (isset($config['private_cdn'])) {
-                $credentials["private_cdn"] = $config['private_cdn'];
+
+            if (isset($credentials['cname'])) {
+                $credentials['secure'] = true;
+                $credentials['secure_distribution'] = $credentials['cname'];
             }
 
             return $credentials;
+
         } catch (\Exception $e) {
             throw new ValidatorException(__(self::CREDENTIALS_CHECK_FAILED));
         }

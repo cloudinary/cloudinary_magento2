@@ -1,0 +1,6 @@
+<?php /* @var  \Cloudinary\Cloudinary\Block\Scripts $block */
+$cname = $block->getCname();
+?>
+<?php if($cname): ?>
+    <span id="cld_domain_cname" data-value="<?= $cname ?>"></span>
+<?php endif; ?>

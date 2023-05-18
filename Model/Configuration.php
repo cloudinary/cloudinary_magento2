@@ -164,20 +164,23 @@ class Configuration implements ConfigurationInterface
      */
     private $coreRegistry;
 
+    /**
+     * @var ManagerInterface
+     */
     private $messageManager;
 
     /**
-     * @method __construct
-     * @param  ScopeConfigInterface             $configReader
-     * @param  WriterInterface                  $configWriter
-     * @param  EncryptorInterface               $decryptor
-     * @param  AutoUploadConfigurationInterface $autoUploadConfiguration
-     * @param  LoggerInterface                  $logger
-     * @param  StoreManagerInterface            $storeManager
-     * @param  ModuleListInterface              $moduleList
-     * @param  ProductMetadataInterface         $productMetadata
-     * @param  CloudinaryLogger                 $cloudinaryLogger
-     * @param  Registry                         $coreRegistry
+     * @param ScopeConfigInterface $configReader
+     * @param WriterInterface $configWriter
+     * @param EncryptorInterface $decryptor
+     * @param AutoUploadConfigurationInterface $autoUploadConfiguration
+     * @param LoggerInterface $logger
+     * @param StoreManagerInterface $storeManager
+     * @param ModuleListInterface $moduleList
+     * @param ProductMetadataInterface $productMetadata
+     * @param Logger $cloudinaryLogger
+     * @param Registry $coreRegistry
+     * @param ManagerInterface $messageManager
      */
     public function __construct(
         ScopeConfigInterface $configReader,
@@ -203,6 +206,7 @@ class Configuration implements ConfigurationInterface
         $this->cloudinaryLogger = $cloudinaryLogger;
         $this->coreRegistry = $coreRegistry;
         $this->messageManager = $messageManager;
+
     }
 
     /**
@@ -234,40 +238,38 @@ class Configuration implements ConfigurationInterface
      */
     public function getCredentials()
     {
-        $rawValue =  $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        $value = $this->decryptor->decrypt($rawValue);
-        $environmentVariable = str_replace('CLOUDINARY_URL=', '', $value);
-        $uri = parse_url($environmentVariable);
-        if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
-            throw new \InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
-        }
-        $q_params = [];
-        if (isset($uri["query"])) {
-            parse_str($uri["query"], $q_params);
-        }
-        $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
-        $config = array_merge(
-            $q_params,
-            [
-                "cloud_name" => $uri["host"],
-                "api_key" => $uri["user"],
-                "api_secret" => $uri["pass"],
-                "private_cdn" => $private_cdn,
-            ]
-        );
-        if ($private_cdn) {
-            $config["secure_distribution"] = substr($uri["path"], 1);
-        }
-        $credentials = [
-            "cloud_name" => $config['cloud_name'],
-            "api_key" => $config['api_key'],
-            "api_secret" => $config['api_secret']
-        ];
-        if (isset($config['private_cdn'])) {
-            $credentials["private_cdn"] = $config['private_cdn'];
+        if ($this->isModuleEnabled()) {
+            $rawValue =  $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $value = $this->decryptor->decrypt($rawValue);
+            $environmentVariable = str_replace('CLOUDINARY_URL=', '', $value);
+            $uri = parse_url($environmentVariable);
+            if (!isset($uri["scheme"]) || strtolower($uri["scheme"]) !== "cloudinary") {
+                throw new \InvalidArgumentException("Invalid CLOUDINARY_URL scheme. Expecting to start with 'cloudinary://'");
+            }
+            $q_params = [];
+            if (isset($uri["query"])) {
+                parse_str($uri["query"], $q_params);
+            }
+            $private_cdn = isset($uri["path"]) && $uri["path"] != "/";
+
+            $credentials = array_merge(
+                $q_params,
+                [
+                    "cloud_name" => $uri["host"],
+                    "api_key" => $uri["user"],
+                    "api_secret" => $uri["pass"],
+                    "private_cdn" => $private_cdn,
+                ]
+            );
+
+            if (isset($credentials['cname'])) {
+                $credentials['secure'] = true;
+                $credentials['secure_distribution'] = $credentials['cname'];
+            }
+
+            return $credentials;
         }
 
-        return $credentials;
     }
 
     /**
@@ -341,6 +343,13 @@ class Configuration implements ConfigurationInterface
         return UploadConfig::fromBooleanValues(self::USE_FILENAME, self::UNIQUE_FILENAME, self::OVERWRITE);
     }
 
+    /**
+     * @return bool
+     */
+    public function isModuleEnabled()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_ENABLED);
+    }
     /**
      * @return boolean
      */

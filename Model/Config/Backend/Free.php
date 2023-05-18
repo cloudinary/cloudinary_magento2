@@ -11,17 +11,24 @@ use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Exception\ValidatorException;
-use Magento\Framework\HTTP\ZendClient;
+use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Phrase;
 use Magento\Framework\Registry;
-use Zend_Http_Response;
+use Laminas\Http\Response as LaminasResponse;
 
 class Free extends \Magento\Framework\App\Config\Value
 {
     const ERROR_FORMAT = 'Incorrect custom transform - %1';
     const ERROR_DEFAULT = 'please update';
+
+    /**
+     * @var ProductMetadataInterface
+     */
+    protected $productMetadata;
+
+    protected $clientType;
 
     /**
      * @var ConfigurationInterface
@@ -34,21 +41,21 @@ class Free extends \Magento\Framework\App\Config\Value
     private $cloudinaryImageProvider;
 
     /**
-     * @var ZendClient
+     * @var LaminasClient|\Magento\Framework\HTTP\ZendClient
      */
-    private $zendClient;
+    private $httpClient;
 
     /**
-     * @param Context                 $context
-     * @param Registry                $registry
-     * @param ScopeConfigInterface    $config
-     * @param TypeListInterface       $cacheTypeList
-     * @param ConfigurationInterface  $configuration,
+     * @param Context $context
+     * @param Registry $registry
+     * @param ScopeConfigInterface $config
+     * @param TypeListInterface $cacheTypeList
+     * @param ConfigurationInterface $configuration
      * @param CloudinaryImageProvider $cloudinaryImageProvider
-     * @param ZendClient              $zendClient
-     * @param AbstractResource        $resource
-     * @param AbstractDb              $resourceCollection
-     * @param array                   $data
+     * @param ProductMetadataInterface $productMetadata
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
      */
     public function __construct(
         Context $context,
@@ -57,17 +64,27 @@ class Free extends \Magento\Framework\App\Config\Value
         TypeListInterface $cacheTypeList,
         ConfigurationInterface $configuration,
         CloudinaryImageProvider $cloudinaryImageProvider,
-        ZendClient $zendClient,
+        ProductMetadataInterface $productMetadata,
         AbstractResource $resource = null,
         AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configuration = $configuration;
         $this->cloudinaryImageProvider = $cloudinaryImageProvider;
-        $this->zendClient = $zendClient;
+        $this->productMetadata = $productMetadata;
+        // fix for magento versions 2.4.6 or newer
+        if (version_compare($productMetadata->getVersion(), '2.4.6', '>=')) {
+            $this->httpClient = new \Magento\Framework\HTTP\LaminasClient();
+            $this->clientType = 'laminas';
+        } else {
+            $this->httpClient = new \Magento\Framework\HTTP\ZendClient();
+            $this->clientType = 'zend';
+        }
+
 
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
+
 
     public function beforeSave()
     {
@@ -96,30 +113,45 @@ class Free extends \Magento\Framework\App\Config\Value
             throw new ValidatorException(__(self::ERROR_FORMAT, self::ERROR_DEFAULT));
         }
 
-        if ($response->isError()) {
+        $isError = ($this->clientType == 'laminas') ? (!$response->isSuccess()) : $response->isError();
+
+        if ($isError) {
             throw new ValidatorException($this->formatError($response));
         }
     }
 
+
+    protected function getHeader($response) {
+        return ($this->clientType == 'laminas') ? $response->getHeaders()->get('x-cld-error') : $response->getHeader('x-cld-error');
+    }
+
     /**
-     * @param  Zend_Http_Response $response
+     * @param  $response
      * @return Phrase
      */
-    public function formatError(Zend_Http_Response $response)
+    public function formatError($response)
     {
+        $status = ($this->clientType == 'laminas') ? $response->getStatusCode() : $response->getStatus();
+        $res = ($this->clientType == 'laminas') ? $this->getHeader($response)->getFieldValue() : $this->getHeader($response);
         return __(
             self::ERROR_FORMAT,
-            $response->getStatus() == 400 ? $response->getHeader('x-cld-error') : self::ERROR_DEFAULT
+            $status == 400 ? $res : self::ERROR_DEFAULT
         );
     }
 
     /**
-     * @param  string $url
-     * @return Zend_Http_Response
+     * @param $url
+     * @return mixed
      */
     public function httpRequest($url)
     {
-        return $this->zendClient->setUri($url)->request(ZendClient::GET);
+        if ($this->clientType == 'laminas') {
+            $client = $this->httpClient->setUri($url)->setMethod(\Laminas\Http\Request::METHOD_GET);
+            return $client->send();
+        } else {
+            return $this->httpClient->setUri($url)->request('GET');
+        }
+
     }
 
     /**

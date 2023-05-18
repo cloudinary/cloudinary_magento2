@@ -18,6 +18,9 @@ use Magento\Framework\Registry;
 use Magento\Framework\Validator\AllowedProtocols;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File;
+use Magento\MediaGalleryUi\Model\UploadImage as MediaGalleryUploader;
+use Magento\MediaGalleryApi\Api\Data\AssetInterfaceFactory;
+use Magento\MediaGalleryApi\Api\SaveAssetsInterface;
 
 /**
  * Upload image.
@@ -96,6 +99,13 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
      */
     private $mediaLibraryMapFactory;
 
+
+    private $mediaGalleryUploader;
+
+    protected $mediaAsset;
+
+    protected $mediaAssetSave;
+
     /**
      * @method __construct
      * @param  Context                $context
@@ -127,7 +137,11 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         AllowedProtocols $protocolValidator,
         NotProtectedExtension $extensionValidator,
         ConfigurationInterface $configuration,
-        MediaLibraryMapFactory $mediaLibraryMapFactory
+        MediaLibraryMapFactory $mediaLibraryMapFactory,
+        MediaGalleryUploader $mediaGalleryUploader,
+        AssetInterfaceFactory $mediaAsset,
+        SaveAssetsInterface $mediaAssetSave
+
     ) {
         parent::__construct($context, $coreRegistry, $resultJsonFactory, $directoryResolver);
         $this->directoryList = $directoryList;
@@ -140,6 +154,9 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         $this->protocolValidator = $protocolValidator;
         $this->configuration = $configuration;
         $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
+        $this->mediaGalleryUploader = $mediaGalleryUploader;
+        $this->mediaAsset = $mediaAsset;
+        $this->mediaAssetSave = $mediaAssetSave;
     }
 
     /**
@@ -152,7 +169,12 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
     {
         try {
             $this->_initAction();
-            $path = $this->getStorage()->getSession()->getCurrentPath();
+            $path = ($this->getStorage()->getSession()->getCurrentPath()) ?? null;
+
+            if (!$path){
+                $path = $this->directoryList->getRoot() .'/pub/'. DirectoryList::MEDIA .'/cloudinary';
+            }
+
             if (!$this->validatePath($path, DirectoryList::MEDIA)) {
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('Directory %1 is not under storage root path.', $path)
@@ -174,6 +196,24 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
             $this->getStorage()->resizeFile($localFilePath, true);
             $this->imageAdapter->validateUploadFile($localFilePath);
             $result = $this->appendResultSaveRemoteImage($localFilePath);
+            $asset = $this->getRequest()->getParam('asset');
+            $reg = preg_match('/^(.*)\/media\//',$localFilePath,$substruct);
+            $newPath = str_replace($substruct[0],'',$localFilePath);
+            $ma = $this->mediaAsset->create(
+                [
+                    //'id' => 2020,
+                    'path' => $newPath,
+                    'description' => $localFileName,
+                    'contentType' => $asset['resource_type'],
+                    'title' => $localFileName,
+                    'source' => 'Cloudinary',
+                    'width' => $asset['width'],
+                    'height' => $asset['height'],
+                    'size' => $asset['bytes']
+                ]
+            );
+            $this->mediaAssetSave->execute([$ma]);
+            // $mgu = $this->mediaGalleryUploader->execute($path, $type);
             if ($this->configuration->isEnabledLocalMapping()) {
                 $this->saveCloudinaryMapping();
             }
