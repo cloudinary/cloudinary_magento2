@@ -9,7 +9,6 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Cloudinary\Core\Image\SynchronizationCheck;
 use Cloudinary\Cloudinary\Core\SynchroniseAssetsRepositoryInterface;
-use Cloudinary\Cloudinary\Model\Framework\File\Uploader;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\DataObject;
 use Magento\Framework\Exception\LocalizedException;
@@ -20,6 +19,7 @@ use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
 use Symfony\Component\Console\Output\OutputInterface;
 
+
 class BatchDownloader
 {
     const API_REQUEST_MAX_RESULTS = 500;
@@ -29,6 +29,12 @@ class BatchDownloader
     const ERROR_MIGRATION_ALREADY_RUNNING = 'Cannot start download - a migration is in progress or was interrupted. If you are sure a migration is not running elsewhere run the cloudinary:migration:stop command before attempting another download.';
     const MESSAGE_DOWNLOAD_INTERRUPTED = 'Download manually stopped.';
     const DONE_MESSAGE = "Done :)";
+
+
+    /**
+     * @var $_cloudinarySdk
+     */
+    private $_cloudinarySdk;
 
     /**
      * @var ConfigurationInterface
@@ -150,8 +156,16 @@ class BatchDownloader
 
     private function _authorise()
     {
-        Cloudinary::config($this->_configurationBuilder->build());
-        Cloudinary::$USER_PLATFORM = $this->_configuration->getUserPlatform();
+
+            // $config = new Configuration($this->configurationBuilder->build());
+            $this->_cloudinarySdk = new Cloudinary($this->_configurationBuilder->build());
+
+            $this->_api = $this->_cloudinarySdk->adminApi();
+            \Cloudinary\Api\BaseApiClient::$userPlatform = $this->_configuration->getUserPlatform();
+            $this->_authorised = true;
+
+            return $this;
+
     }
 
     /**
@@ -289,7 +303,7 @@ class BatchDownloader
      */
     private function getResources($nextCursor = null)
     {
-        $response = $this->_api->resources(
+        $response = $this->_api->assets(
             [
             "resource_type" => 'image',
             "type" => "upload",
@@ -298,9 +312,11 @@ class BatchDownloader
             "next_cursor" => $nextCursor,
             ]
         );
-        $this->_rateLimitResetAt = $response->rate_limit_reset_at;
-        $this->_rateLimitAllowed = $response->rate_limit_allowed;
-        $this->_rateLimitRemaining = $response->rate_limit_remaining;
+
+
+        $this->_rateLimitResetAt = $response->rateLimitResetAt;
+        $this->_rateLimitAllowed = $response->rateLimitAllowed;
+        $this->_rateLimitRemaining = $response->rateLimitRemaining;
         $response->resources = array_values($response['resources']);
         return new DataObject((array)$response);
     }
