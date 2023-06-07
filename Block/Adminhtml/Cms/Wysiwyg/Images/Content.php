@@ -2,7 +2,6 @@
 
 namespace Cloudinary\Cloudinary\Block\Adminhtml\Cms\Wysiwyg\Images;
 
-use _PHPStan_532094bc1\Nette\Neon\Exception;
 use Cloudinary\Cloudinary\Helper\MediaLibraryHelper;
 use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\Json\EncoderInterface;
@@ -67,7 +66,7 @@ class Content extends \Magento\Cms\Block\Adminhtml\Wysiwyg\Images\Content
 
         } catch (\Exception $e) {
             //Catch deprecation error on Magento 2.3.5 and above
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
 
         return $this->_jsonEncoder->encode(
