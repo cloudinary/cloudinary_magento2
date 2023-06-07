@@ -105,6 +105,7 @@ class DownloadImages extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
         try {
             $this->batchDownloader = $this->objectManager
                 ->get(\Cloudinary\Cloudinary\Model\BatchDownloader::class);
@@ -120,6 +121,9 @@ class DownloadImages extends Command
             }
             $this->outputLogger->setOutput($output);
             $this->batchDownloader->downloadUnsynchronisedImages($this->outputLogger, $this->_override);
+
+            return 1;
+
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
         }
