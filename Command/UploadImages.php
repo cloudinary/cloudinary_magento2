@@ -105,6 +105,7 @@ class UploadImages extends Command
             }
             $this->outputLogger->setOutput($output);
             $this->batchUploader->uploadUnsynchronisedImages($this->outputLogger);
+            return 1;
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
         }
