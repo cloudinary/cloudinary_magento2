@@ -238,7 +238,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getCredentials()
     {
-        if ($this->isModuleEnabled()) {
+
             $rawValue =  $this->configReader->getValue(self::CONFIG_PATH_ENVIRONMENT_VARIABLE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
             $value = $this->decryptor->decrypt($rawValue);
             $environmentVariable = str_replace('CLOUDINARY_URL=', '', $value);
@@ -268,7 +268,7 @@ class Configuration implements ConfigurationInterface
             }
 
             return $credentials;
-        }
+
 
     }
 

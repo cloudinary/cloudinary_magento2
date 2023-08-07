@@ -60,5 +60,6 @@ class StopMigration extends Command
         } else {
             $output->writeln(self::NOP_MESSAGE);
         }
+        return 1;
     }
 }
