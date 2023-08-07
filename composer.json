@@ -2,7 +2,7 @@
     "name": "cloudinary/cloudinary-magento2",
     "description": "Cloudinary Magento 2 Integration.",
     "type": "magento2-module",
-    "version": "1.19.5",
+    "version": "1.19.6",
     "license": "MIT",
     "require": {
         "cloudinary/cloudinary_php": ">=2.7 <2.8.1",
@@ -20,4 +20,7 @@
         "type": "git",
         "url": "https://github.com/cloudinary/cloudinary_magento2"
     }]
+    "require": {
+        "php": "7.1 < 8.3"
+    }
 }
