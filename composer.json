@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "cloudinary/cloudinary_php": ">=2.7 <2.8.1",
-        "php": ">=7.1 <8.2"
+        "php": ">=7.1 <8.3"
     },
     "autoload": {
         "files": [
@@ -20,7 +20,4 @@
         "type": "git",
         "url": "https://github.com/cloudinary/cloudinary_magento2"
     }]
-    "require": {
-        "php": "7.1 < 8.3"
-    }
 }
