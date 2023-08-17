@@ -16,7 +16,6 @@ define(
                         self.update(key);
                     });
                     $('#save-button').on('click', function (e){
-                        alert('saving...');
                         self.images.each(function(elem){
                             if (elem.cld_image) {
                                 let cld_src = elem.cld_image;
