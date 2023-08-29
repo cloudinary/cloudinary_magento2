@@ -106,7 +106,6 @@ class MediaLibraryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCname()
     {
-        $cname = isset($this->configuration->getCredentials()['cname']) ? $this->configuration->getCredentials()['cname'] : null;
-        return $cname;
+        return $this->configuration->isEnabled() && isset($this->configuration->getCredentials()['cname']) ? $this->configuration->getCredentials()['cname'] : null;
     }
 }

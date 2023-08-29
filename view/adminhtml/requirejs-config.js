@@ -8,7 +8,8 @@ var config = {
             cloudinarySpinsetModal: 'Cloudinary_Cloudinary/js/cloudinary-spinset-modal',
             cldspinsetDialog: 'Cloudinary_Cloudinary/js/cloudinary-spinset-dialog',
             productGallery: 'Cloudinary_Cloudinary/js/product-gallery',
-            cloudinaryLazyload: 'Cloudinary_Cloudinary/js/cloudinary-lazyload'
+            cloudinaryLazyload: 'Cloudinary_Cloudinary/js/cloudinary-lazyload',
+            updateCmsImages: 'Cloudinary_Cloudinary/js/cms/preview-update',
         }
     },
     paths: {
@@ -24,6 +25,9 @@ var config = {
         'uiComponent': {
             deps: ['jquery']
         },
+        'Cloudinary_Cloudinary/js/cms/preview-update': {
+            deps: ['jquery']
+        }
     },
     config: {
         mixins: {
