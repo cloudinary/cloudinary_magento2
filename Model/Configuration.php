@@ -377,6 +377,14 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * @return array
+     */
+    public function getSupportedVideoFormats()
+    {
+        return ['mp4', 'webm', 'ogv', 'mov', 'wmv'];
+    }
+
+    /**
      * @param  string $file
      * @return string
      */
@@ -702,6 +710,10 @@ class Configuration implements ConfigurationInterface
 
         $slug = \array_shift($_url);
         $parsed["type"] = ($parsed["cloudName"] && $slug  === "video") ? "video" : "image";
+
+        if (isset($parsed['extension'])) {
+            $parsed['type'] = (in_array($parsed['extension'], $this->getSupportedVideoFormats())) ? 'video' : 'image';
+        }
 
         $slug = \array_shift($_url);
         $parsed["transformations_string"] = ($slug === 'upload' ? '' : $slug) . implode('/', $_url);
