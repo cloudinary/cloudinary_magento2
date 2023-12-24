@@ -10,8 +10,8 @@
 
 define(
     [
-      'jquery',
-      'jquery-ui-modules/widget'
+        'jquery',
+        'jquery-ui-modules/widget'
     ],
     function ($) {
         'use strict';
@@ -59,19 +59,19 @@ define(
                  */
                 _create: function () {
                     switch (this.element.data('type')) {
-                    case 'youtube':
-                        this.element.videoYoutube();
-                        this._player = this.element.data('mageVideoYoutube');
+                        case 'youtube':
+                            this.element.videoYoutube();
+                            this._player = this.element.data('mageVideoYoutube');
                             break;
-                    case 'vimeo':
-                        this.element.videoVimeo();
-                        this._player = this.element.data('mageVideoVimeo');
+                        case 'vimeo':
+                            this.element.videoVimeo();
+                            this._player = this.element.data('mageVideoVimeo');
                             break;
-                    case 'cloudinary':
-                        this.element.videoCloudinary();
-                        this._player = this.element.data('mageVideoCloudinary');
+                        case 'cloudinary':
+                            this.element.videoCloudinary();
+                            this._player = this.element.data('mageVideoCloudinary');
                             break;
-                    default:
+                        default:
                             throw {
                                 name: 'Video Error',
                                 message: 'Unknown video type',
@@ -82,7 +82,7 @@ define(
                                 toString: function () {
                                     return this.name + ': ' + this.message;
                                 }
-                        };
+                            };
                     }
                 },
 
@@ -226,11 +226,11 @@ define(
                                              */
                                             onStateChange: function (data) {
                                                 switch (window.parseInt(data.data, 10)) {
-                                                case 1:
-                                                    self._playing = true;
+                                                    case 1:
+                                                        self._playing = true;
                                                         break;
-                                                default:
-                                                    self._playing = false;
+                                                    default:
+                                                        self._playing = false;
                                                         break;
                                                 }
 
@@ -339,7 +339,7 @@ define(
                 _create: function () {
                     var timestamp,
                         additionalParams = '',
-                        src;
+                        src, id;
 
                     this._initialize();
                     timestamp = new Date().getTime();
@@ -357,27 +357,25 @@ define(
                         this._code +
                         timestamp +
                         additionalParams;
+                    id = 'vimeo' + this._code + timestamp;
                     this.element.append(
                         $('<iframe/>')
-                        .attr('frameborder', 0)
-                        .attr('id', 'vimeo' + this._code + timestamp)
-                        .attr('width', this._width)
-                        .attr('height', this._height)
-                        .attr('src', src)
-                        .attr('webkitallowfullscreen', '')
-                        .attr('mozallowfullscreen', '')
-                        .attr('allowfullscreen', '')
-                        .attr('referrerPolicy', 'origin')
+                            .attr('frameborder', 0)
+                            .attr('id', id)
+                            .attr('width', this._width)
+                            .attr('height', this._height)
+                            .attr('src', src)
+                            .attr('webkitallowfullscreen', '')
+                            .attr('mozallowfullscreen', '')
+                            .attr('allowfullscreen', '')
+                            .attr('referrerPolicy', 'origin')
                     );
-                    this._player = window.$f(this.element.children(':first')[0]);
 
+                    this._player = new Vimeo.Player(this.element.children(':first')[0]);
                     // Froogaloop throws error without a registered ready event
-                    this._player.addEvent(
-                        'ready',
-                        function (id) {
-                            $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
-                        }
-                    );
+                    this._player.ready().then(function () {
+                        $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
+                    });
                 },
 
                 /**
@@ -426,22 +424,22 @@ define(
                     var elem = this.element;
                     elem.append(
                         $('<iframe/>')
-                        .attr('frameborder', 0)
-                        .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
-                        .attr('class', 'cld-video-player')
-                        .attr('width', this._width)
-                        .attr('height', this._height)
-                        .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
-                        .attr('webkitallowfullscreen', '')
-                        .attr('mozallowfullscreen', '')
-                        .attr('allowfullscreen', '')
-                        .attr('referrerPolicy', 'origin')
-                        .on(
-                            "load",
-                            function () {
-                                elem.parent('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
-                            }
-                        )
+                            .attr('frameborder', 0)
+                            .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
+                            .attr('class', 'cld-video-player')
+                            .attr('width', this._width)
+                            .attr('height', this._height)
+                            .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
+                            .attr('webkitallowfullscreen', '')
+                            .attr('mozallowfullscreen', '')
+                            .attr('allowfullscreen', '')
+                            .attr('referrerPolicy', 'origin')
+                            .on(
+                                "load",
+                                function () {
+                                    elem.parent('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
+                                }
+                            )
                     );
 
                 },
