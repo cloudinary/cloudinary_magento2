@@ -40,11 +40,18 @@
             <values>
                 <value id="cloudinary_main" type="host">cloudinary.com</value>
                 <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
+                <value id="google_wildcard" type="host">*.googleapis.com</value>
             </values>
         </policy>
         <policy id="media-src">
             <values>
                 <value id="cloudinary_main" type="host">cloudinary.com</value>
+                <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="google_wildcard" type="host">*.gstatic.com</value>
                 <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
             </values>
         </policy>

@@ -294,6 +294,63 @@
                     </depends>
                 </field>
             </group>
+            <group id="cld_video" translate="label" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Video Settings</label>
+                <attribute type="expanded">1</attribute>
+                <depends>
+                    <field id="cloudinary/product_gallery/pg_enabled">1</field>
+                </depends>
+                <!--<field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Video?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Only Cloudinary video are supported.</comment>
+                </field>-->
+                <field id="player_type" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Player type</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Type</source_model>
+                </field>
+                <field id="use_abr" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Adaptive bitrate streaming (beta)</label>
+                    <comment>
+                        Adaptive bitrate streaming is a video delivery technique that adjusts the quality of a video stream in real time according to detected bandwidth and CPU capacity.
+                    </comment>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\StreamMode</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/player_type">cloudinary</field>
+                    </depends>
+                </field>
+                <field id="controls" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Show controls</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Controls</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/player_type">cloudinary</field>
+                    </depends>
+                </field>
+                <field id="sound" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Mute</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/player_type">cloudinary</field>
+                    </depends>
+                    <comment>Whether the video has sound. Default: false
+                        Relevant only when controls is not set to 'none'.</comment>
+                </field>
+                <field id="loop" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Repeat video</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/player_type">cloudinary</field>
+                    </depends>
+                </field>
+                <field id="autoplay" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Autoplay</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Autoplay</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/player_type">cloudinary</field>
+                    </depends>
+                </field>
+
+            </group>
             <group id="lazyload" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Lazyload Settings</label>
                 <attribute type="expanded">0</attribute>

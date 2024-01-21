@@ -55,6 +55,9 @@
                 <indicatorProps_shape>round</indicatorProps_shape>
                 <custom_free_params>{}</custom_free_params>
             </product_gallery>
+            <cld_video>
+
+            </cld_video>
         </cloudinary>
         <csp>
             <mode>
