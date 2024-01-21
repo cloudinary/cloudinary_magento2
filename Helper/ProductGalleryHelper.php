@@ -66,6 +66,34 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
     {
         if ((is_null($this->cloudinaryPGoptions) || $refresh) && ($ignoreDisabled || ($this->configuration->isEnabled() && $this->configuration->isEnabledProductGallery()))) {
             $this->cloudinaryPGoptions = $this->configuration->getProductGalleryAll();
+
+
+            if ($this->configuration->isEnabledCldVideo() == 'cloudinary'){
+                $config = [];
+                $videoSettings = $this->configuration->getAllVideoSettings();
+                $config['playerType'] = 'cloudinary';
+                $config['controls'] = $videoSettings['controls'];
+                $config['loop'] = (bool) $videoSettings['loop'];
+                $config['sound'] = (bool) $videoSettings['sound'];
+                if ($videoSettings['autoplay'] != 'never') {
+                    $config['autoplay'] = true;
+                    $config['autoplayMode'] = $videoSettings['autoplay'];
+
+                } else {
+                    $config['autoplay'] = false;
+                }
+
+                if ($videoSettings['use_abr'] != 'none') {
+                        if ($videoSettings['use_abr'] == 'both') {
+                            $config['sourceTypes'] = ['hls', 'dash'];
+                        }else{
+                            $config['sourceTypes'] = [$videoSettings['use_abr']];
+                        }
+                }
+                $config['chapters'] = false;
+                $this->cloudinaryPGoptions['videoProps'] = $config;
+            }
+
             foreach ($this->cloudinaryPGoptions as $key => $value) {
                 //Change casting
                 if (isset($this->_casting[$key])) {

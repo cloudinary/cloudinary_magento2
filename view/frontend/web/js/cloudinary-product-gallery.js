@@ -26,6 +26,8 @@ define([
             } else {
                 this.cloudinary_pg = window.cloudinary_pg[this.options.cldPGid];
             }
+
+
         },
 
     });
