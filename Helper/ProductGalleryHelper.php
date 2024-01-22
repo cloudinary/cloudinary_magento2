@@ -74,8 +74,8 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $config['playerType'] = 'cloudinary';
                 $config['controls'] = $videoSettings['controls'];
                 $config['loop'] = (bool) $videoSettings['loop'];
-                $config['sound'] = (bool) $videoSettings['sound'];
-                if ($videoSettings['autoplay'] != 'never') {
+                $config['sound'] = (isset($videoSettings['sound'])) ? (bool) $videoSettings['sound'] : false;
+                if ( isset($videoSettings['autoplay']) && $videoSettings['autoplay'] != 'never') {
                     $config['autoplay'] = true;
                     $config['autoplayMode'] = $videoSettings['autoplay'];
 
@@ -83,12 +83,12 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                     $config['autoplay'] = false;
                 }
 
-                if ($videoSettings['use_abr'] != 'none') {
-                        if ($videoSettings['use_abr'] == 'both') {
-                            $config['sourceTypes'] = ['hls', 'dash'];
-                        }else{
-                            $config['sourceTypes'] = [$videoSettings['use_abr']];
-                        }
+                if (isset($videoSettings['use_abr'] ) && $videoSettings['use_abr']  != 'none') {
+                    if ($videoSettings['use_abr'] == 'both') {
+                        $config['sourceTypes'] = ['hls', 'dash'];
+                    }else{
+                        $config['sourceTypes'] = [$videoSettings['use_abr']];
+                    }
                 }
                 $config['chapters'] = false;
                 $this->cloudinaryPGoptions['videoProps'] = $config;
