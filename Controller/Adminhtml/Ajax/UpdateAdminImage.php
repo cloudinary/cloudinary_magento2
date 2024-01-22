@@ -99,6 +99,7 @@ class UpdateAdminImage extends Action
     public function execute()
     {
         $this->authorise();
+        $result = [];
         if ($this->configuration->isEnabled()) {
             try{
                 $remoteImageUrl = $this->getRequest()->getParam('remote_image');
@@ -112,9 +113,6 @@ class UpdateAdminImage extends Action
                             'version' => 1
                         ]
                     ) . '?_i=AB';
-
-
-
 
             } catch (\Exception $e) {
                 $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
