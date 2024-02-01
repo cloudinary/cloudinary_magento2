@@ -5,9 +5,16 @@ use Magento\Framework\View\Element\Template;
 
 class VideoSettings extends template
 {
-
+    /**
+     * @var ConfigurationInterface
+     */
     protected $configuration;
 
+    /**
+     * @param ConfigurationInterface $configuration
+     * @param Template\Context $context
+     * @param array $data
+     */
     public function __construct(
         ConfigurationInterface $configuration,
         Template\Context $context, array $data = []
@@ -22,8 +29,9 @@ class VideoSettings extends template
      */
     public function getVideoSettings() {
         $allSettings = $this->configuration->getAllVideoSettings();
-        $autoplay = ($allSettings['autoplay'] != "never");
-        $controls = ($allSettings == "all");
+
+        $autoplay = (isset($allSettings['autoplay']) && $allSettings['autoplay'] != "never");
+        $controls = (isset($allSettings['controls']) && $allSettings['controls'] == "all");
         $playerSettings = [
             "cloudName" => $this->configuration->getCloud(),
             'controls' => $controls,
@@ -31,7 +39,7 @@ class VideoSettings extends template
             'loop' => (bool) $allSettings['loop'],
             'muted' => (bool) $allSettings['sound']
         ];
-        if ($allSettings['use_abr'] != "none") {
+        if (isset($allSettings['use_abr']) && $allSettings['use_abr'] != "none") {
             $playerSettings['sourceTypes'] = [$allSettings['use_abr']];
         }
         $settings = [
