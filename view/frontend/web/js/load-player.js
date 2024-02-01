@@ -11,7 +11,8 @@
 define(
     [
         'jquery',
-        'jquery-ui-modules/widget'
+        'jquery-ui-modules/widget',
+        'https://unpkg.com/cloudinary-video-player@1.10.5/dist/cld-video-player.min.js'
     ],
     function ($) {
         'use strict';
@@ -144,7 +145,7 @@ define(
                  * Destroyer
                  */
                 destroy: function () {
-                    this._player.destroy();
+                    console.log(this._player);
                 },
 
                 /**
@@ -422,25 +423,48 @@ define(
                 _create: function () {
                     this._initialize();
                     var elem = this.element;
-                    elem.append(
-                        $('<iframe/>')
-                            .attr('frameborder', 0)
-                            .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
-                            .attr('class', 'cld-video-player')
-                            .attr('width', this._width)
-                            .attr('height', this._height)
-                            .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
-                            .attr('webkitallowfullscreen', '')
-                            .attr('mozallowfullscreen', '')
-                            .attr('allowfullscreen', '')
-                            .attr('referrerPolicy', 'origin')
-                            .on(
-                                "load",
-                                function () {
-                                    elem.parent('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
-                                }
-                            )
-                    );
+                    var cldVideoSettings = JSON.parse(document.getElementById('cld_video_settings').textContent);
+
+                    console.log(elem, cldVideoSettings);
+                    if (cldVideoSettings.player_type != 'cloudinary') {
+                        elem.append(
+                            $('<iframe/>')
+                                .attr('frameborder', 0)
+                                .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
+                                .attr('class', 'cld-video-player')
+                                .attr('width', this._width)
+                                .attr('height', this._height)
+                                .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
+                                .attr('webkitallowfullscreen', '')
+                                .attr('mozallowfullscreen', '')
+                                .attr('allowfullscreen', '')
+                                .attr('referrerPolicy', 'origin')
+                                .on(
+                                    "load",
+                                    function () {
+                                        elem.parent('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
+                                    }
+                                )
+                        );
+                    } else {
+                        let id = 'cld_video_player';
+                        this._player = $('<video/>');
+                        elem.append(
+                            this._player
+                                .attr('id', id)
+                                .attr('controls', '')
+                                .attr('data-cld-public-id', this._code)
+                                .attr('class', 'cld-video-player cld-fluid')
+                        );
+
+                        let cldPlayer = cloudinary.videoPlayer(id ,cldVideoSettings.settings).source(this._code);
+                        cldPlayer.play();
+                        $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
+                        this._player.parent().css({
+                            "position": "relative",
+                            "z-index": "100"
+                        })
+                    }
 
                 },
 

@@ -8,6 +8,7 @@
                 <value id="cloudinary_cloudflare_cdnjs" type="host">cdnjs.cloudflare.com</value>
                 <value id="youtube_scripts" type="host">*.youtube.com</value>
                 <value id="vimeo_scripts" type="host">*.vimeo.com</value>
+                <value id="cld_video_player_script" type="host" >unpkg.com</value>
             </values>
         </policy>
         <policy id="frame-src">
@@ -41,6 +42,7 @@
                 <value id="cloudinary_main" type="host">cloudinary.com</value>
                 <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
                 <value id="google_wildcard" type="host">*.googleapis.com</value>
+                <value id="cld_video_player_css" type="host" >unpkg.com</value>
             </values>
         </policy>
         <policy id="media-src">
