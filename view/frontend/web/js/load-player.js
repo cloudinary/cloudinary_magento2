@@ -459,7 +459,7 @@ define(
 
                         let cldPlayer = cloudinary.videoPlayer(id ,cldVideoSettings.settings).source(this._code);
 
-                        $('#' + id).parent('product-video').addClass('cld-product-video');
+                        $('#' + id).parent('.product-video').addClass('cld-product-video');
                         $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
                         this._player.parent().css({
                             "position": "relative",
