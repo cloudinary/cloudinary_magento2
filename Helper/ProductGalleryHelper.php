@@ -74,7 +74,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $config['playerType'] = 'cloudinary';
                 $config['controls'] = $videoSettings['controls'];
                 $config['loop'] = (bool) $videoSettings['loop'];
-                $config['sound'] = (isset($videoSettings['sound'])) ? (bool) $videoSettings['sound'] : false;
+                $config['sound'] = (isset($videoSettings['sound'])) ? false : (bool) $videoSettings['sound'];
                 if ( isset($videoSettings['autoplay']) && $videoSettings['autoplay'] != 'never') {
                     $config['autoplay'] = true;
                     $config['autoplayMode'] = $videoSettings['autoplay'];
