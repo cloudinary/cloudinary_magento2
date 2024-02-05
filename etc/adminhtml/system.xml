@@ -348,7 +348,6 @@
                         <field id="cloudinary/cld_video/player_type">cloudinary</field>
                     </depends>
                 </field>
-                <comment>Note: If Cloudinary media gallery is not enabled, this will work in context of On / Off mode while 'Always' will show controls and rest of options will disable autoplay.</comment>
             </group>
             <group id="lazyload" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Lazyload Settings</label>
