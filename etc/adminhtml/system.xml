@@ -319,10 +319,11 @@
                 <field id="controls" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Show controls</label>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Controls</source_model>
+                    <comment>Note: If Cloudinary media gallery is not enabled, this will work in context of On / Off mode while 'All' will show controls and rest of options will disable the controls.</comment>
                     <depends>
                         <field id="cloudinary/cld_video/player_type">cloudinary</field>
                     </depends>
-                    <comment>Note: If Cloudinary media gallery is not enabled, this will work in context of On / Off mode while 'All' will show controls and rest of options will disable the controls.</comment>
+
                 </field>
                 <field id="sound" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Mute</label>
