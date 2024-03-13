@@ -456,8 +456,16 @@ define(
                                 .attr('data-cld-public-id', this._code)
                                 .attr('class', 'cld-video-player cld-fluid')
                         );
+                        var url = this._videoUrl;
+                        if (cldVideoSettings.transformation != 'undefined') {
 
-                        let cldPlayer = cloudinary.videoPlayer(id ,cldVideoSettings.settings).source(this._code);
+                            url = this._videoUrl.replace('/upload/','/upload/' + cldVideoSettings.transformation + '/');
+                        }
+                        let settings = {...cldVideoSettings.settings};
+                        if (cldVideoSettings?.transformation) {
+                            settings.tranformation = cldVideoSettings.transformation;
+                        }
+                        let cldPlayer = cloudinary.videoPlayer(id ,settingss).source(url);
 
                         $('#' + id).parent('.product-video').addClass('cld-product-video');
                         $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');

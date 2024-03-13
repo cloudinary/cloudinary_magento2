@@ -18,16 +18,12 @@ class StreamMode implements OptionSourceInterface
                 'label' => 'None',
             ],
             [
-                'value' => 'hls',
-                'label' => 'HLS',
+                'value' => 'abr',
+                'label' => 'Adaptive bitrate streaming (beta)',
             ],
             [
-                'value' => 'dash',
-                'label' => 'MPEG-Dash',
-            ],
-            [
-                'value' => 'both',
-                'label' => 'HLS + Dash',
+                'value' => 'optimization',
+                'label' => 'Video optimization',
             ],
         ];
     }
