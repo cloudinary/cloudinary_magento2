@@ -75,13 +75,15 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $config = [
                     'playerType' => 'cloudinary',
                     'controls' => $videoSettings['controls'],
-                    'chapters' => false
+                    'chapters' => false,
+                    'muted' => false
 
                 ];
                 $autoplayMode = $videoSettings['autoplay'] ?? null;
                 if ( $autoplayMode && $autoplayMode != 'never') {
                     $config['autoplay'] = true;
                     $config['autoplayMode'] = $videoSettings['autoplay'];
+                    $config['muted'] = true;
 
                 } else {
                     $config['autoplay'] = false;
