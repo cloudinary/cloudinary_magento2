@@ -465,7 +465,7 @@ define(
                         if (cldVideoSettings?.transformation) {
                             settings.tranformation = cldVideoSettings.transformation;
                         }
-                        let cldPlayer = cloudinary.videoPlayer(id ,settingss).source(url);
+                        let cldPlayer = cloudinary.videoPlayer(id ,settings).source(url);
 
                         $('#' + id).parent('.product-video').addClass('cld-product-video');
                         $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');

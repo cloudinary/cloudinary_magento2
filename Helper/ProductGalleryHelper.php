@@ -75,12 +75,11 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $config = [
                     'playerType' => 'cloudinary',
                     'controls' => $videoSettings['controls'],
-                    'loop' => (bool) $videoSettings['loop'],
-                    'sound' => (isset($videoSettings['sound'])) ? (bool) !$videoSettings['sound'] : false,
                     'chapters' => false
 
                 ];
-                if ( isset($videoSettings['autoplay']) && $videoSettings['autoplay'] != 'never') {
+                $autoplayMode = $videoSettings['autoplay'] ?? null;
+                if ( $autoplayMode && $autoplayMode != 'never') {
                     $config['autoplay'] = true;
                     $config['autoplayMode'] = $videoSettings['autoplay'];
 
@@ -88,23 +87,25 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                     $config['autoplay'] = false;
                 }
 
-                if (isset($videoSettings['stream_mode']) && $videoSettings['stream_mode'] != "none") {
-                    if ($videoSettings['stream_mode'] == 'optimization') {
-                        if (isset($videoSettings['stream_mode_format']) && $videoSettings['stream_mode_format'] != 'none'){
-                            $transformation[] =  $videoSettings['stream_mode_format'];
-                        }
-                        if (isset($videoSettings['stream_mode_quality']) && $videoSettings['stream_mode_quality'] != 'none'){
-                            $transformation[]=  $videoSettings['stream_mode_quality'];
-                        }
-                    } else if ($videoSettings['stream_mode'] == 'abr') {
-                        if (isset($videoSettings['source_types'])){
+                $streamMode = $videoSettings['stream_mode'] ?? null;
 
+                    if ($streamMode == 'optimization') {
+                        $streamModeFormat = $videoSettings['stream_mode_format'] ?? null;
+                        $streamModeQuality = $videoSettings['stream_mode_quality'] ?? null;
+                        if ($streamModeFormat) {
+                            $transformation[] =  $streamModeFormat;
+                        }
+
+                        if ($streamModeQuality) {
+                            $transformation[]=  $streamModeQuality;
+                        }
+                    }
+                    if ($streamMode == 'abr') {
+                        if (isset($videoSettings['source_types'])){
                             $config['sourceTypes'] = ['auto'];
                             $transformation[] = 'f_' . $videoSettings['source_types'];
                         }
                     }
-                }
-
 
                 if ($transformation && is_array($transformation)) {
                     $config['transformation'] = implode(',',$transformation);
