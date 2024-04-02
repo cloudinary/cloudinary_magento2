@@ -80,9 +80,10 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
 
                 ];
                 $autoplayMode = $videoSettings['autoplay'] ?? null;
+                $config['autoplayMode'] = $videoSettings['autoplay'];
                 if ( $autoplayMode && $autoplayMode != 'never') {
                     $config['autoplay'] = true;
-                    $config['autoplayMode'] = $videoSettings['autoplay'];
+
                     $config['muted'] = true;
 
                 } else {
