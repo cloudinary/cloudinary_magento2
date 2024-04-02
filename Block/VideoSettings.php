@@ -43,25 +43,41 @@ class VideoSettings extends template
                 'loop' => (bool) $allSettings['loop'],
                 'chapters' => false
             ];
-            if (isset($allSettings['stream_mode']) && $allSettings['stream_mode'] != "none") {
-                if ($allSettings['stream_mode'] == 'optimization') {
-                    if (isset($allSettings['stream_mode_format']) && $allSettings['stream_mode_format'] != 'none'){
-                        $transformation[] =  $allSettings['stream_mode_format'];
+
+            $playerSettings['muted'] = false;
+
+            $autoplayMode = $allSettings['autoplay'] ?? null;
+            if ($autoplayMode) {
+                $playerSettings['autoplayMode'] = $autoplayMode;
+                if ($autoplayMode != 'never') {
+                    $playerSettings['muted'] = true;
+                }
+            }
+
+            $streamMode = $videoSettings['stream_mode'] ?? null;
+
+                if ($streamMode == 'optimization') {
+                    $streamModeFormat = $videoSettings['stream_mode_format'] ?? null;
+                    $streamModeQuality = $videoSettings['stream_mode_quality'] ?? null;
+                    if ($streamModeFormat){
+                        $transformation[] =  $streamModeFormat;
                     }
-                    if (isset($allSettings['stream_mode_quality']) && $allSettings['stream_mode_quality'] != 'none'){
-                        $transformation[]=  $allSettings['stream_mode_quality'];
+                    if ($streamModeQuality){
+                        $transformation[]=  $streamModeQuality;
                     }
-                } else if ($allSettings['stream_mode'] == 'abr') {
-                    if (isset($allSettings['source_types'])){
-                         // $allSettings['source_types']
+                }
+                if ($streamMode == 'abr') {
+                    $sourceType = $allSettings['source_types'] ?? null;
+                    if ($sourceType){
+
                         // TODO: Find out why passing source types is not supported:
                         // TODO: errors: (1) invalid source configuration, (2) No supported media sources,
                         $playerSettings['sourceTypes'] = ['auto'];
                         // $playerSettings['streaming_profile'] = 'auto';
-                        $transformation[] = 'f_' . $allSettings['source_types'];
+                        $transformation[] = 'f_' . $sourceType;
                     }
                 }
-            }
+
             $settings = [
                 'player_type' => ($this->configuration->isEnabledProductGallery()) ? 'default' : 'cloudinary',
                 'settings' => $playerSettings

@@ -300,7 +300,7 @@
                 <field id="controls" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Show controls</label>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Controls</source_model>
-                    <comment>Note: If Cloudinary media gallery is not enabled, this will work in context of On / Off mode while 'All' will show controls and rest of options will disable the controls.</comment>
+                    <comment>Note: If the Cloudinary Product Gallery is not enabled, the functionality operates in On/Off mode. Selecting 'All' will display controls, while choosing other options will disable the controls.</comment>
                 </field>
                 <field id="loop" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Repeat video</label>
@@ -316,6 +316,9 @@
                 <field id="stream_mode" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Stream mode</label>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\StreamMode</source_model>
+                    <comment>
+                        <model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\ABR\Comment</model>
+                    </comment>
                 </field>
                 <field id="stream_mode_format" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Video format</label>
