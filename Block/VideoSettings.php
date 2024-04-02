@@ -40,7 +40,6 @@ class VideoSettings extends template
                 "cloudName" => $this->configuration->getCloud(),
                 'controls' => $controls,
                 'autoplay' => $autoplay,
-                'loop' => (bool) $allSettings['loop'],
                 'chapters' => false
             ];
 
