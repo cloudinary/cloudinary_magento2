@@ -34,12 +34,14 @@ class VideoSettings extends template
         if ($this->configuration->isEnabled()) {
             $allSettings = $this->configuration->getAllVideoSettings();
             $transformation = [];
-            $autoplay = (isset($allSettings['autoplay']) && $allSettings['autoplay'] != "never");
-            $controls = (isset($allSettings['controls']) && $allSettings['controls'] == "all");
+            $autoplay = $allSettings['autoplay'];
+            $controls = $allSettings['controls'];
+            $isLoop = (bool) $allSettings['loop'];
             $playerSettings = [
                 "cloudName" => $this->configuration->getCloud(),
-                'controls' => $controls,
-                'autoplay' => $autoplay,
+                'controls' => ($controls == 'all'),
+                'autoplay' => ($autoplay != 'never'),
+                'loop' => $isLoop,
                 'chapters' => false
             ];
 
@@ -53,11 +55,11 @@ class VideoSettings extends template
                 }
             }
 
-            $streamMode = $videoSettings['stream_mode'] ?? null;
+            $streamMode = $allSettings['stream_mode'] ?? null;
 
                 if ($streamMode == 'optimization') {
-                    $streamModeFormat = $videoSettings['stream_mode_format'] ?? null;
-                    $streamModeQuality = $videoSettings['stream_mode_quality'] ?? null;
+                    $streamModeFormat = $allSettings['stream_mode_format'] ?? null;
+                    $streamModeQuality = $allSettings['stream_mode_quality'] ?? null;
                     if ($streamModeFormat){
                         $transformation[] =  $streamModeFormat;
                     }

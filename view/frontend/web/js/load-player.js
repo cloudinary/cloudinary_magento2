@@ -425,7 +425,7 @@ define(
                     var elem = this.element;
                     var cldVideoSettings = JSON.parse(document.getElementById('cld_video_settings').textContent);
 
-                    console.log(elem, cldVideoSettings);
+
                     if (cldVideoSettings.player_type != 'cloudinary') {
                         elem.append(
                             $('<iframe/>')
@@ -449,10 +449,13 @@ define(
                     } else {
                         let id = 'cld_video_player';
                         this._player = $('<video/>');
+
                         elem.append(
                             this._player
                                 .attr('id', id)
                                 .attr('controls', '')
+                                .attr('autoplay', '')
+                                .attr('preload', "none")
                                 .attr('data-cld-public-id', this._code)
                                 .attr('class', 'cld-video-player cld-fluid')
                         );
@@ -461,10 +464,13 @@ define(
 
                             url = this._videoUrl.replace('/upload/','/upload/' + cldVideoSettings.transformation + '/');
                         }
+
                         let settings = {...cldVideoSettings.settings};
-                        if (cldVideoSettings?.transformation) {
+
+
+                        /*if (cldVideoSettings?.transformation) {
                             settings.tranformation = cldVideoSettings.transformation;
-                        }
+                        }*/
                         let cldPlayer = cloudinary.videoPlayer(id ,settings).source(url);
 
                         $('#' + id).parent('.product-video').addClass('cld-product-video');
@@ -473,11 +479,12 @@ define(
                             "position": "relative",
                             "z-index": "100"
                         });
-                        cldPlayer.play();
+
+                        if (setting.autoplay && settings.muted) {
+                            cldPlayer.play();
+                        }
                     }
-
-                },
-
+                }
             }
         );
     }
