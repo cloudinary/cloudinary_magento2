@@ -97,7 +97,7 @@ class Configuration implements ConfigurationInterface
     // Video Settings
 
     const CONFIG_PATH_CLD_VIDEO_SETTINGS_ALL = 'cloudinary/cld_video';
-    const CONFIG_PATH_CLD_VIDEO_PLAYER_MODE = 'cloudinary/cld_video/player_type';
+    const CONFIG_PATH_CLD_VIDEO_ENABLED = 'cloudinary/cld_video/enabled';
     const CONFIG_PATH_CLD_VIDEO_PLAYER_USE_ABR = 'cloudinary/cld_video/use_abr';
     const CONFIG_PATH_CLD_VIDEO_PLAYER_SHOW_CONTROLS = 'cloudinary/cld_video/controls';
     const CONFIG_PATH_CLD_VIDEO_PLAYER_LOOP = 'cloudinary/cld_video/loop';
@@ -673,7 +673,7 @@ class Configuration implements ConfigurationInterface
 
     public function isEnabledCldVideo()
     {
-        return  $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_PLAYER_MODE);
+        return  $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_ENABLED);
     }
 
     public function getAbrMode()

@@ -68,52 +68,64 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
             $this->cloudinaryPGoptions = $this->configuration->getProductGalleryAll();
 
 
-            if ($this->configuration->isEnabledCldVideo() == 'cloudinary'){
+            if ($this->configuration->isEnabledCldVideo()){
 
                 $transformation = [];
                 $videoSettings = $this->configuration->getAllVideoSettings();
-                $config = [
-                    'playerType' => 'cloudinary',
-                    'controls' => $videoSettings['controls'],
-                    'chapters' => false,
-                    'muted' => false
-
-                ];
-                $autoplayMode = $videoSettings['autoplay'] ?? null;
-                $config['autoplayMode'] = $videoSettings['autoplay'];
-                if ( $autoplayMode && $autoplayMode != 'never') {
-                    $config['autoplay'] = true;
-
-                    $config['muted'] = true;
-
-                } else {
-                    $config['autoplay'] = false;
+                $videoFreeParams = $videoSettings['video_free_params'] ?? null;
+                if ($videoFreeParams) {
+                    $config = json_decode($videoFreeParams, true);
+                    $config = array_shift($config);
+                    unset($config['cloudName']);
                 }
 
-                $streamMode = $videoSettings['stream_mode'] ?? null;
+
+                $config['playerType'] = 'cloudinary';
+
+
+                if (!$videoFreeParams) {
+                    $config = [
+                        'playerType' => 'cloudinary',
+                        'controls' => $videoSettings['controls'],
+                        'chapters' => false,
+                        'muted' => false
+
+                    ];
+                    $autoplayMode = $videoSettings['autoplay'] ?? null;
+                    $config['autoplayMode'] = $videoSettings['autoplay'];
+                    if ($autoplayMode && $autoplayMode != 'never') {
+                        $config['autoplay'] = true;
+
+                        $config['muted'] = true;
+
+                    } else {
+                        $config['autoplay'] = false;
+                    }
+
+                    $streamMode = $videoSettings['stream_mode'] ?? null;
 
                     if ($streamMode == 'optimization') {
                         $streamModeFormat = $videoSettings['stream_mode_format'] ?? null;
                         $streamModeQuality = $videoSettings['stream_mode_quality'] ?? null;
                         if ($streamModeFormat) {
-                            $transformation[] =  $streamModeFormat;
+                            $transformation[] = $streamModeFormat;
                         }
 
                         if ($streamModeQuality) {
-                            $transformation[]=  $streamModeQuality;
+                            $transformation[] = $streamModeQuality;
                         }
                     }
                     if ($streamMode == 'abr') {
-                        if (isset($videoSettings['source_types'])){
+                        if (isset($videoSettings['source_types'])) {
                             $config['sourceTypes'] = ['auto'];
                             $transformation[] = 'f_' . $videoSettings['source_types'];
                         }
                     }
 
-                if ($transformation && is_array($transformation)) {
-                    $config['transformation'] = implode(',',$transformation);
+                    if ($transformation && is_array($transformation)) {
+                        $config['transformation'] = implode(',', $transformation);
+                    }
                 }
-
                 $this->cloudinaryPGoptions['videoProps'] = $config;
             }
 

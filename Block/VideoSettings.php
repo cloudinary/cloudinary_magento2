@@ -31,9 +31,26 @@ class VideoSettings extends template
         $settings = [
             'player_type' => 'default'
         ];
-        if ($this->configuration->isEnabled()) {
-            $allSettings = $this->configuration->getAllVideoSettings();
+        $allSettings = $this->configuration->getAllVideoSettings();
+        $videoPlayerEnabled = (bool) $allSettings['enabled'] ?? false;
+        $videoFreeParams = $allSettings['video_free_params'] ?? null;
+        $videoFreeParamsArray = json_decode($videoFreeParams, true);
+        if (empty($videoFreeParamsArray)) {
+            $videoFreeParams = false;
+        }
+        $videoFreeParamsArray['player']['cloudName'] = $this->configuration->getCloud();
+        $settings['settings'] = $videoFreeParamsArray['player'];
+        $settings['player_type'] = 'cloudinary';
+        // additional params
+        $source = $videoFreeParamsArray['source'] ?? null;
+        $settings['source'] = $source ?? [];
+
+
+
+        if ($this->configuration->isEnabled() && $videoPlayerEnabled && !$videoFreeParams) {
+
             $transformation = [];
+
             $autoplay = $allSettings['autoplay'];
             $controls = $allSettings['controls'];
             $isLoop = (bool) $allSettings['loop'];
@@ -60,6 +77,7 @@ class VideoSettings extends template
                 if ($streamMode == 'optimization') {
                     $streamModeFormat = $allSettings['stream_mode_format'] ?? null;
                     $streamModeQuality = $allSettings['stream_mode_quality'] ?? null;
+                    // TODO: need to be changed to multiselect as described at https://studio.cloudinary.com/?code=configjson
                     if ($streamModeFormat){
                         $transformation[] =  $streamModeFormat;
                     }
@@ -69,23 +87,16 @@ class VideoSettings extends template
                 }
                 if ($streamMode == 'abr') {
                     $sourceType = $allSettings['source_types'] ?? null;
-                    if ($sourceType){
-
-                        // TODO: Find out why passing source types is not supported:
-                        // TODO: errors: (1) invalid source configuration, (2) No supported media sources,
-                        $playerSettings['sourceTypes'] = ['auto'];
-                        // $playerSettings['streaming_profile'] = 'auto';
-                        $transformation[] = 'f_' . $sourceType;
-                    }
                 }
 
             $settings = [
                 'player_type' => ($this->configuration->isEnabledProductGallery()) ? 'default' : 'cloudinary',
-                'settings' => $playerSettings
+                'settings' => $playerSettings,
+
             ];
 
-            if ($transformation && is_array($transformation)) {
-                $settings['transformation'] = implode(',',$transformation);
+            if ($sourceType) {
+                $settings['source'] = ['sourceTypes' => [$sourceType]];
             }
         }
 

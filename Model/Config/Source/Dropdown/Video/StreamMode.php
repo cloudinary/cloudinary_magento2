@@ -15,11 +15,11 @@ class StreamMode implements OptionSourceInterface
         return [
             [
                 'value' => 'optimization',
-                'label' => 'Video optimization',
+                'label' => 'Progressive mode (i.e MP4/Webm)',
             ],
             [
                 'value' => 'abr',
-                'label' => 'Adaptive bitrate streaming (beta)',
+                'label' => 'ABR',
             ]
         ];
     }
