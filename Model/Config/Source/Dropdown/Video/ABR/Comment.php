@@ -24,14 +24,10 @@ class Comment implements CommentInterface
 
     public function getCommentText($elementValue)
     {
-        $url = 'https://cloudinary.com/documentation/adaptive_bitrate_streaming';
 
-        $comment = 'Adaptive bitrate streaming (Beta), Dynamic adaptive streaming over HTTP (MPEG-DASH),
-        HTTP live streaming (HLS).
-        Adaptive bitrate streaming is a video delivery technique that adjusts the quality of a video stream in real time according to detected bandwidth and CPU capacity.';
-        $comment .= ' Read more about';
-        $comment .= '<br><a href="'.$url.'" target="_blank">adaptive bitrate streaming</a>';
-
+        if ($elementValue == 'optimization') {
+            $comment = '';
+        }
         return $comment;
     }
 }

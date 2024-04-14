@@ -32,9 +32,7 @@ class Comment implements CommentInterface
     {
         $url = 'https://cloudinary.com/glossary/video-autoplay';
 
-        $comment = 'Note: When selecting ‘Always’, the video will autoplay without sound (muted). This behavior is a standard feature across all major browsers.';
-
-        $comment .= '<br>Read more about <a href="'.$url.'" target="_blank">autoplay</a>';
+        $comment = '';
 
         return $comment;
     }

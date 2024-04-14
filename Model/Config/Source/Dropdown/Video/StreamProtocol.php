@@ -15,11 +15,11 @@ class StreamProtocol implements OptionSourceInterface
     {
         return [
             [
-                'value' => 'mpd',
+                'value' => 'dash',
                 'label' => 'Dynamic adaptive streaming over HTTP (MPEG-DASH)',
             ],
             [
-                'value' => 'm3u8',
+                'value' => 'hls',
                 'label' => 'HTTP live streaming (HLS)',
             ],
         ];
