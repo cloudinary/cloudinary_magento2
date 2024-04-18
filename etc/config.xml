@@ -56,7 +56,7 @@
                 <custom_free_params>{}</custom_free_params>
             </product_gallery>
             <cld_video>
-
+                <progressive_sourcetypes>webm/vp9,mp4/h265,mp4/h264</progressive_sourcetypes>
             </cld_video>
         </cloudinary>
         <csp>

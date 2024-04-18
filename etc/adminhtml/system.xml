@@ -339,7 +339,13 @@
                         <field id="cloudinary/cld_video/enabled">1</field>
                         <field id="cloudinary/cld_video/stream_mode">optimization</field>
                     </depends>
-
+                </field>
+                <field id="progressive_sourcetypes" translate="label comment" type="multiselect" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Source types</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\SourceTypes</source_model>
+                    <depends>
+                        <field id="stream_mode_format">none</field>
+                    </depends>
                 </field>
                 <field id="stream_mode_quality" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Video quality</label>
