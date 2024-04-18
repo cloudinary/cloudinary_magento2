@@ -10,7 +10,7 @@
                 <cloudinary_free_transform_global_products_behavior>add</cloudinary_free_transform_global_products_behavior>
             </transformations>
             <configuration>
-                <cloudinary_cdn_subdomain>1</cloudinary_cdn_subdomain>
+                <cloudinary_cdn_subdomain>0</cloudinary_cdn_subdomain>
             </configuration>
             <lazyload>
                 <enabled>1</enabled>
