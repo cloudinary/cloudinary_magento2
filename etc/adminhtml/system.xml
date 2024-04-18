@@ -310,7 +310,7 @@
                     </depends>
                 </field>
                 <field id="loop" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Repeat video</label>
+                    <label>Loop video</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="cloudinary/cld_video/enabled">1</field>
@@ -325,9 +325,9 @@
                     </depends>
                 </field>
                 <field id="stream_mode" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Progressive mode / ABR </label>
+                    <label>Video delivery</label>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\StreamMode</source_model>
-                    <comment><![CDATA[Progressive mode: Progressive mode enhances user experience by enabling automatic delivery options for videos. These options include delivering videos in the most suitable format for the requesting browser and maintaining an optimal balance between compression and visual quality.<br>ABR mode: Adaptive bitrate streaming is a video delivery technique that adjusts the quality of a video stream in real time according to detected bandwidth and CPU capacity. Read more about <a href="https://cloudinary.com/documentation/adaptive_bitrate_streaming" target="_blank">adaptive bitrate streaming</a>]]></comment>
+                    <comment><![CDATA[Progressive mode: Progressive mode enhances user experience by enabling automatic delivery options for videos. These options include delivering videos in the most suitable format for the requesting browser and maintaining an optimal balance between compression and visual quality.<br><br>ABR mode: Adaptive bitrate streaming is a video delivery technique that adjusts the quality of a video stream in real time according to detected bandwidth and CPU capacity. Read more about <a href="https://cloudinary.com/documentation/adaptive_bitrate_streaming" target="_blank">adaptive bitrate streaming</a>]]></comment>
                     <depends>
                         <field id="cloudinary/cld_video/enabled">1</field>
                     </depends>
@@ -358,8 +358,8 @@
                     </depends>
                 </field>
                 <field id="video_free_params" translate="label comment" type="textarea" sortOrder="99" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Video free parameters</label>
-                    <comment><![CDATA[Custom json to add or override the above parameters. See <a href="https://studio.cloudinary.com/?code=configjson" target="_blank">page</a> reference to to construct a customized JSON and modify the parameters as required.]]></comment>
+                    <label>Video free parameters (advanced)</label>
+                    <comment><![CDATA[Custom json to add or override the above parameters. <a href="https://studio.cloudinary.com/?code=configjson" target="_blank">See Cloudinary Video Player studio</a> reference to to construct a customized JSON and modify the parameters as required.]]></comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\VideoSettingsFreeParams</backend_model>
                     <depends>
                         <field id="cloudinary/cld_video/enabled">1</field>

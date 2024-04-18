@@ -31,26 +31,6 @@ class VideoQuality implements OptionSourceInterface
             [
                 'value' => 'q_auto:low',
                 'label' => 'Auto low',
-            ],
-            [
-                'value' => 'q_100',
-                'label' => '100',
-            ],
-            [
-                'value' => 'q_80',
-                'label' => '80',
-            ],
-            [
-                'value' => '60',
-                'label' => '60',
-            ],
-            [
-                'value' => 'q_40',
-                'label' => '40',
-            ],
-            [
-                'value' => 'q_20',
-                'label' => '20',
             ]
         ];
     }

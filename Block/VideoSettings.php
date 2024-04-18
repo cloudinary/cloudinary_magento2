@@ -35,6 +35,7 @@ class VideoSettings extends template
         $videoPlayerEnabled = (bool) $allSettings['enabled'] ?? false;
         $videoFreeParams = $allSettings['video_free_params'] ?? null;
         $videoFreeParamsArray = json_decode($videoFreeParams, true);
+        $sourceType = null;
         if (empty($videoFreeParamsArray)) {
             $videoFreeParams = false;
         }
@@ -91,9 +92,12 @@ class VideoSettings extends template
 
             $settings = [
                 'player_type' => ($this->configuration->isEnabledProductGallery()) ? 'default' : 'cloudinary',
-                'settings' => $playerSettings,
-
+                'settings' => $playerSettings
             ];
+
+            if ($transformation && is_array($transformation)) {
+                $settings['transformation'] = implode(',',$transformation);
+            }
 
             if ($sourceType) {
                 $settings['source'] = ['sourceTypes' => [$sourceType]];

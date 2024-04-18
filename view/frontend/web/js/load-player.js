@@ -463,8 +463,13 @@ define(
                         let settings = {...cldVideoSettings.settings};
                         let cldPlayer = cloudinary.videoPlayer(id ,settings);
                         let additionalParams = cldVideoSettings.source ? cldVideoSettings.source : {};
-
-                        cldPlayer.source(this._code, additionalParams);
+                        var url = this._videoUrl;
+                        if (cldVideoSettings.transformation !== 'undefined') {
+                            url = this._videoUrl.replace('/upload/','/upload/' + cldVideoSettings.transformation + '/');
+                            cldPlayer.source(url, additionalParams);
+                        } else {
+                            cldPlayer.source(this._code, additionalParams);
+                        }
 
                         $('#' + id).parent('.product-video').addClass('cld-product-video');
                         $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
