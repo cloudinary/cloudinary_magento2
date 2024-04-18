@@ -13,7 +13,7 @@ class VideoFormat implements OptionSourceInterface
                 'label' => 'None',
             ],
             [
-                'value' => 'f_auto',
+                'value' => 'auto',
                 'label' => 'Auto',
             ],
         ];

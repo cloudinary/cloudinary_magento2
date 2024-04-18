@@ -78,16 +78,16 @@ class VideoSettings extends template
                 if ($streamMode == 'optimization') {
                     $streamModeFormat = $allSettings['stream_mode_format'] ?? null;
                     $streamModeQuality = $allSettings['stream_mode_quality'] ?? null;
-                    // TODO: need to be changed to multiselect as described at https://studio.cloudinary.com/?code=configjson
-                    if ($streamModeFormat){
-                        $transformation[] =  $streamModeFormat;
+                    $progressiveSourceTypes = $allSettings['progressive_sourcetypes'] ?? null;
+                    if ($streamModeFormat == 'none' && $progressiveSourceTypes){
+                        $sourceTypes = explode(',',$progressiveSourceTypes);
                     }
                     if ($streamModeQuality){
                         $transformation[]=  $streamModeQuality;
                     }
                 }
                 if ($streamMode == 'abr') {
-                    $sourceType = $allSettings['source_types'] ?? null;
+                    $sourceTypes = $allSettings['source_types'] ? [$allSettings['source_types']] : null;
                 }
 
             $settings = [
@@ -99,8 +99,8 @@ class VideoSettings extends template
                 $settings['transformation'] = implode(',',$transformation);
             }
 
-            if ($sourceType) {
-                $settings['source'] = ['sourceTypes' => [$sourceType]];
+            if ($sourceTypes) {
+                $settings['source'] = ['sourceTypes' => $sourceTypes];
             }
         }
 
