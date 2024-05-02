@@ -32,53 +32,55 @@ class VideoSettings extends template
             'player_type' => 'default'
         ];
         $allSettings = $this->configuration->getAllVideoSettings();
-        $videoPlayerEnabled = (bool) $allSettings['enabled'] ?? false;
-        $videoFreeParams = $allSettings['video_free_params'] ?? null;
+
+        $videoPlayerEnabled = isset($allSettings['enabled']) && (bool)$allSettings['enabled'];
+        $videoFreeParams = isset($allSettings['video_free_params']) ? $allSettings['video_free_params'] : null;
         $videoFreeParamsArray = json_decode($videoFreeParams, true);
-        $sourceType = null;
+        $sourceTypes = null;
         if (empty($videoFreeParamsArray)) {
             $videoFreeParams = false;
         }
         $videoFreeParamsArray['player']['cloudName'] = $this->configuration->getCloud();
         $settings['settings'] = $videoFreeParamsArray['player'];
-        $settings['player_type'] = 'cloudinary';
+
         // additional params
         $source = $videoFreeParamsArray['source'] ?? null;
         $settings['source'] = $source ?? [];
 
+        if ($this->configuration->isEnabled() && $videoPlayerEnabled) {
+            $settings['player_type'] = 'cloudinary';
+            if (!$videoFreeParams) {
 
+                $transformation = [];
 
-        if ($this->configuration->isEnabled() && $videoPlayerEnabled && !$videoFreeParams) {
+                $autoplay = $allSettings['autoplay'];
+                $controls = $allSettings['controls'];
+                $isLoop = (bool) $allSettings['loop'];
+                $playerSettings = [
+                    "cloudName" => $this->configuration->getCloud(),
+                    'controls' => ($controls == 'all'),
+                    'autoplay' => ($autoplay != 'never'),
+                    'loop' => $isLoop,
+                    'chapters' => false
+                ];
 
-            $transformation = [];
+                $playerSettings['muted'] = false;
 
-            $autoplay = $allSettings['autoplay'];
-            $controls = $allSettings['controls'];
-            $isLoop = (bool) $allSettings['loop'];
-            $playerSettings = [
-                "cloudName" => $this->configuration->getCloud(),
-                'controls' => ($controls == 'all'),
-                'autoplay' => ($autoplay != 'never'),
-                'loop' => $isLoop,
-                'chapters' => false
-            ];
-
-            $playerSettings['muted'] = false;
-
-            $autoplayMode = $allSettings['autoplay'] ?? null;
-            if ($autoplayMode) {
-                $playerSettings['autoplayMode'] = $autoplayMode;
-                if ($autoplayMode != 'never') {
-                    $playerSettings['muted'] = true;
+                $autoplayMode = $allSettings['autoplay'] ?? null;
+                if ($autoplayMode) {
+                    $playerSettings['autoplayMode'] = $autoplayMode;
+                    if ($autoplayMode != 'never') {
+                        $playerSettings['muted'] = true;
+                    }
                 }
-            }
 
-            $streamMode = $allSettings['stream_mode'] ?? null;
+                $streamMode = $allSettings['stream_mode'] ?? null;
 
                 if ($streamMode == 'optimization') {
                     $streamModeFormat = $allSettings['stream_mode_format'] ?? null;
                     $streamModeQuality = $allSettings['stream_mode_quality'] ?? null;
                     $progressiveSourceTypes = $allSettings['progressive_sourcetypes'] ?? null;
+
                     if ($streamModeFormat == 'none' && $progressiveSourceTypes){
                         $sourceTypes = explode(',',$progressiveSourceTypes);
                     }
@@ -90,20 +92,20 @@ class VideoSettings extends template
                     $sourceTypes = $allSettings['source_types'] ? [$allSettings['source_types']] : null;
                 }
 
-            $settings = [
-                'player_type' => ($this->configuration->isEnabledProductGallery()) ? 'default' : 'cloudinary',
-                'settings' => $playerSettings
-            ];
+                $settings = [
+                    'player_type' => ($this->configuration->isEnabledProductGallery()) ? 'default' : 'cloudinary',
+                    'settings' => $playerSettings
+                ];
 
-            if ($transformation && is_array($transformation)) {
-                $settings['transformation'] = implode(',',$transformation);
-            }
+                if ($transformation && is_array($transformation)) {
+                    $settings['transformation'] = implode(',',$transformation);
+                }
 
-            if ($sourceTypes) {
-                $settings['source'] = ['sourceTypes' => $sourceTypes];
+                if ($sourceTypes) {
+                    $settings['source'] = ['sourceTypes' => $sourceTypes];
+                }
             }
         }
-
 
         return $settings;
     }
