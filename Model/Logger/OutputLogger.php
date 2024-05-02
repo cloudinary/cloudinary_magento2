@@ -1,23 +1,18 @@
 <?php
-
 namespace Cloudinary\Cloudinary\Model\Logger;
-
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Psr\Log\LoggerInterface;
-
 class OutputLogger implements OutputInterface
 {
     /**
      * @var LoggerInterface
      */
     private $logger;
-
     /**
      * @var OutputInterface
      */
     private $output;
-
     /**
      * OutputLogger constructor.
      *
@@ -27,7 +22,6 @@ class OutputLogger implements OutputInterface
     {
         $this->logger = $logger;
     }
-
     /**
      * @param OutputInterface $output
      */
@@ -35,7 +29,6 @@ class OutputLogger implements OutputInterface
     {
         $this->output = $output;
     }
-
     /**
      * @return OutputInterface
      */
@@ -44,10 +37,8 @@ class OutputLogger implements OutputInterface
         if (!$this->output) {
             throw new \RuntimeException('Undefined output source on OutputLogger');
         }
-
         return $this->output;
     }
-
     /**
      * @param string|array $messages The message as an array of lines or a single string
      */
@@ -61,7 +52,6 @@ class OutputLogger implements OutputInterface
             $this->logger->notice($messages);
         }
     }
-
     /**
      * Writes a message to the output.
      *
@@ -74,7 +64,6 @@ class OutputLogger implements OutputInterface
         $this->getOutput()->write($messages, $newline, $options);
         $this->log($messages);
     }
-
     /**
      * Writes a message to the output and adds a newline at the end.
      *
@@ -86,7 +75,6 @@ class OutputLogger implements OutputInterface
         $this->getOutput()->writeln($messages, $options);
         $this->log($messages);
     }
-
     /**
      * Sets the verbosity of the output.
      *
@@ -96,57 +84,51 @@ class OutputLogger implements OutputInterface
     {
         $this->getOutput()->setVerbosity($level);
     }
-
     /**
      * Gets the current verbosity of the output.
      *
      * @return int The current level of verbosity (one of the VERBOSITY constants)
      */
-    public function getVerbosity()
+    public function getVerbosity(): int
     {
         return $this->getOutput()->getVerbosity();
     }
-
     /**
      * Returns whether verbosity is quiet (-q).
      *
      * @return bool true if verbosity is set to VERBOSITY_QUIET, false otherwise
      */
-    public function isQuiet()
+    public function isQuiet(): bool
     {
         return $this->getOutput()->isQuiet();
     }
-
     /**
      * Returns whether verbosity is verbose (-v).
      *
      * @return bool true if verbosity is set to VERBOSITY_VERBOSE, false otherwise
      */
-    public function isVerbose()
+    public function isVerbose(): bool
     {
         return $this->getOutput()->isVerbose();
     }
-
     /**
      * Returns whether verbosity is very verbose (-vv).
      *
      * @return bool true if verbosity is set to VERBOSITY_VERY_VERBOSE, false otherwise
      */
-    public function isVeryVerbose()
+    public function isVeryVerbose(): bool
     {
         return $this->getOutput()->isVeryVerbose();
     }
-
     /**
      * Returns whether verbosity is debug (-vvv).
      *
      * @return bool true if verbosity is set to VERBOSITY_DEBUG, false otherwise
      */
-    public function isDebug()
+    public function isDebug(): bool
     {
         return $this->getOutput()->isDebug();
     }
-
     /**
      * Sets the decorated flag.
      *
@@ -156,17 +138,15 @@ class OutputLogger implements OutputInterface
     {
         $this->getOutput()->setDecorated($decorated);
     }
-
     /**
      * Gets the decorated flag.
      *
      * @return bool true if the output will decorate messages, false otherwise
      */
-    public function isDecorated()
+    public function isDecorated(): bool
     {
         return $this->getOutput()->isDecorated();
     }
-
     /**
      * Sets output formatter.
      *
@@ -176,13 +156,12 @@ class OutputLogger implements OutputInterface
     {
         $this->getOutput()->setFormatter($formatter);
     }
-
     /**
      * Returns current output formatter instance.
      *
      * @return OutputFormatterInterface
      */
-    public function getFormatter()
+    public function getFormatter(): OutputFormatterInterface
     {
         return $this->getOutput()->getFormatter();
     }
