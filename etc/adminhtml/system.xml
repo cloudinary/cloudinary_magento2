@@ -319,7 +319,7 @@
                 <field id="autoplay" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Autoplay</label>
                     <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Autoplay</source_model>
-                    <comment><![CDATA[<u>Note:</u> When selecting ‘Always’, the video will autoplay without sound (muted). This behavior is a standard feature across all major browsers. Read more about <a href="'.$url.'" target="_blank">autoplay</a>]]></comment>
+                    <comment><![CDATA[<u>Note:</u> When selecting ‘Always’, the video will autoplay without sound (muted). This behavior is a standard feature across all major browsers. Read more about <a href="https://cloudinary.com/glossary/video-autoplay" target="_blank">autoplay</a>]]></comment>
                     <depends>
                         <field id="cloudinary/cld_video/enabled">1</field>
                     </depends>
@@ -346,6 +346,7 @@
                     <depends>
                         <field id="cloudinary/cld_video/enabled">1</field>
                         <field id="cloudinary/cld_video/stream_mode_format">none</field>
+                        <field id="cloudinary/cld_video/stream_mode">optimization</field>
                     </depends>
                 </field>
                 <field id="stream_mode_quality" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
