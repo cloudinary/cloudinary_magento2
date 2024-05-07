@@ -56,15 +56,20 @@ class VideoSettingsFreeParams extends \Magento\Framework\App\Config\Value
 
     protected function jsonDecode($jsonString)
     {
-        $jsonString = preg_replace('/\r|\n/','',trim($jsonString));
-        $jsonString = str_replace(
+        $json = preg_replace('/\r|\n/','',trim($jsonString));
+        $json = str_replace(
                 array('"',  "'"),
                 array('\"', '"'),
-            $jsonString
+            $json
             );
-        $jsonString = preg_replace('/(\w+):/i', '"\1":', $jsonString);
+        $json = preg_replace('/(\w+):/i', '"\1":', $json);
 
-        return json_decode($jsonString);
+        return (json_decode($json)) ? $json : $jsonString;
+    }
+
+    function isJson($string) {
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
     }
 
     public function beforeSave()
@@ -89,7 +94,11 @@ class VideoSettingsFreeParams extends \Magento\Framework\App\Config\Value
                     $this->messageManager->addError(self::BAD_JSON_ERROR_MESSAGE);
                 }
             } else {
-                $this->setValue(json_encode((array)$data));
+                if ($this->isJson($data)) {
+                    $json = preg_replace('/\s+/', '', $data);
+                    return $this->setValue($json);
+                }
+                $this->setValue('{}');
             }
         } else {
             $this->setValue('{}');

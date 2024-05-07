@@ -36,7 +36,7 @@ class VideoSettings extends template
         $sourceTypes = null;
         $videoPlayerEnabled = isset($allSettings['enabled']) && (bool)$allSettings['enabled'];
         $videoFreeParams = isset($allSettings['video_free_params']) ? $allSettings['video_free_params'] : null;
-        if (!empty($videoFreeParams) && $videoFreeParams != "[]") {
+        if (!empty($videoFreeParams) && $videoFreeParams != "{}") {
             $videoFreeParamsArray = json_decode($videoFreeParams, true);
             $videoFreeParamsArray['player']['cloudName'] = $this->configuration->getCloud();
             $settings['settings'] = $videoFreeParamsArray['player'];
