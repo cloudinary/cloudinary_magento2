@@ -62,8 +62,43 @@ class VideoSettingsFreeParams extends \Magento\Framework\App\Config\Value
                 array('\"', '"'),
             $json
             );
-        $json = preg_replace('/(\w+):/i', '"\1":', $json);
 
+        $start = strpos($json, 'logoImageUrl');
+        // Find the end of the URL (first comma after the start of logoImageUrl)
+        $end = strpos($json, ',', $start);
+        $logoUrl = null;
+        if ($start) {
+
+            $logoUrl = substr($json, $start, $end - $start);
+            $json = substr($json, 0, $start) . substr($json, $end + 1);
+        }
+        $linkStart = strpos($json, 'logoOnclickUrl');
+        $linkEnd = strpos($json, ',',$linkStart);
+        $linkUrl = null;
+        if ($linkStart) {
+            $linkUrl = substr($json, $linkStart, $linkEnd - $linkStart);
+            $json = substr($json, 0, $linkStart) . substr($json, $linkEnd +1);
+        }
+
+        // Extract the logoImageUrl part
+
+        $json = preg_replace('/(\w+):/', '"$1":', $json);
+        $arr = json_decode($json, true);
+
+        if (is_array($arr)) {
+            if ($logoUrl) {
+                $url = str_replace("logoImageUrl:", "", $logoUrl);
+                $url = str_replace('"', "", $url);
+                $arr['player']['logoImageUrl'] = $url;
+            }
+            if ($linkUrl) {
+                $url = str_replace("logoOnclickUrl:", "", $linkUrl);
+                $url = str_replace('"', "", $url);
+                $arr['player']['logoOnclickUrl'] = $url;
+            }
+            $json = json_encode($arr);
+        }
+        // $json = str_replace("'", '"', $json);
         return (json_decode($json)) ? $json : $jsonString;
     }
 
@@ -95,8 +130,8 @@ class VideoSettingsFreeParams extends \Magento\Framework\App\Config\Value
                 }
             } else {
                 if ($this->isJson($data)) {
-                    $json = preg_replace('/\s+/', '', $data);
-                    return $this->setValue($json);
+
+                    return $this->setValue($data);
                 }
                 $this->setValue('{}');
             }
