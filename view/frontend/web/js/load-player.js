@@ -11,7 +11,8 @@
 define(
     [
         'jquery',
-        'jquery-ui-modules/widget'
+        'jquery-ui-modules/widget',
+        'https://unpkg.com/cloudinary-video-player@1.10.5/dist/cld-video-player.min.js'
     ],
     function ($) {
         'use strict';
@@ -144,7 +145,7 @@ define(
                  * Destroyer
                  */
                 destroy: function () {
-                    this._player.destroy();
+                    console.log(this._player);
                 },
 
                 /**
@@ -422,28 +423,66 @@ define(
                 _create: function () {
                     this._initialize();
                     var elem = this.element;
-                    elem.append(
-                        $('<iframe/>')
-                            .attr('frameborder', 0)
-                            .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
-                            .attr('class', 'cld-video-player')
-                            .attr('width', this._width)
-                            .attr('height', this._height)
-                            .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
-                            .attr('webkitallowfullscreen', '')
-                            .attr('mozallowfullscreen', '')
-                            .attr('allowfullscreen', '')
-                            .attr('referrerPolicy', 'origin')
-                            .on(
-                                "load",
-                                function () {
-                                    elem.parent('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
-                                }
-                            )
-                    );
+                    var cldVideoSettings = JSON.parse(document.getElementById('cld_video_settings').textContent);
+                    console.log(cldVideoSettings);
 
+                    if (cldVideoSettings.player_type != 'cloudinary') {
+                        elem.append(
+                            $('<iframe/>')
+                                .attr('frameborder', 0)
+                                .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
+                                .attr('class', 'cld-video-player')
+                                .attr('width', this._width)
+                                .attr('height', this._height)
+                                .attr('src', this._videoUrl.replace(/(^\w+:|^)/, ''))
+                                .attr('webkitallowfullscreen', '')
+                                .attr('mozallowfullscreen', '')
+                                .attr('allowfullscreen', '')
+                                .attr('referrerPolicy', 'origin')
+                                .on(
+                                    "load",
+                                    function () {
+                                        elem.parent('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
+                                    }
+                                )
+                        );
+                    } else {
+                        let id = 'cld_video_player';
+                        this._player = $('<video/>');
+                        console.log(elem);
+                        elem.append(
+                            this._player
+                                .attr('id', id)
+                                .attr('controls', '')
+                                .attr('autoplay', '')
+                                .attr('preload', "none")
+                                .attr('data-cld-public-id', this._code)
+                                .attr('class', 'cld-video-player cld-fluid')
+                        );
+                        var url = this._videoUrl;
+                        let settings = {...cldVideoSettings.settings};
+                        let cldPlayer = cloudinary.videoPlayer(id ,settings);
+                        let additionalParams = cldVideoSettings.source ? cldVideoSettings.source : {};
+                        var url = this._videoUrl;
+                        if (cldVideoSettings.transformation !== 'undefined') {
+                            url = this._videoUrl.replace('/upload/','/upload/' + cldVideoSettings.transformation + '/');
+                            cldPlayer.source(url, additionalParams);
+                        } else {
+                            cldPlayer.source(this._code, additionalParams);
+                        }
+
+                        $('#' + id).parent('.product-video').addClass('cld-product-video');
+                        $('#' + id).closest('.fotorama__stage__frame').addClass('fotorama__product-video--loaded');
+                        this._player.parent().css({
+                            "position": "relative",
+                            "z-index": "100"
+                        });
+
+                        if (settings.autoplay && settings.muted) {
+                            cldPlayer.play();
+                        }
+                    }
                 },
-
             }
         );
     }

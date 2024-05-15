@@ -94,6 +94,16 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_PG_INDICATORPROPS_SHAPE = 'cloudinary/product_gallery/indicatorProps_shape';
     const CONFIG_PATH_PG_CUSTOM_FREE_PARAMS = 'cloudinary/product_gallery/custom_free_params';
 
+    // Video Settings
+
+    const CONFIG_PATH_CLD_VIDEO_SETTINGS_ALL = 'cloudinary/cld_video';
+    const CONFIG_PATH_CLD_VIDEO_ENABLED = 'cloudinary/cld_video/enabled';
+    const CONFIG_PATH_CLD_VIDEO_PLAYER_USE_ABR = 'cloudinary/cld_video/use_abr';
+    const CONFIG_PATH_CLD_VIDEO_PLAYER_SHOW_CONTROLS = 'cloudinary/cld_video/controls';
+    const CONFIG_PATH_CLD_VIDEO_PLAYER_LOOP = 'cloudinary/cld_video/loop';
+    const CONFIG_PATH_CLD_VIDEO_PLAYER_AUTOPLAY = 'cloudinary/cld_video/autoplay';
+
+
     //= Others
     const CONFIG_PATH_SECURE_BASE_URL = "web/secure/base_url";
     const CONFIG_PATH_UNSECURE_BASE_URL = "web/unsecure/base_url";
@@ -478,6 +488,12 @@ class Configuration implements ConfigurationInterface
         return (array) $this->configReader->getValue(self::CONFIG_PATH_PG_ALL);
     }
 
+
+    public function getAllVideoSettings()
+    {
+        return (array) $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_SETTINGS_ALL);
+    }
+
     public function isEnabledLazyload()
     {
         return (bool) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_ENABLED);
@@ -653,6 +669,31 @@ class Configuration implements ConfigurationInterface
     public function getMagentoPlatformVersion()
     {
         return $this->productMetadata->getVersion();
+    }
+
+    public function isEnabledCldVideo()
+    {
+        return  $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_ENABLED);
+    }
+
+    public function getAbrMode()
+    {
+        return  $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_PLAYER_USE_ABR);
+    }
+
+    public function isCldVideoLoop()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_PLAYER_LOOP);
+    }
+
+    public function showCldVideoControls()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_PLAYER_SHOW_CONTROLS);
+    }
+
+    public function getCldVideoAutoplayMode()
+    {
+        return  $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_PLAYER_AUTOPLAY);
     }
 
     /**
