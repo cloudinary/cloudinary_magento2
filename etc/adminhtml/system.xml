@@ -294,6 +294,86 @@
                     </depends>
                 </field>
             </group>
+            <group id="cld_video" translate="label" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Video Player Settings</label>
+                <attribute type="expanded">1</attribute>
+                <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="controls" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Show controls</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Controls</source_model>
+                    <comment>Note: If the Cloudinary Product Gallery is not enabled, the functionality operates in On/Off mode. Selecting 'All' will display controls, while choosing other options will disable the controls.</comment>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="loop" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Loop video</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="autoplay" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Autoplay</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\Autoplay</source_model>
+                    <comment><![CDATA[<u>Note:</u> When selecting ‘Always’, the video will autoplay without sound (muted). This behavior is a standard feature across all major browsers. Read more about <a href="https://cloudinary.com/glossary/video-autoplay" target="_blank">autoplay</a>]]></comment>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="stream_mode" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Video delivery</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\StreamMode</source_model>
+                    <comment><![CDATA[Progressive mode: Progressive mode enhances user experience by enabling automatic delivery options for videos. These options include delivering videos in the most suitable format for the requesting browser and maintaining an optimal balance between compression and visual quality.<br><br>ABR mode: Adaptive bitrate streaming is a video delivery technique that adjusts the quality of a video stream in real time according to detected bandwidth and CPU capacity. Read more about <a href="https://cloudinary.com/documentation/adaptive_bitrate_streaming" target="_blank">adaptive bitrate streaming</a>]]></comment>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                    </depends>
+                </field>
+                <field id="stream_mode_format" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Video format</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\VideoFormat</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                        <field id="cloudinary/cld_video/stream_mode">optimization</field>
+                    </depends>
+                </field>
+                <field id="progressive_sourcetypes" translate="label comment" type="multiselect" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Source types</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\SourceTypes</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                        <field id="cloudinary/cld_video/stream_mode_format">none</field>
+                        <field id="cloudinary/cld_video/stream_mode">optimization</field>
+                    </depends>
+                </field>
+                <field id="stream_mode_quality" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Video quality</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\VideoQuality</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                        <field id="cloudinary/cld_video/stream_mode">optimization</field>
+                    </depends>
+                </field>
+                <field id="source_types" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Streaming protocol</label>
+                    <source_model>Cloudinary\Cloudinary\Model\Config\Source\Dropdown\Video\StreamProtocol</source_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                        <field id="cloudinary/cld_video/stream_mode">abr</field>
+                    </depends>
+                </field>
+                <field id="video_free_params" translate="label comment" type="textarea" sortOrder="99" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Video free parameters (advanced)</label>
+                    <comment><![CDATA[Custom json to add or override the above parameters. <a href="https://studio.cloudinary.com/?code=configjson" target="_blank">See Cloudinary Video Player Studio</a> reference to to construct a customized JSON and modify the parameters as required.]]></comment>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\VideoSettingsFreeParams</backend_model>
+                    <depends>
+                        <field id="cloudinary/cld_video/enabled">1</field>
+                    </depends>
+                </field>
+            </group>
             <group id="lazyload" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Lazyload Settings</label>
                 <attribute type="expanded">0</attribute>

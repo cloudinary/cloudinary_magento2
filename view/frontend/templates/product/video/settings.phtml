@@ -1,0 +1,20 @@
+<?php
+/**
+* Product media data template
+*
+* @var $block Cloudinary\Cloudinary\Block\VideoSettings
+*/
+?>
+<style>
+    .cld_video_player-dimensions.vjs-fluid:not(.vjs-audio-only-mode){
+        padding-top: 95% !important;
+    }
+    .product-video.cld-product-video {
+        position: static;
+        height: initial;
+        width: initial;
+    }
+</style>
+<script id="cld_video_settings" type="application/json">
+    <?= json_encode($block->getVideoSettings()) ?>
+</script>

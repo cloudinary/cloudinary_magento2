@@ -1,9 +1,12 @@
 <?xml version="1.0"?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <link rel="stylesheet" type="text/css" src="https://unpkg.com/cloudinary-video-player@1.10.5/dist/cld-video-player.min.css" src_type="url" />
+
+    </head>
     <body>
-        <referenceContainer name="product.info.media">
-            <!--block class="Cloudinary\Cloudinary\Block\Catalog\CloudinaryProductGallery" name="product.info.media.image" template="Magento_Catalog::product/view/gallery.phtml"/> <block class="Magento\Catalog\Block\Product\View\Gallery"
-            name="product.info.media.image" template="Magento_Catalog::product/view/gallery.phtml"/-->
+        <referenceContainer name="before.body.end">
+            <block class="Cloudinary\Cloudinary\Block\VideoSettings" name="cld.video.settings" before="product.info.media.video" template="Cloudinary_Cloudinary::product/video/settings.phtml" />
         </referenceContainer>
     </body>
 </page>
