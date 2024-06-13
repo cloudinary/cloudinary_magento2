@@ -78,7 +78,11 @@ class Gallery
             $productGalleryBlock->setCldPGid($this->getCldPGid());
         }
     }
-
+    public function getCname()
+    {
+        $config = $this->configuration->getCredentials();
+        return ($config['cname']) ?? '';
+    }
     public function getHtmlId()
     {
         if (!$this->htmlId) {
@@ -167,7 +171,7 @@ class Gallery
                 } elseif ($value['type'] === 'video') {
                     $url = $value['videoUrl'];
                 }
-                if (\strpos($url, '.cloudinary.com/') !== false && (strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false || strpos($url, '://' . $this->productGalleryHelper->getCloudName()) !== false)) {
+                if ((strpos($url, '.cloudinary.com/') !== false)  && (strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false || strpos($url, '://' . $this->productGalleryHelper->getCloudName()) !== false) ||  strpos($url, $this->getCname()) !== false) {
                     $parsed = $this->configuration->parseCloudinaryUrl($url);
                     $publicId = ($value['type'] === 'image') ? $parsed['publicId'] . '.' . $parsed['extension'] : $parsed['publicId'];
                     $transformation = \str_replace('/', ',', $parsed['transformations_string']);
