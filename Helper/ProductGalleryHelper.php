@@ -73,6 +73,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $transformation = [];
                 $videoSettings = $this->configuration->getAllVideoSettings();
                 $videoFreeParams = $videoSettings['video_free_params'] ?? null;
+                $videoControls = $videoSettings['controls'] ?? null;
                 if ($videoFreeParams) {
                     $config = json_decode($videoFreeParams, true);
                     $config = array_shift($config);
@@ -86,7 +87,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 if (!$videoFreeParams || $videoFreeParams == "{}") {
                     $config = [
                         'playerType' => 'cloudinary',
-                        'controls' => $videoSettings['controls'],
+                        'controls' => $videoControls,
                         'chapters' => false,
                         'muted' => false
 
