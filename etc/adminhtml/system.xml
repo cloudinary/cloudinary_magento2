@@ -27,7 +27,7 @@
                 <field id="cloudinary_environment_variable" translate="label comment" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Cloudinary Account Credentials</label>
                     <comment>
-                        <![CDATA[Copy the API environment variable format from the API Keys page. Replace [your_api_key] and [your_api_secret] with your actual values, while your cloud name is already correctly included in the format.]]>
+                        <![CDATA[Copy the <b>API environment variable</b> format from the <a href="https://console.cloudinary.com/settings/api-keys" target="_blank">API Keys</a> page. Replace [your_api_key] and [your_api_secret] with your actual values, while your cloud name is already correctly included in the format.]]>
                     </comment>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\Credentials</backend_model>
                 </field>
