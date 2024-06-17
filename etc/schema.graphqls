@@ -5,8 +5,38 @@ type CloudinaryData {
     media_gallery: [String]
 }
 
+type CloudinaryImage {
+    role: String
+    disabled: String
+    disabled_default: String
+    entity_id: String
+    file: String
+    id: String
+    label: String
+    label_default: String
+    media_type: String
+    path: String
+    position: String
+    position_default: String
+    url: String
+    value_id: String
+    video_description: String
+    video_description_default: String
+    video_metadata: String
+    video_metadata_default: String
+    video_provider: String
+    video_provider_default: String
+    video_title: String
+    video_title_default: String
+    video_url: String
+    video_url_default: String
+}
+
 interface ProductInterface {
     cld_data: CloudinaryData
         @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldResolver")
+        @doc(description: "Cloudinary urls generated for product images")
+    cloudinary_images: [CloudinaryImage]
+        @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldDataResolver")
         @doc(description: "Cloudinary urls generated for product images")
 }
