@@ -3,6 +3,7 @@ type CloudinaryData {
     small_image: String
     thumbnail: String
     media_gallery: [String]
+    media_gallery_params: String @doc(description: "Cloudinary media gallery params (json)")
 }
 
 interface ProductInterface {
