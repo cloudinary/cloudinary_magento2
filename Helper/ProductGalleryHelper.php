@@ -60,7 +60,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      * @method getCloudinaryPGOptions
      * @param bool $refresh Refresh options
      * @param bool $ignoreDisabled Get te options even if the module or the product gallery are disabled
-     * @return array
+     * @return array|null
      */
     public function getCloudinaryPGOptions($refresh = false, $ignoreDisabled = false)
     {

@@ -10,6 +10,7 @@ use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Cloudinary\Cloudinary\Model\ProductGalleryApiQueueFactory;
 use Cloudinary\Cloudinary\Model\ProductImageFinder;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
+use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product\Gallery\Processor;
 use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
@@ -161,6 +162,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      */
     private $resourceConnection;
 
+    private $productGalleryHelper;
+
     /**
      * @method __construct
      * @param  ConfigurationInterface        $configuration
@@ -208,7 +211,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         MediaLibraryMapFactory $mediaLibraryMapFactory,
         ProductGalleryApiQueueFactory $productGalleryApiQueueFactory,
         AppEmulation $appEmulation,
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        ProductGalleryHelper $productGalleryHelper
     ) {
         $this->configuration = $configuration;
         $this->request = $request;
@@ -232,6 +236,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->productGalleryApiQueueFactory = $productGalleryApiQueueFactory;
         $this->appEmulation = $appEmulation;
         $this->resourceConnection = $resourceConnection;
+        $this->productGalleryHelper = $productGalleryHelper;
     }
 
 
@@ -405,6 +410,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         }
 
         return $this->jsonHelper->jsonEncode($result);
+
     }
 
     /**
@@ -828,6 +834,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             'small_image' => null,
             'thumbnail' => null,
             'media_gallery' => [],
+            'media_gallery_params' => [],
         ];
         try {
             $product = $this->productRepository->get($sku);
@@ -843,6 +850,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $urls['thumbnail'] = $gallItem->getUrl();
                 }
             }
+            $urls['media_gallery_params'] = $this->jsonHelper->jsonEncode($this->productGalleryHelper->getCloudinaryPGOptions());
         } catch (\Exception $e) {
             $urls = [
                 'error' => 1,
