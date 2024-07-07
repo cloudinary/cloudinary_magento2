@@ -834,7 +834,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             'small_image' => null,
             'thumbnail' => null,
             'media_gallery' => [],
-            'media_gallery_params' => [],
+            'gallery_widget_parameters' => [],
         ];
         try {
             $product = $this->productRepository->get($sku);
@@ -850,7 +850,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $urls['thumbnail'] = $gallItem->getUrl();
                 }
             }
-            $urls['media_gallery_params'] = $this->jsonHelper->jsonEncode($this->productGalleryHelper->getCloudinaryPGOptions());
+            $urls['gallery_widget_parameters'] = $this->jsonHelper->jsonEncode($this->productGalleryHelper->getCloudinaryPGOptions());
         } catch (\Exception $e) {
             $urls = [
                 'error' => 1,
