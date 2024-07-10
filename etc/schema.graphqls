@@ -3,10 +3,11 @@ type CloudinaryData {
     small_image: String
     thumbnail: String
     media_gallery: [String]
+    gallery_widget_parameters: String @doc(description: "Cloudinary gallery widget parameters (json)")
 }
 
 interface ProductInterface {
     cld_data: CloudinaryData
         @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldResolver")
-        @doc(description: "Cloudinary urls generated for product images")
+        @doc(description: "Cloudinary urls generated for product images and gallery widget parameters.")
 }
