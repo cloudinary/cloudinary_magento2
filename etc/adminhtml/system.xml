@@ -477,7 +477,7 @@
                     <comment>If not in use on your website, you may spare DB queries on the frontend by setting this to 'No'.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="load_cloudinary_swatches" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">>
+                <field id="load_cloudinary_swatches" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Load product swatches from Cloudinary?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\SwatchUpload</backend_model>
