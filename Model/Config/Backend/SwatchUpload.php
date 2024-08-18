@@ -81,8 +81,9 @@ class SwatchUpload extends Value
      */
     public function afterSave()
     {
+        $originalValue = $this->getOldValue();
         // Check if the CDN setting is enabled
-        if ($this->getValue()) {
+        if ($this->getvalue() && $this->getValue() != $originalValue) {
             // Get all swatches of type 2 (visual swatches)
             $swatchCollection = $this->swatchCollectionFactory->create()
                 ->addFieldToFilter('type', ['eq' => Swatch::SWATCH_TYPE_VISUAL_IMAGE]);
