@@ -2,6 +2,7 @@
 namespace Cloudinary\Cloudinary\Plugin;
 
 
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Swatches\Helper\Media as SwatchMediaHelper;
 use Magento\Framework\UrlInterface;
@@ -10,6 +11,7 @@ use Cloudinary\Asset\Media;
 use Cloudinary\Cloudinary\Model\Configuration;
 class SwatchImageUrlPlugin
 {
+    public const  SWATCH_MEDIA_PATH = 'attribute/swatch';
     /**
      * @var StoreManagerInterface
      */
@@ -33,23 +35,30 @@ class SwatchImageUrlPlugin
      */
     protected $imageConfig;
 
+    protected $imageFactory;
+
     /**
-     * Constructor
      * @param StoreManagerInterface $storeManager
      * @param UrlInterface $urlBuilder
      * @param Configuration $configuration
      * @param \Magento\Framework\View\ConfigInterface $configInterface
+     * @param \Magento\Framework\Image\Factory $imageFactory
+     * @param \Magento\Framework\Filesystem $filesystem
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         UrlInterface $urlBuilder,
         Configuration $configuration,
         \Magento\Framework\View\ConfigInterface $configInterface,
+        \Magento\Framework\Image\Factory $imageFactory,
+        \Magento\Framework\Filesystem $filesystem,
     ) {
         $this->storeManager = $storeManager;
         $this->urlBuilder = $urlBuilder;
         $this->_configuration = $configuration;
         $this->viewConfig = $configInterface;
+        $this->imageFactory = $imageFactory;
+        $this->mediaDirectory = $filesystem->getDirectoryRead(DirectoryList::PUB);
     }
 
     /**
@@ -67,6 +76,15 @@ class SwatchImageUrlPlugin
         return $this->imageConfig;
     }
 
+    public function getSwatchCachePath($swatchType)
+    {
+        return self::SWATCH_MEDIA_PATH . '/' . $swatchType . '/';
+    }
+
+    protected function getAbsolutePath($swatchType)
+    {
+        return $this->mediaDirectory->getAbsolutePath($this->getSwatchCachePath($swatchType));
+    }
     /**
      * @param SwatchMediaHelper $subject
      * @param $result
@@ -80,14 +98,17 @@ class SwatchImageUrlPlugin
             // Check if the file path is valid
             if (in_array($swatchType, $swatchTypes) && strpos($result, '/') !== false) {
 
+                $parsedUrl = parse_url($result, PHP_URL_PATH);
+                $absolutePath = $this->mediaDirectory->getAbsolutePath() . $parsedUrl;
                 $imageConfig = $this->getImageConfig();
 
+                $image = $this->imageFactory->create($absolutePath);
                 $imageId = pathinfo($result, PATHINFO_FILENAME);
                 $transformations = [
                     'fetch_format' => $this->_configuration->getFetchFormat(),
                     'quality' =>  $this->_configuration->getImageQuality(),
-                    'width' => $imageConfig[$swatchType]['width'] ?? null,
-                    'height' =>  $imageConfig[$swatchType]['height'] ?? null
+                    'width' =>  $image->getOriginalWidth() ?? $imageConfig[$swatchType]['width'],
+                    'height' => $image->getOriginalHeight() ??  $imageConfig[$swatchType]['height']
                 ];
                 try {
                     $image = Media::fromParams(
