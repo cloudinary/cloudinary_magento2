@@ -478,7 +478,7 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="load_cloudinary_swatches" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
-                    <label>Enable product swatch image sync with Cloudinary</label>
+                    <label>Enable Product Swatch Image sync with Cloudinary </label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\SwatchUpload</backend_model>
                     <comment>If set to 'No', swatch images will be loaded exclusively from Magento.</comment>
