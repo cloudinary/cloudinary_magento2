@@ -73,7 +73,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                 $transformation = [];
                 $videoSettings = $this->configuration->getAllVideoSettings();
                 $videoFreeParams = $videoSettings['video_free_params'] ?? null;
-                $videoControls = $videoSettings['controls'] ?? null;
+                $videoControls = $videoSettings['controls'] ?? "none";
                 if ($videoFreeParams) {
                     $config = json_decode($videoFreeParams, true);
                     $config = array_shift($config);

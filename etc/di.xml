@@ -94,7 +94,12 @@
     <type name="Magento\Cms\Block\Widget\Block">
         <plugin name="cloudinary_plugin_block_cms_block_widget_block" type="Cloudinary\Cloudinary\Plugin\Cms\Block\Widget\Block"/>
     </type>
-
+    <type name="Magento\Catalog\Model\ResourceModel\Eav\Attribute">
+        <plugin name="cloudinary_update_swatch_plugin" type="Cloudinary\Cloudinary\Plugin\AttributeSavePlugin" />
+    </type>
+    <type name="Magento\Swatches\Helper\Media">
+        <plugin name="cloudinary_swatch_image_url_plugin" type="Cloudinary\Cloudinary\Plugin\SwatchImageUrlPlugin" />
+    </type>
     <type name="Cloudinary\Cloudinary\Model\Logger\CloudinaryHandler">
         <arguments>
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>

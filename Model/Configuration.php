@@ -66,6 +66,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_PG_API_QUEUE_LIMIT = 'cloudinary/advanced/product_gallery_api_queue_limit';
     const CONFIG_PATH_PG_API_QUEUE_MAX_TRYOUTS = 'cloudinary/advanced/product_gallery_api_queue_max_tryouts';
     const CONFIG_PATH_ENABLE_PRODUCT_FREE_TRANSFORMATIONS = 'cloudinary/advanced/enable_product_free_transformations';
+    const CONFIG_PATH_LOAD_SWATCHES_FROM_CLOUDINARY = 'cloudinary/advanced/load_cloudinary_swatches';
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -178,6 +179,8 @@ class Configuration implements ConfigurationInterface
      * @var ManagerInterface
      */
     private $messageManager;
+
+    protected $directoryList;
 
     /**
      * @param ScopeConfigInterface $configReader
@@ -494,6 +497,10 @@ class Configuration implements ConfigurationInterface
         return (array) $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_SETTINGS_ALL);
     }
 
+    public function isLoadSwatchesFromCloudinary(){
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_LOAD_SWATCHES_FROM_CLOUDINARY);
+    }
+
     public function isEnabledLazyload()
     {
         return (bool) $this->configReader->getValue(self::XML_PATH_LAZYLOAD_ENABLED);
@@ -694,6 +701,12 @@ class Configuration implements ConfigurationInterface
     public function getCldVideoAutoplayMode()
     {
         return  $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_PLAYER_AUTOPLAY);
+    }
+
+    public function mediaRelativePath($filepath)
+    {
+        $pubPath = DirectoryList::getPath(DirectoryList::PUB) . DIRECTORY_SEPARATOR;
+        return (strpos($filepath, $pubPath) === 0) ? str_replace($pubPath, '', $filepath) : $filepath;
     }
 
     /**
