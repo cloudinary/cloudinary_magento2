@@ -89,7 +89,7 @@ class UploadImages extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -108,6 +108,7 @@ class UploadImages extends Command
             return 1;
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
+            return 0;
         }
     }
 }

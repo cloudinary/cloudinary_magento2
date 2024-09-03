@@ -21,6 +21,11 @@ class ProductGalleryApiQueueProcess extends Command
     private $appState;
 
     /**
+     * @var $job
+     */
+    protected $job;
+
+    /**
      * @method __construct
      * @param  ObjectManagerInterface $objectManager
      * @param  AppState               $appState
