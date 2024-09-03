@@ -75,7 +75,7 @@ class ResetAll extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -86,25 +86,26 @@ class ResetAll extends Command
 
         $helper = $this->getHelper('question');
         if (!$this->confirmActionStart($input, $output, $helper)) {
-            return;
+            return 0;
         }
 
         $adminUser = $this->getAdminUser($this->readAdminName($input, $output, $helper));
         if (!$adminUser->getId()) {
             $output->writeln(self::ADMIN_USER_NOT_FOUND);
-            return;
+            return 0;
         }
 
         $adminPassword = $this->readAdminPassword($input, $output, $helper);
         if (!$this->authenticate($adminUser, $adminPassword)) {
             $output->writeln(self::ADMIN_PASSWORD_INCORRECT);
-            return;
+            return 0;
         }
 
         $this->resetHelper->resetModule();
 
         $output->writeln(self::COMPLETE_MESSAGE1);
         $output->writeln(self::COMPLETE_MESSAGE2);
+        return 1;
     }
 
     /**

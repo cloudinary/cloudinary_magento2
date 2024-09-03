@@ -79,6 +79,7 @@ class ProductGalleryApiQueue
 
     public function execute()
     {
+
         if ($this->configuration->isEnabled() && $this->configuration->isEnabledProductgalleryApiQueue()) {
             try {
                 $queuedItems = $this->productGalleryApiQueueFactory->create()->getCollection()
@@ -143,7 +144,7 @@ class ProductGalleryApiQueue
             }
         }
 
-        return $this;
+        return 1;
     }
 
     /**

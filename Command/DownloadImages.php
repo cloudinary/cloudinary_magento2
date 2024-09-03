@@ -101,7 +101,7 @@ class DownloadImages extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return init
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -126,6 +126,7 @@ class DownloadImages extends Command
 
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
+            return 0;
         }
     }
 
