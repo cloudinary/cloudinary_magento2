@@ -35,6 +35,7 @@
                 <value id="cloudinary_main" type="host">cloudinary.com</value>
                 <value id="cloudinary_wildcard" type="host">*.cloudinary.com</value>
                 <value id="data" type="host">data:</value>
+                <value id="blob" type="host">blob:</value>
             </values>
         </policy>
         <policy id="style-src">
