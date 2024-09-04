@@ -43,8 +43,9 @@ class AddFromCloudinary implements ButtonProviderInterface
      */
     public function getButtonData(): array
     {
-        $cloudinaryMLwidgetOprions = json_decode($this->images->getCloudinaryMediaLibraryWidgetOptions(),true);
-
+        $cloudinaryMLwidgetOprions = ($this->images->getCloudinaryMediaLibraryWidgetOptions())
+            ? json_decode($this->images->getCloudinaryMediaLibraryWidgetOptions(),true)
+            : null;
 
         $buttonData = [
             'label' => __('Add From Cloudinary'),
