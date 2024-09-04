@@ -32,9 +32,9 @@ class Scripts extends Template
         array $data = []
     )
     {
+        parent::__construct($context, $data);
         $this->configuration = $configuration;
         $this->_helper = $mediaHelper;
-        parent::__construct($context, $data);
     }
 
     /**
