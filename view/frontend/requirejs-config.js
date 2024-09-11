@@ -15,5 +15,12 @@ var config = {
         'jquery.lazyload': {
             deps: ['jquery']
         },
+    },
+    config: {
+        mixins: {
+            'Magento_Swatches/js/swatch-renderer': {
+                'Cloudinary_Cloudinary/js/swatch-renderer-mixin': true
+            }
+        }
     }
 };
