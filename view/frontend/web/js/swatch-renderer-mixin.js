@@ -32,8 +32,8 @@ define([
                 if (images && images.length > 0) {
 
                     const mainImageUrl = images[0].url;
-                    // const imgsToUpdate = images.map(image => this.extractImageName(image.img));
-                    const imgsToUpdate = images.map(image => image.img);
+                     const imgsToUpdate = images.map(image => this.extractImageName(image.img));
+                    //const imgsToUpdate = images.map(image => image.img);
 
                     if (cldGalleryWidget) {
                         var loadedAssets = cldGalleryWidget.options.mediaAssets;
