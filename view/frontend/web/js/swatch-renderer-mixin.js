@@ -4,8 +4,6 @@ define([
 ], function ($) {
     'use strict';
 
-    console.log('Mixin loaded'); // For debugging
-
     return function (SwatchRenderer) {
         $.widget('mage.SwatchRenderer', $['mage']['SwatchRenderer'], {
 
