@@ -5,7 +5,7 @@ define([
     'use strict';
 
     return function (SwatchRenderer) {
-        $.widget('mage.SwatchRenderer', $['mage']['SwatchRenderer'], {
+        $.widget('mage.SwatchRenderer', SwatchRenderer, {
 
             extractImageName: function (url){
                 const fileNameWithExtension = url.substring(url.lastIndexOf('/') + 1);
@@ -26,6 +26,8 @@ define([
                 const cldPGid = loadedGallery.attr('id')
                 const cldGalleryWidget = window.cloudinary_pg[cldPGid] || null;
 
+                if (!loadedGallery || !cldGalleryWidget) return false;
+
                 if (typeof this._super === 'function') {
                     this._super($this, $widget);
                 }
@@ -36,16 +38,22 @@ define([
 
                     if (cldGalleryWidget) {
                         const loadedAssets = cldGalleryWidget.options.mediaAssets;
+                        const config = cldGalleryWidget.config;
                         const mediaAssets = this.mergeMediaAssets(loadedAssets, imgsToUpdate);
-
+                        const selectIndex = images.length + 1;
                         cldGalleryWidget.update({
                             mediaAssets: mediaAssets,
                         });
+                        const selectedThumb = `.thumbnails-wrap button[data-index="${selectIndex}"]`;
+                        setTimeout( () => {
+                            document.querySelector(selectedThumb).l.clickfalse({ detail: true });
+                        },500)
+
                     }
                 }
             }
         });
 
-        return $['mage']['SwatchRenderer'];
+        return $.mage.SwatchRenderer;
     };
 });

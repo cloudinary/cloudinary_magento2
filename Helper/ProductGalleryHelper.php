@@ -79,10 +79,7 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                     $config = array_shift($config);
                     unset($config['cloudName']);
                 }
-
-
                 $config['playerType'] = 'cloudinary';
-
 
                 if (!$videoFreeParams || $videoFreeParams == "{}") {
                     $config = [
