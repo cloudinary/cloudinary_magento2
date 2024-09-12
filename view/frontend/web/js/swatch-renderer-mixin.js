@@ -48,7 +48,7 @@ define([
                         const loadedAssets = cldGalleryWidget.options.mediaAssets;
                         const config = cldGalleryWidget.config;
                         const mediaAssets = this.mergeMediaAssets(loadedAssets, imgsToUpdate);
-                        const selectIndex = images.length + 1;
+                        const selectIndex = mediaAssets.length -1;
                         cldGalleryWidget.update({
                             mediaAssets: mediaAssets,
                         });
