@@ -20,6 +20,14 @@ define([
                 const uniqueNewAssets = newAssets.filter(newAsset => !existingPublicIds.includes(newAsset.publicId));
                 return [...existingAssets, ...uniqueNewAssets];
             },
+            clickThumbnail: function (index) {
+                const thumbElement = document.querySelector(`.thumbnails-wrap button[data-index="${index}"]`);
+                const enterEvent = new KeyboardEvent("keydown", {
+                    key: "Enter"
+                });
+                thumbElement.dispatchEvent(enterEvent);
+
+            },
             _OnClick: function ($this, $widget) {
 
                 const loadedGallery = $('.cloudinary-product-gallery');
@@ -44,9 +52,9 @@ define([
                         cldGalleryWidget.update({
                             mediaAssets: mediaAssets,
                         });
-                        const selectedThumb = `.thumbnails-wrap button[data-index="${selectIndex}"]`;
+
                         setTimeout( () => {
-                            document.querySelector(selectedThumb).l.clickfalse({ detail: true });
+                            this.clickThumbnail(selectIndex);
                         },500)
 
                     }
