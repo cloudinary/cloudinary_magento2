@@ -6,7 +6,6 @@ define([
 
     return function (SwatchRenderer) {
 
-
         if ($('.cloudinary-product-gallery').length > 0) {
 
             $.widget('mage.SwatchRenderer', SwatchRenderer, {
@@ -62,8 +61,7 @@ define([
                     }
                 }
             });
-
-            return $.mage.SwatchRenderer;
         }
+        return $.mage.SwatchRenderer;
     };
 });
