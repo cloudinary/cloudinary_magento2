@@ -26,20 +26,23 @@ define([
                     key: "Enter"
                 });
                 thumbElement.dispatchEvent(enterEvent);
-
             },
+
             _OnClick: function ($this, $widget) {
 
-                const loadedGallery = $('.cloudinary-product-gallery');
-                const cldPGid = loadedGallery.attr('id');
-                if (!loadedGallery || !cldPGid) return false;
-                const cldGalleryWidget = window.cloudinary_pg[cldPGid] || null;
-
-                if (typeof this._super === 'function') {
+                if (typeof this._super  == 'function') {
                     this._super($this, $widget);
                 }
 
+                const loadedGallery = $('.cloudinary-product-gallery');
+                const cldPGid = loadedGallery.attr('id');
+                const cldGalleryWidget = window.cloudinary_pg[cldPGid] || null;
+
+                if (!loadedGallery || !cldPGid || !cldGalleryWidget)  return this._super($this, $widget);
+
                 const images = $widget.options.jsonConfig.images[$widget.getProduct()];
+
+
                 if (images && images.length > 0) {
                     const imgsToUpdate = images.map(image => this.extractImageName(image.img));
 
