@@ -31,10 +31,9 @@ define([
             _OnClick: function ($this, $widget) {
 
                 const loadedGallery = $('.cloudinary-product-gallery');
-                const cldPGid = loadedGallery.attr('id')
+                const cldPGid = loadedGallery.attr('id');
+                if (!loadedGallery || !cldPGid) return false;
                 const cldGalleryWidget = window.cloudinary_pg[cldPGid] || null;
-
-                if (!loadedGallery || !cldGalleryWidget) return false;
 
                 if (typeof this._super === 'function') {
                     this._super($this, $widget);
