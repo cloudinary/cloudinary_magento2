@@ -51,15 +51,13 @@ define([
                         if (cldGalleryWidget) {
                             const loadedAssets = cldGalleryWidget.options.mediaAssets;
                             const config = cldGalleryWidget.config;
-                            const mediaAssets = this.mergeMediaAssets(loadedAssets, imgsToUpdate);
+                            const mediaAssets = this.mergeMediaAssets(imgsToUpdate, loadedAssets);
                             const selectIndex = mediaAssets.length - 1;
+                            this.clickThumbnail(0);
                             cldGalleryWidget.update({
                                 mediaAssets: mediaAssets,
                                 mediaType: 'image'
-                            }).then((e) => {
-                                this.clickThumbnail(selectIndex);
-                            })
-
+                            });
                         }
                     }
                 }
