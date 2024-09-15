@@ -30,9 +30,7 @@ define([
 
             _OnClick: function ($this, $widget) {
 
-                if (typeof this._super  == 'function') {
-                    this._super($this, $widget);
-                }
+
 
                 const loadedGallery = $('.cloudinary-product-gallery');
                 const cldPGid = loadedGallery.attr('id');
@@ -42,6 +40,10 @@ define([
                 const cldGalleryWidget = window.cloudinary_pg[cldPGid] || null;
 
                 if (!cldGalleryWidget)  return this._super($this, $widget);
+
+                if (typeof this._super  == 'function') {
+                    this._super($this, $widget);
+                }
 
                 const images = $widget.options.jsonConfig.images[$widget.getProduct()];
 
