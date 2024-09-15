@@ -36,12 +36,14 @@ define([
 
                 const loadedGallery = $('.cloudinary-product-gallery');
                 const cldPGid = loadedGallery.attr('id');
+
+                if (!cldPGid)  return this._super($this, $widget);
+
                 const cldGalleryWidget = window.cloudinary_pg[cldPGid] || null;
 
-                if (!loadedGallery || !cldPGid || !cldGalleryWidget)  return this._super($this, $widget);
+                if (!cldGalleryWidget)  return this._super($this, $widget);
 
                 const images = $widget.options.jsonConfig.images[$widget.getProduct()];
-
 
                 if (images && images.length > 0) {
                     const imgsToUpdate = images.map(image => this.extractImageName(image.img));
