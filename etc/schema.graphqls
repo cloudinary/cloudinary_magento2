@@ -1,9 +1,17 @@
+type CustomMediaAttribute {
+    attribute_code: String
+    url: String
+}
+
 type CloudinaryData {
     image: String
     small_image: String
     thumbnail: String
     media_gallery: [String]
     gallery_widget_parameters: String @doc(description: "Cloudinary gallery widget parameters (json)")
+    custom_media_attributes(attribute_codes: [String]!): [CustomMediaAttribute]
+    @resolver(class: "\\Cloudinary\\Cloudinary\\Model\\GraphQLResolver\\ProductAttributeCldResolver")
+    @doc(description: "Fetch a custom media attributes for the product based on the provided attribute code.")
 }
 
 interface ProductInterface {
