@@ -850,7 +850,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $urls['thumbnail'] = $gallItem->getUrl();
                 }
             }
-            $urls['gallery_widget_parameters'] = $this->jsonHelper->jsonEncode($this->productGalleryHelper->getCloudinaryPGOptions());
+            $urls['gallery_widget_parameters'] = $this->jsonHelper->jsonEncode($this->productGalleryHelper->getCloudinaryPGOptions(true, true));
         } catch (\Exception $e) {
             $urls = [
                 'error' => 1,
