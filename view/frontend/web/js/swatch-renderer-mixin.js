@@ -52,7 +52,7 @@ define([
                             const config = cldGalleryWidget.config;
                             const mediaAssets = this.mergeMediaAssets(imgsToUpdate, loadedAssets);
                             const selectIndex = mediaAssets.length - 1;
-                            this.clickThumbnail(0);
+                            // this.clickThumbnail(0);
                             cldGalleryWidget.update({
                                 mediaAssets: mediaAssets,
                                 mediaType: 'image'
