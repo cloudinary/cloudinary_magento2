@@ -5,7 +5,7 @@
   "version": "1.18.0",
   "license": "MIT",
   "require": {
-    "cloudinary/cloudinary_php": "^1.20.5"
+    "cloudinary/cloudinary_php": "^1.20.52"
   },
   "autoload": {
     "files": [
