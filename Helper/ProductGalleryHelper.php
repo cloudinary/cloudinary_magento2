@@ -4,7 +4,10 @@ namespace Cloudinary\Cloudinary\Helper;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Magento\Framework\App\Helper\Context;
-
+use Magento\Theme\Model\Theme\ThemeProvider;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
 {
 
@@ -45,15 +48,38 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
     ];
 
     /**
-     * @param Context $context
-     * @param ConfigurationInterface $configuration
+     * @var ScopeConfigInterface
      */
+    protected $scopeConfig;
+    /**
+     * @var ThemeList
+     */
+    protected $themeProvider;
+
+    protected $storeManager;
+
+
     public function __construct(
         Context $context,
-        ConfigurationInterface $configuration
+        ConfigurationInterface $configuration,
+        StoreManagerInterface $storeManager,
+        ScopeConfigInterface $scopeConfig,
+        ThemeProvider $themeProvider
     ) {
         parent::__construct($context);
         $this->configuration = $configuration;
+        $this->storeManager = $storeManager;
+        $this->scopeConfig = $scopeConfig;
+        $this->themeProvider = $themeProvider;
+    }
+
+    protected function LogToFile($msg, $file = '/var/log/cloudinary.log')
+    {
+        $writer = new \Zend_Log_Writer_Stream(BP . $file);
+        $logger = new \Zend_Log();
+        $logger->addWriter($writer);
+
+        $logger->info(print_r($msg, true));
     }
 
     /**
@@ -178,6 +204,23 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
         return ($config['cname']) ?? '';
     }
 
+    /**
+     * Check if Hyvä Theme is active
+     *
+     * @return bool
+     */
+    public function isHyvaThemeEnabled()
+    {
+
+        $themeId = $this->scopeConfig->getValue(
+            'design/theme/theme_id',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $this->storeManager->getStore()->getId()
+        );
+
+        $theme = $this->themeProvider->getThemeById($themeId);
+        return $theme && strpos($theme->getCode(), 'Hyva/') === 0;
+    }
 
 
 
