@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <link rel="stylesheet" type="text/css" src="https://unpkg.com/cloudinary-video-player@1.10.5/dist/cld-video-player.min.css" src_type="url" />
-
+        <css src="https://unpkg.com/cloudinary-video-player/dist/cld-video-player.min.css" rel="stylesheet" src_type="url" />
     </head>
     <body>
         <referenceContainer name="before.body.end">
