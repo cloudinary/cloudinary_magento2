@@ -2,8 +2,160 @@
 /**
  * @var \Magento\Catalog\Block\Product\View\Gallery $block
  */
+$cloudinaryGalleryHelper = $this->helper('Cloudinary\Cloudinary\Helper\ProductGalleryHelper');
 ?>
-<div id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
-    class="cloudinary-product-gallery"
-    data-mage-init='{"cloudinaryProductGallery": <?= $block->getCloudinaryPGOptions() ?>}'
-    style="max-width:100%;margin:auto"></div>
+
+<?php if ($cloudinaryGalleryHelper->isHyvaThemeEnabled()): ?>
+    <script>
+        document.addEventListener("alpine:init", () => {
+            Alpine.data("cloudinaryGallery", () => ({
+                cld_gallery: null,
+                cld_mediaAssets: [],
+
+                init() {
+                    this.loadCloudinary(() => {
+                        this.$nextTick(() => {
+                            this.setupGallery();
+                            this.registerSwatchListener();
+                        });
+                    });
+                },
+
+                loadCloudinary(callback) {
+                    if (window.cloudinary && typeof cloudinary.galleryWidget === "function") {
+                        callback();
+                        return;
+                    }
+
+                    let script = document.createElement("script");
+                    script.src = "https://product-gallery.cloudinary.com/latest/all.js";
+                    script.async = true;
+                    script.onload = callback;
+                    document.head.appendChild(script);
+                },
+
+                setupGallery() {
+                    let galleryElement = document.querySelector(`[data-selector="cloudinary-product-gallery"]`);
+                    if (!galleryElement) {
+                        setTimeout(() => this.setupGallery(), 500);
+                        return;
+                    }
+
+                    let cldOptions = galleryElement.getAttribute("data-cloudinary-options");
+                    if (!cldOptions) return;
+
+                    try {
+                        cldOptions = JSON.parse(cldOptions);
+                    } catch (e) {
+                        return;
+                    }
+                    this.cld_mediaAssets = cldOptions.cloudinaryPGoptions.mediaAssets || [];
+
+                    let options = {
+                        cloudinaryPGoptions: cldOptions.cloudinaryPGoptions || {},
+                        cldPGid: cldOptions.cldPGid || galleryElement.id,
+                        mediaAssets: this.cld_mediaAssets,
+                    };
+
+                    window.cloudinary_pg = window.cloudinary_pg || {};
+                    let cldpgid = options.cldPGid;
+
+                    if (!window.cloudinary_pg[cldpgid]) {
+                        this.cld_gallery = window.cloudinary_pg[cldpgid] = cloudinary.galleryWidget(options.cloudinaryPGoptions);
+                        this.cld_gallery.render();
+                    } else {
+                        this.cld_gallery = window.cloudinary_pg[cldpgid];
+                    }
+                },
+
+                registerSwatchListener() {
+                    document.querySelectorAll("label.swatch-option").forEach((label) => {
+                        if (!label.dataset.listenerAdded) {
+                            label.dataset.listenerAdded = "true";
+                            label.addEventListener("click", () => {
+                                let input = label.querySelector("input.product-option-value-input");
+                                if (input) {
+                                    let selectedSwatch = input.value;
+                                    let newImages = this.getProductImages(selectedSwatch);
+                                    if (newImages.length > 0) {
+                                        this.updateCloudinaryGallery(newImages);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                },
+
+                getProductImages(selectedSwatch) {
+                    const productIdElement = document.querySelector('input[name="product"]');
+                    if (!productIdElement) return [];
+
+                    const productId = productIdElement.value;
+                    const functionName = `initConfigurableSwatchOptions_${productId}`;
+                    if (typeof window[functionName] !== "function") {
+                        setTimeout(() => this.getProductImages(selectedSwatch), 1000);
+                        return [];
+                    }
+
+                    let configData = window[functionName]();
+                    if (!configData?.optionConfig?.images) return [];
+
+                    let matchingProductId = Object.keys(configData.optionConfig.index).find(
+                        (id) => configData.optionConfig.index[id]["93"] == selectedSwatch
+                    );
+
+                    return matchingProductId ? configData.optionConfig.images[matchingProductId] : [];
+                },
+
+                extractImageName(url) {
+                    let fileNameWithExtension = url.substring(url.lastIndexOf("/") + 1);
+                    let firstChar = fileNameWithExtension.charAt(0);
+                    let secondChar = fileNameWithExtension.charAt(1);
+                    let publicId = `media/catalog/product/${firstChar}/${secondChar}/${fileNameWithExtension}`;
+                    return { publicId: publicId.replace("?_i=AB", ""), mediaType: "image" };
+                },
+
+                mergeMediaAssets(existingAssets, newAssets) {
+                    const existingPublicIds = existingAssets.map(asset => asset.publicId);
+                    return [
+                        ...existingAssets,
+                        ...newAssets.filter(newAsset => !existingPublicIds.includes(newAsset.publicId)),
+                    ];
+                },
+
+                updateCloudinaryGallery(newImages) {
+                    if (!this.cld_gallery) {
+                        setTimeout(() => this.updateCloudinaryGallery(newImages), 500);
+                        return;
+                    }
+
+                    if (typeof this.cld_gallery.update !== "function") return;
+
+                    let newMediaAssets = newImages.map(image => this.extractImageName(image.full));
+                    let updatedAssets = this.mergeMediaAssets(newMediaAssets, this.cld_mediaAssets);
+
+
+                    this.$nextTick(() => {
+                        try {
+                            this.cld_gallery.update({ mediaAssets: updatedAssets });
+                            this.cld_gallery.setItem(0);
+                        } catch (error) {}
+                    });
+                }
+            }));
+        });
+    </script>
+
+    <div x-data="cloudinaryGallery"
+         data-cloudinary-options='<?= $block->getCloudinaryPGOptions() ?>'
+         id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
+         data-selector="cloudinary-product-gallery"
+         class="w-full pt-6 md:pt-0 md:h-auto md:row-start-1 md:row-span-2 md:col-start-1"
+    ></div>
+
+<?php else: ?>
+    <div id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
+         class="cloudinary-product-gallery"
+         data-mage-init='{"cloudinaryProductGallery": <?= $block->getCloudinaryPGOptions() ?>}'
+         style="max-width:100%;margin:auto"></div>
+<?php endif; ?>

@@ -57,6 +57,7 @@ define([
                                 mediaAssets: mediaAssets,
                                 mediaType: 'image'
                             });
+                            cldGalleryWidget.setItem(0);
                         }
                     }
                 }

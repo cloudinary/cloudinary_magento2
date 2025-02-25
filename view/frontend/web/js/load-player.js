@@ -12,7 +12,7 @@ define(
     [
         'jquery',
         'jquery-ui-modules/widget',
-        'https://unpkg.com/cloudinary-video-player@1.10.5/dist/cld-video-player.min.js'
+        'https://unpkg.com/cloudinary-video-player/dist/cld-video-player.min.js'
     ],
     function ($) {
         'use strict';
