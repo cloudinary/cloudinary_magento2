@@ -18,3 +18,9 @@
 <script id="cld_video_settings" type="application/json">
     <?= json_encode($block->getVideoSettings()) ?>
 </script>
+<?php
+$cloudinaryGalleryHelper = $this->helper('Cloudinary\Cloudinary\Helper\ProductGalleryHelper');
+?>
+<?php if ($cloudinaryGalleryHelper->isHyvaThemeEnabled()): ?>
+    <script src="<?= $block->getViewFileUrl('Cloudinary_Cloudinary::js/hyva/cloudinary-video-support.js') ?>"></script>
+<?php endif; ?>

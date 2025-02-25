@@ -37,6 +37,8 @@ class SwatchImageUrlPlugin
 
     protected $imageFactory;
 
+    protected $mediaDirectory;
+
     /**
      * @param StoreManagerInterface $storeManager
      * @param UrlInterface $urlBuilder
