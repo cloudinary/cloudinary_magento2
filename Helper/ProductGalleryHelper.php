@@ -4,13 +4,10 @@ namespace Cloudinary\Cloudinary\Helper;
 
 use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Magento\Framework\App\Helper\Context;
-use Magento\Theme\Model\Theme\ThemeProvider;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\View\DesignInterface;
+
 class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
     /**
      * @var ConfigurationInterface
      */
@@ -21,6 +18,11 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      * @var array|null
      */
     protected $cloudinaryPGoptions;
+
+    /**
+     * @var DesignInterface
+     */
+    protected DesignInterface $viewDesign;
 
     protected $_casting = [
         'themeProps_primary' => 'string',
@@ -48,38 +50,37 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
     ];
 
     /**
-     * @var ScopeConfigInterface
+     * @param Context $context
+     * @param ConfigurationInterface $configuration
+     * @param DesignInterface $viewDesign
      */
-    protected $scopeConfig;
-    /**
-     * @var ThemeList
-     */
-    protected $themeProvider;
-
-    protected $storeManager;
-
-
     public function __construct(
         Context $context,
         ConfigurationInterface $configuration,
-        StoreManagerInterface $storeManager,
-        ScopeConfigInterface $scopeConfig,
-        ThemeProvider $themeProvider
+        DesignInterface $viewDesign
     ) {
         parent::__construct($context);
         $this->configuration = $configuration;
-        $this->storeManager = $storeManager;
-        $this->scopeConfig = $scopeConfig;
-        $this->themeProvider = $themeProvider;
+        $this->viewDesign = $viewDesign;
     }
 
-    protected function LogToFile($msg, $file = '/var/log/cloudinary.log')
+    /**
+     * Check if Hyvä Theme is active
+     *
+     * @return bool
+     */
+    public function isHyvaThemeEnabled(): bool
     {
-        $writer = new \Zend_Log_Writer_Stream(BP . $file);
-        $logger = new \Zend_Log();
-        $logger->addWriter($writer);
+        $theme = $this->viewDesign->getDesignTheme();
 
-        $logger->info(print_r($msg, true));
+        while ($theme) {
+            if (strpos($theme->getCode(), 'Hyva/') === 0) {
+                return true;
+            }
+            $theme = $theme->getParentTheme();
+        }
+
+        return false;
     }
 
     /**
@@ -90,16 +91,17 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCloudinaryPGOptions($refresh = false, $ignoreDisabled = false)
     {
-        if ((is_null($this->cloudinaryPGoptions) || $refresh) && ($ignoreDisabled || ($this->configuration->isEnabled() && $this->configuration->isEnabledProductGallery()))) {
+        if ((is_null($this->cloudinaryPGoptions) || $refresh) &&
+            ($ignoreDisabled || ($this->configuration->isEnabled() && $this->configuration->isEnabledProductGallery()))
+        ) {
             $this->cloudinaryPGoptions = $this->configuration->getProductGalleryAll();
 
-
-            if ($this->configuration->isEnabledCldVideo()){
-
+            if ($this->configuration->isEnabledCldVideo()) {
                 $transformation = [];
                 $videoSettings = $this->configuration->getAllVideoSettings();
                 $videoFreeParams = $videoSettings['video_free_params'] ?? null;
                 $videoControls = $videoSettings['controls'] ?? "none";
+
                 if ($videoFreeParams) {
                     $config = json_decode($videoFreeParams, true);
                     $config = array_shift($config);
@@ -113,15 +115,12 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
                         'controls' => $videoControls,
                         'chapters' => false,
                         'muted' => false
-
                     ];
                     $autoplayMode = $videoSettings['autoplay'] ?? null;
                     $config['autoplayMode'] = $autoplayMode;
                     if ($autoplayMode && $autoplayMode != 'never') {
                         $config['autoplay'] = true;
-
                         $config['muted'] = true;
-
                     } else {
                         $config['autoplay'] = false;
                     }
@@ -154,15 +153,15 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
             }
 
             foreach ($this->cloudinaryPGoptions as $key => $value) {
-                //Change casting
+                // Change casting
                 if (isset($this->_casting[$key])) {
                     \settype($value, $this->_casting[$key]);
                     $this->cloudinaryPGoptions[$key] = $value;
                 }
-                //Build options hierarchy
+                // Build options hierarchy
                 $path = explode("_", $key);
                 $_path = $path[0];
-                if (in_array($_path, ['themeProps','zoomProps','thumbnailProps','indicatorProps'])) {
+                if (in_array($_path, ['themeProps', 'zoomProps', 'thumbnailProps', 'indicatorProps'])) {
                     if (!isset($this->cloudinaryPGoptions[$_path])) {
                         $this->cloudinaryPGoptions[$_path] = [];
                     }
@@ -197,32 +196,14 @@ class ProductGalleryHelper extends \Magento\Framework\App\Helper\AbstractHelper
         return (string)$this->configuration->getCloud();
     }
 
-
+    /**
+     * @return string
+     */
     public function getCname()
     {
         $config = $this->configuration->getCredentials();
         return ($config['cname']) ?? '';
     }
-
-    /**
-     * Check if Hyvä Theme is active
-     *
-     * @return bool
-     */
-    public function isHyvaThemeEnabled()
-    {
-
-        $themeId = $this->scopeConfig->getValue(
-            'design/theme/theme_id',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeManager->getStore()->getId()
-        );
-
-        $theme = $this->themeProvider->getThemeById($themeId);
-        return $theme && strpos($theme->getCode(), 'Hyva/') === 0;
-    }
-
-
 
     /**
      * @return bool
