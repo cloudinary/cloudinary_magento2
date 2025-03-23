@@ -2,6 +2,7 @@
 namespace Cloudinary\Cloudinary\Plugin;
 
 
+use Cloudinary\Api\BaseApiClient;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Swatches\Helper\Media as SwatchMediaHelper;
@@ -9,6 +10,7 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Cloudinary\Asset\Media;
 use Cloudinary\Cloudinary\Model\Configuration;
+use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 class SwatchImageUrlPlugin
 {
     public const  SWATCH_MEDIA_PATH = 'attribute/swatch';
@@ -39,6 +41,11 @@ class SwatchImageUrlPlugin
 
     protected $mediaDirectory;
 
+    protected $configurationBuilder;
+
+    private $_authorised;
+
+
     /**
      * @param StoreManagerInterface $storeManager
      * @param UrlInterface $urlBuilder
@@ -51,6 +58,7 @@ class SwatchImageUrlPlugin
         StoreManagerInterface $storeManager,
         UrlInterface $urlBuilder,
         Configuration $configuration,
+        ConfigurationBuilder $configurationBuilder,
         \Magento\Framework\View\ConfigInterface $configInterface,
         \Magento\Framework\Image\Factory $imageFactory,
         \Magento\Framework\Filesystem $filesystem,
@@ -58,6 +66,7 @@ class SwatchImageUrlPlugin
         $this->storeManager = $storeManager;
         $this->urlBuilder = $urlBuilder;
         $this->_configuration = $configuration;
+        $this->configurationBuilder = $configurationBuilder;
         $this->viewConfig = $configInterface;
         $this->imageFactory = $imageFactory;
         $this->mediaDirectory = $filesystem->getDirectoryRead(DirectoryList::PUB);
@@ -87,6 +96,17 @@ class SwatchImageUrlPlugin
     {
         return $this->mediaDirectory->getAbsolutePath($this->getSwatchCachePath($swatchType));
     }
+
+
+    private function authorise()
+    {
+        if (!$this->_authorised && $this->_configuration->isEnabled()) {
+            \Cloudinary\Configuration\Configuration::instance($this->configurationBuilder->build());
+            BaseApiClient::$userPlatform =  $this->_configuration->getUserPlatform();
+            $this->_authorised = true;
+        }
+    }
+
     /**
      * @param SwatchMediaHelper $subject
      * @param $result
@@ -95,7 +115,8 @@ class SwatchImageUrlPlugin
      */
     public function afterGetSwatchAttributeImage(SwatchMediaHelper $subject, $result, $swatchType)
     {
-        if ($this->_configuration->isEnabled() && $this->_configuration->isLoadSwatchesFromCloudinary()) {
+        $this->authorise();
+        if ($this->_authorised && $this->_configuration->isLoadSwatchesFromCloudinary()) {
             $swatchTypes = ['swatch_image', 'swatch_thumb'];
             // Check if the file path is valid
             if (in_array($swatchType, $swatchTypes) && strpos($result, '/') !== false) {
