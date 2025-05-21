@@ -156,7 +156,7 @@ class Gallery
             $this->cloudinaryPGoptions['mediaAssets'] = [];
             foreach ($galleryAssets as $key => $value) {
                 $publicId = $url = $transformation = null;
-                if ($value['type'] === 'image') {
+                if ($value['type'] === 'image' && isset($value['file']) && $value['file'] ) {
                     //Check if image is a spinset:
                     $cldspinset = $this->productSpinsetMapFactory->create()->getCollection()->addFieldToFilter("image_name", $value['file'])->setPageSize(1)->getFirstItem();
                     if ($cldspinset && ($cldspinset = $cldspinset->getCldspinset())) {
