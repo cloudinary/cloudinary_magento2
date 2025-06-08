@@ -28,6 +28,7 @@ use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\Filesystem;
 
 class Configuration implements ConfigurationInterface
 {
@@ -67,6 +68,11 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_PG_API_QUEUE_MAX_TRYOUTS = 'cloudinary/advanced/product_gallery_api_queue_max_tryouts';
     const CONFIG_PATH_ENABLE_PRODUCT_FREE_TRANSFORMATIONS = 'cloudinary/advanced/enable_product_free_transformations';
     const CONFIG_PATH_LOAD_SWATCHES_FROM_CLOUDINARY = 'cloudinary/advanced/load_cloudinary_swatches';
+
+    const CONFIG_PATH_ENABLE_CACHE_PLACEHOLDER = 'cloudinary/advanced/cache_placeholder_enable';
+
+    const CONFIG_PATH_CUSTOM_PLACEHOLDER_IMAGE = 'cloudinary/advanced/custom_placeholder_image';
+
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -182,6 +188,8 @@ class Configuration implements ConfigurationInterface
 
     protected $directoryList;
 
+    private $filesystem;
+
     /**
      * @param ScopeConfigInterface $configReader
      * @param WriterInterface $configWriter
@@ -194,6 +202,7 @@ class Configuration implements ConfigurationInterface
      * @param Logger $cloudinaryLogger
      * @param Registry $coreRegistry
      * @param ManagerInterface $messageManager
+     * @param Filesystem $filesystem
      */
     public function __construct(
         ScopeConfigInterface $configReader,
@@ -206,7 +215,8 @@ class Configuration implements ConfigurationInterface
         ProductMetadataInterface $productMetadata,
         CloudinaryLogger $cloudinaryLogger,
         Registry $coreRegistry,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        Filesystem $filesystem,
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
@@ -219,7 +229,7 @@ class Configuration implements ConfigurationInterface
         $this->cloudinaryLogger = $cloudinaryLogger;
         $this->coreRegistry = $coreRegistry;
         $this->messageManager = $messageManager;
-
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -497,8 +507,32 @@ class Configuration implements ConfigurationInterface
         return (array) $this->configReader->getValue(self::CONFIG_PATH_CLD_VIDEO_SETTINGS_ALL);
     }
 
-    public function isLoadSwatchesFromCloudinary(){
+    public function isLoadSwatchesFromCloudinary()
+    {
         return (bool) $this->configReader->getValue(self::CONFIG_PATH_LOAD_SWATCHES_FROM_CLOUDINARY);
+    }
+
+    public function isEnabledCachePlaceholder()
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_ENABLE_CACHE_PLACEHOLDER);
+    }
+
+    public function getCustomPlaceholderPath(): ?string
+    {
+        $fileName = $this->configReader->getValue(self::CONFIG_PATH_CUSTOM_PLACEHOLDER_IMAGE);
+
+        if (!$fileName) {
+            return null;
+        }
+
+        $mediaDirectory = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $filePath = 'cloudinary_placeholder/' . ltrim($fileName, '/');
+
+        if ($mediaDirectory->isExist($filePath)) {
+            return $mediaDirectory->getAbsolutePath($filePath);
+        }
+
+        return null;
     }
 
     public function isEnabledLazyload()

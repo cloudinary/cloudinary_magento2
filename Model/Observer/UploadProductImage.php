@@ -52,7 +52,12 @@ class UploadProductImage implements ObserverInterface
     protected function isCloudinaryImage($image)
     {
         $file = $image->getRelativePath();
-        $cld_prefix = 'c/l/cld_';
-        return strpos($file,$cld_prefix);
+
+        // Skip if it's our known placeholder
+        if (strpos($file, 'cloudinary_placeholder.jpg') !== false) {
+            return true;
+        }
+
+        return strpos($file, 'c/l/cld_') !== false;
     }
 }

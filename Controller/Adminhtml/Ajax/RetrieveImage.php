@@ -15,6 +15,7 @@ use Magento\Framework\HTTP\Adapter\Curl;
 use Magento\Framework\Image\AdapterFactory as ImageAdapterFactory;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Validator\AllowedProtocols;
+use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
 use Magento\PageBuilder\Controller\Adminhtml\ContentType\Image\Upload as PageBuilderContentTypeUpload;
@@ -108,6 +109,8 @@ class RetrieveImage extends \Magento\Backend\App\Action
      */
     private $mediaLibraryMapFactory;
 
+    private $assetRepository;
+
     /**
      * @method __construct
      * @param  Context                $context
@@ -137,7 +140,8 @@ class RetrieveImage extends \Magento\Backend\App\Action
         NotProtectedExtension $extensionValidator,
         StoreManagerInterface $storeManager,
         ConfigurationInterface $configuration,
-        MediaLibraryMapFactory $mediaLibraryMapFactory
+        MediaLibraryMapFactory $mediaLibraryMapFactory,
+        AssetRepository $assetRepository
     ) {
         parent::__construct($context);
         $this->resultRawFactory = $resultRawFactory;
@@ -152,6 +156,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
         $this->storeManager = $storeManager;
         $this->configuration = $configuration;
         $this->mediaLibraryMapFactory = $mediaLibraryMapFactory;
+        $this->assetRepository = $assetRepository;
     }
 
     /**
@@ -161,6 +166,17 @@ class RetrieveImage extends \Magento\Backend\App\Action
     {
         try {
             $localUniqFilePath = $this->remoteFileUrl = $this->getRequest()->getParam('remote_image');
+            if ($this->configuration->isEnabledCachePlaceholder()) {
+                $customPlaceholder = $this->configuration->getCustomPlaceholderPath();
+                if ($customPlaceholder && file_exists($customPlaceholder)) {
+                    $image = file_get_contents($customPlaceholder);
+                    $sourceFilePath = $customPlaceholder;
+                } else {
+                    $asset = $this->assetRepository->createAsset('Cloudinary_Cloudinary::images/cloudinary_placeholder.jpg');
+                    $sourceFilePath = $asset->getSourceFile();
+                    $image = file_get_contents($sourceFilePath);
+                }
+            }
             $this->validateRemoteFile($this->remoteFileUrl);
             $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->remoteFileUrl);
             $this->parsedRemoteFileUrl["transformations_string"] = $this->getRequest()->getParam('asset')["free_transformation"];
@@ -168,13 +184,25 @@ class RetrieveImage extends \Magento\Backend\App\Action
             $this->parsedRemoteFileUrl["type"] = $assetParsedRemoteFileUrl['type'];
             $this->parsedRemoteFileUrl["thumbnail_url"] = $assetParsedRemoteFileUrl['thumbnail_url'];
             $baseTmpMediaPath = $this->getBaseTmpMediaPath();
+
             if ($this->configuration->isEnabledLocalMapping()) {
                 $this->cldUniqid = $this->configuration->generateCLDuniqid();
                 $localUniqFilePath = $this->configuration->addUniquePrefixToBasename($localUniqFilePath, $this->cldUniqid);
             }
+
             $localUniqFilePath = $this->appendNewFileName($baseTmpMediaPath . $this->getLocalTmpFileName($localUniqFilePath));
             $this->validateFileExtensions($localUniqFilePath);
-            $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
+
+            // reads the image and save it locally
+            if (!$this->configuration->isEnabledCachePlaceholder()) {
+                // Only download the real Cloudinary image if not using placeholder
+                $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
+            } else {
+                // Save the already-read placeholder image manually
+                $this->fileUtility->saveFile($localUniqFilePath, $image);
+                $this->usingPlaceholderFallback = true;
+            }
+
             $localFileFullPath = $this->appendAbsoluteFileSystemPath($localUniqFilePath);
             $this->imageAdapter->validateUploadFile($localFileFullPath);
             $result = $this->appendResultSaveRemoteImage($localUniqFilePath, $baseTmpMediaPath);
@@ -300,6 +328,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
     {
         $this->curl->setConfig(['header' => false]);
         $this->curl->write('GET', $fileUrl);
+
         $image = $this->curl->read();
 
         if (empty($image) && $this->getRequest()->getParam('asset')["resource_type"] === 'video') {
