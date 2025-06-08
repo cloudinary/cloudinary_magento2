@@ -111,6 +111,8 @@ class BatchDownloader
     private $_rateLimitAllowed = null;
     private $_rateLimitRemaining = null;
 
+    private $_authorised = false;
+
     /**
      * @method __construct
      * @param  ConfigurationInterface               $configuration
@@ -301,24 +303,27 @@ class BatchDownloader
      * @param  mixed       $nextCursor
      * @return DataObject
      */
-    private function getResources($nextCursor = null)
+    private function getResources(?string $nextCursor = null): DataObject
     {
-        $response = $this->_api->assets(
-            [
-            "resource_type" => 'image',
-            "type" => "upload",
-            "prefix" => DirectoryList::MEDIA . DIRECTORY_SEPARATOR,
-            "max_results" => self::API_REQUEST_MAX_RESULTS,
-            "next_cursor" => $nextCursor,
-            ]
-        );
+        $response = $this->_api->assets([
+            'resource_type' => 'image',
+            'type'          => 'upload',
+            'prefix'        => DirectoryList::MEDIA . DIRECTORY_SEPARATOR,
+            'max_results'   => self::API_REQUEST_MAX_RESULTS,
+            'next_cursor'   => $nextCursor,
+        ]);
 
+        $this->_rateLimitResetAt   = $response->rateLimitResetAt ?? null;
+        $this->_rateLimitAllowed   = $response->rateLimitAllowed ?? null;
+        $this->_rateLimitRemaining = $response->rateLimitRemaining ?? null;
 
-        $this->_rateLimitResetAt = $response->rateLimitResetAt;
-        $this->_rateLimitAllowed = $response->rateLimitAllowed;
-        $this->_rateLimitRemaining = $response->rateLimitRemaining;
-        $response->resources = array_values($response['resources']);
-        return new DataObject((array)$response);
+        // Avoid modifying $response directly to prevent dynamic property creation
+        $responseArray = (array) $response;
+        if (isset($responseArray['resources']) && is_array($responseArray['resources'])) {
+            $responseArray['resources'] = array_values($responseArray['resources']);
+        }
+
+        return new DataObject($responseArray);
     }
 
     /**
