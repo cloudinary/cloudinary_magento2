@@ -166,7 +166,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
     {
         try {
             $localUniqFilePath = $this->remoteFileUrl = $this->getRequest()->getParam('remote_image');
-            if ($this->configuration->isEnabledCachePlaceholder()) {
+            if ($this->configuration->isEnabledCachePlaceholder() && strpos($this->getBaseTmpMediaPath(), '/category' == false) ) {
                 $customPlaceholder = $this->configuration->getCustomPlaceholderPath();
                 if ($customPlaceholder && file_exists($customPlaceholder)) {
                     $image = file_get_contents($customPlaceholder);
@@ -197,6 +197,8 @@ class RetrieveImage extends \Magento\Backend\App\Action
             if (!$this->configuration->isEnabledCachePlaceholder()) {
                 // Only download the real Cloudinary image if not using placeholder
                 $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
+            } else if ((strpos($this->getBaseTmpMediaPath(), '/category') != false)) {
+                    $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
             } else {
                 // Save the already-read placeholder image manually
                 $this->fileUtility->saveFile($localUniqFilePath, $image);
