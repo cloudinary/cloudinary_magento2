@@ -486,11 +486,11 @@
                 <field id="cache_placeholder_enable" translate="label comment" type="select" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Cloudinary cache placeholder Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>WARNING: By activating this field, all the media received from Cloudinary will be saved as a placeholder in your storage.</comment>
+                    <comment>When enabled, media will be stored only on Cloudinary. Magento will keep a small placeholder file (around 1KB) in place of the full media file. This reduces local storage use and ensures assets are delivered directly from Cloudinary.</comment>
                 </field>
                 <field id="custom_placeholder_image" translate="label comment" type="image" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Custom Placeholder Image</label>
-                    <comment>Optional: Upload a custom image that will be used instead of the default Cloudinary placeholder. recommended use up to 10kb image.</comment>
+                    <comment>Optional: Upload a small image (recommended ≤10KB) to use as the local placeholder instead of the default Cloudinary one.</comment>
                     <backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>
                     <upload_dir config="system/filesystem/media" scope_info="1">cloudinary_placeholder</upload_dir>
                     <base_url type="media" scope_info="1">cloudinary_placeholder</base_url>
