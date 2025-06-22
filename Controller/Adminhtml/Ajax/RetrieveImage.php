@@ -176,6 +176,8 @@ class RetrieveImage extends \Magento\Backend\App\Action
                     $sourceFilePath = $asset->getSourceFile();
                     $image = file_get_contents($sourceFilePath);
                 }
+            } else {
+                $image = file_get_contents($localUniqFilePath);
             }
             $this->validateRemoteFile($this->remoteFileUrl);
             $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->remoteFileUrl);
