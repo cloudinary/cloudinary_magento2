@@ -87,6 +87,11 @@
         <plugin name="cloudinary_plugin_block_catalog_category_view" type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Category\View"/>
     </type>
 
+    <type name="Magento\Catalog\ViewModel\Category\Image">
+        <plugin name="cloudinary_category_image_url"
+                type="Cloudinary\Cloudinary\Plugin\Catalog\Block\Category\Image" />
+    </type>
+
     <type name="Magento\Cms\Block\Block">
         <plugin name="cloudinary_plugin_block_cms_block_block" type="Cloudinary\Cloudinary\Plugin\Cms\Block\Block"/>
     </type>

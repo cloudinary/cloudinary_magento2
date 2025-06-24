@@ -28,6 +28,7 @@
                 <product_gallery_api_queue_limit>20</product_gallery_api_queue_limit>
                 <product_gallery_api_queue_max_tryouts>5</product_gallery_api_queue_max_tryouts>
                 <enable_product_free_transformations>1</enable_product_free_transformations>
+                <cache_placeholder_enable>0</cache_placeholder_enable>
             </advanced>
             <product_gallery>
                 <enabled>0</enabled>
