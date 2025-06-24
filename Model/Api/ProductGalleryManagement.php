@@ -10,7 +10,6 @@ use Cloudinary\Cloudinary\Model\MediaLibraryMapFactory;
 use Cloudinary\Cloudinary\Model\ProductGalleryApiQueueFactory;
 use Cloudinary\Cloudinary\Model\ProductImageFinder;
 use Cloudinary\Cloudinary\Model\TransformationFactory;
-use Cloudinary\Cloudinary\Helper\ProductGalleryHelper;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product\Gallery\Processor;
 use Magento\Catalog\Model\Product\Media\Config as ProductMediaConfig;
@@ -27,6 +26,7 @@ use Magento\Framework\Image\AdapterFactory as ImageAdapterFactory;
 use Magento\Framework\Json\Helper\Data as JsonHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Validator\AllowedProtocols;
+use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\MediaStorage\Model\File\Validator\NotProtectedExtension;
 use Magento\MediaStorage\Model\ResourceModel\File\Storage\File as FileUtility;
 use Magento\Store\Model\App\Emulation as AppEmulation;
@@ -162,7 +162,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
      */
     private $resourceConnection;
 
-    private $productGalleryHelper;
+    private $assetRepository;
 
     /**
      * @method __construct
@@ -212,7 +212,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         ProductGalleryApiQueueFactory $productGalleryApiQueueFactory,
         AppEmulation $appEmulation,
         ResourceConnection $resourceConnection,
-        ProductGalleryHelper $productGalleryHelper
+        AssetRepository $assetRepository
     ) {
         $this->configuration = $configuration;
         $this->request = $request;
@@ -236,9 +236,8 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->productGalleryApiQueueFactory = $productGalleryApiQueueFactory;
         $this->appEmulation = $appEmulation;
         $this->resourceConnection = $resourceConnection;
-        $this->productGalleryHelper = $productGalleryHelper;
+        $this->assetRepository = $assetRepository;
     }
-
 
     /**
      * Remove Gallery Item
@@ -410,7 +409,6 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         }
 
         return $this->jsonHelper->jsonEncode($result);
-
     }
 
     /**
@@ -566,7 +564,11 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             $roles = ($roles) ? array_map('trim', (is_string($roles) ? explode(',', $roles) : (array) $roles)) : null;
             $product = $this->productRepository->get($sku);
 
+            $isEnabledPlaceholderCache = $this->configuration->isEnabledCachePlaceholder();
+
             $result = $this->retrieveImage($this->parsedRemoteFileUrl['thumbnail_url'] ?: $this->parsedRemoteFileUrl['transformationless_url']);
+
+
             $result["file"] = $this->mediaGalleryProcessor->addImage(
                 $product,
                 $result["tmp_name"],
@@ -576,7 +578,6 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             );
 
             $mediaGalleryData = $product->getMediaGallery();
-            // last gallery value from array
             $galItem = array_pop($mediaGalleryData["images"]);
 
             if ($this->parsedRemoteFileUrl["type"] === "video") {
@@ -664,9 +665,26 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                 $this->cldUniqid = $this->configuration->generateCLDuniqid();
                 $localUniqFilePath = $this->configuration->addUniquePrefixToBasename($remoteFileUrl, $this->cldUniqid);
             }
+            if ($this->configuration->isEnabledCachePlaceholder()) {
+                $customPlaceholderPath = $this->configuration->getCustomPlaceholderPath();
+
+                if ($customPlaceholderPath && file_exists($customPlaceholderPath)) {
+                    $image = file_get_contents($customPlaceholderPath);
+                } else {
+                    // Fallback to module default image
+                    $asset = $this->assetRepository->createAsset('Cloudinary_Cloudinary::images/cloudinary_placeholder.jpg');
+                    $image = $asset->getContent();
+                }
+
+            }
             $localUniqFilePath = $this->appendNewFileName($baseTmpMediaPath . $this->getLocalTmpFileName($localUniqFilePath));
             $this->validateRemoteFileExtensions($localUniqFilePath);
-            $this->retrieveRemoteImage($remoteFileUrl, $localUniqFilePath);
+
+            if (!$this->configuration->isEnabledCachePlaceholder()) {
+                $this->retrieveRemoteImage($remoteFileUrl, $localUniqFilePath);
+            } else {
+                $this->fileUtility->saveFile($localUniqFilePath, $image);
+            }
             $localFileFullPath = $this->appendAbsoluteFileSystemPath($localUniqFilePath);
             $this->imageAdapter->validateUploadFile($localFileFullPath);
             $result = $this->appendResultSaveRemoteImage($localUniqFilePath, $baseTmpMediaPath);
@@ -780,6 +798,7 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
     {
         $this->curl->setConfig(['header' => false]);
         $this->curl->write('GET', $fileUrl);
+
         $image = $this->curl->read();
         if (empty($image)) {
             throw new LocalizedException(
@@ -834,7 +853,6 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
             'small_image' => null,
             'thumbnail' => null,
             'media_gallery' => [],
-            'gallery_widget_parameters' => [],
         ];
         try {
             $product = $this->productRepository->get($sku);
@@ -850,7 +868,6 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
                     $urls['thumbnail'] = $gallItem->getUrl();
                 }
             }
-            $urls['gallery_widget_parameters'] = $this->jsonHelper->jsonEncode($this->productGalleryHelper->getCloudinaryPGOptions(true, true));
         } catch (\Exception $e) {
             $urls = [
                 'error' => 1,
@@ -904,6 +921,4 @@ class ProductGalleryManagement implements \Cloudinary\Cloudinary\Api\ProductGall
         $this->startEnvironmentEmulation(0, Area::AREA_ADMINHTML, $force);
         return $this;
     }
-
-
 }
