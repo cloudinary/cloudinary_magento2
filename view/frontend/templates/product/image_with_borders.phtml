@@ -27,8 +27,8 @@ $paddingBottom = $block->getRatio() * 100;
             <?php foreach ($block->getCustomAttributes() as $name => $value): ?>
                 <?= $escaper->escapeHtmlAttr($name) ?>="<?= $escaper->escapeHtmlAttr($value) ?>"
             <?php endforeach; ?>
-            src="<?= $block->getLazyloadPlaceholder() ?>"
-            data-original="<?= $block->escapeUrl($block->getImageUrl()) ?>"
+            src="<?= /* @noEscape */ $block->getLazyloadPlaceholder() ?>"
+            data-original="<?= $escaper->escapeUrl($block->getImageUrl()) ?>"
             <?php if ($borders || $enableLazyLoadingWithoutBorders): ?>
                 width="<?= $escaper->escapeHtmlAttr($block->getWidth()) ?>"
                 height="<?= $escaper->escapeHtmlAttr($block->getHeight()) ?>"

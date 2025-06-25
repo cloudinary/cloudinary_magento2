@@ -13,12 +13,12 @@
         type="button"
         class="scalable"
         style="margin-top: 10px;"
-    <?= (!$this->isCanPreviewTransformations()) ? ' disabled' : '' ?>
+    <?= /* @noEscape */ (!$this->isCanPreviewTransformations()) ? ' disabled' : '' ?>
 >
     <span><span><span>Preview custom transformation</span></span></span>
 </button>
 
 <div id="cloudinary_custom_transform_preview"
      style="margin-top: 10px;"
-     data-mage-init='{"cloudinaryFreeTransform":{"previewButtonId": "#cloudinary_free_transform_preview_button", "transformInputFieldId": "#cloudinary_transformations_cloudinary_free_transform_global", "transformInputProductsFieldId": "#cloudinary_transformations_cloudinary_free_transform_global_products", "transformInputProductsBehaviorFieldId": "#cloudinary_transformations_cloudinary_free_transform_global_products_behavior", "ajaxUrl": "<?= $this->getUrl('cloudinary/ajax_free/sample') ?>", "ajaxKey": "<?= $this->getFormKey() ?>"}}'>
+     data-mage-init='{"cloudinaryFreeTransform":{"previewButtonId": "#cloudinary_free_transform_preview_button", "transformInputFieldId": "#cloudinary_transformations_cloudinary_free_transform_global", "transformInputProductsFieldId": "#cloudinary_transformations_cloudinary_free_transform_global_products", "transformInputProductsBehaviorFieldId": "#cloudinary_transformations_cloudinary_free_transform_global_products_behavior", "ajaxUrl": "<?= /* @noEscape  */ $this->getUrl('cloudinary/ajax_free/sample') ?>", "ajaxKey": "<?= /* @noEscape  */ $this->getFormKey() ?>"}}'>
 </div>

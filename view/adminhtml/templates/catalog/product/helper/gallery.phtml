@@ -7,6 +7,7 @@
 // @codingStandardsIgnoreFile
 
 /** @var $block \Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Gallery\Content */
+/**  @var $escaper \Magento\Framework\Escaper  */
 $elementName = $block->getElement()->getName() . '[images]';
 $formName = $block->getFormName();
 $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
@@ -15,38 +16,38 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
 <div class="row">
     <div class="add-video-button-container">
         <button id="add_video_button"
-            title="<?= $block->escapeHtml(__('Add Video')) ?>"
+            title="<?= $escaper->escapeHtml(__('Add Video')) ?>"
             data-role="add-video-button"
             type="button"
             class="action-secondary"
             data-ui-id="widget-button-1">
-            <span><?= $block->escapeHtml(__('Add Video')) ?></span>
+            <span><?= $escaper->escapeHtmlAttr(__('Add Video')) ?></span>
         </button>
         <?php if ($cloudinaryMLwidgetOprions): ?>
             <div id="gallery_top_cloudinary_buttons_container">
                 <div id="gallery_top_add_from_cloudinary_dd_button"
-                    title="<?= $block->escapeHtml(__('Add from Cloudinary')) ?>"
+                    title="<?= $escaper->escapeHtmlAttr(__('Add from Cloudinary')) ?>"
                     data-role="add-from-cloudinary-dd-button"
                     type="button"
                     class="action-secondary add-from-cloudinary-dd-button cloudinary-button-with-logo">
-                    <span><?= $block->escapeHtml(__('Add from Cloudinary')) ?></span>
+                    <span><?= $escaper->escapeHtmlAttr(__('Add from Cloudinary')) ?></span>
                     <div id="gallery_top_add_from_cloudinary_dd">
                         <div id="gallery_top_add_from_cloudinary_dd_inner">
                             <button id="gallery_top_add_from_cloudinary_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
-                                title="<?= $block->escapeHtml(__('Add Image/Video')) ?>"
+                                title="<?= $escaper->escapeHtmlAttr(__('Add Image/Video')) ?>"
                                 data-role="add-from-cloudinary-button"
                                 type="button"
                                 data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
                                 class="action-secondary add-from-cloudinary-button">
-                                <span><?= $block->escapeHtml(__('Add Image/Video')) ?></span>
+                                <span><?= $escaper->escapeHtmlAttr(__('Add Image/Video')) ?></span>
                             </button>
                             <button id="gallery_top_add_cldspinset_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>"
-                                title="<?= $block->escapeHtml(__('Add Spinset')) ?>"
+                                title="<?= $escaper->escapeHtmlAttr(__('Add Spinset')) ?>"
                                 data-role="add-cldspinset-button"
                                 type="button"
                                 data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
                                 class="action-secondary">
-                                <span><?= $block->escapeHtml(__('Add Spinset')) ?></span>
+                                <span><?= $escaper->escapeHtmlAttr(__('Add Spinset')) ?></span>
                             </button>
                         </div>
                     </div>
@@ -65,15 +66,15 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
 <div id="<?= $block->getHtmlId() ?>"
      class="gallery"
      data-mage-init='{"openVideoModal":{}}'
-     data-parent-component="<?= $block->escapeHtml($block->getData('config/parentComponent')) ?>"
-     data-images="<?= $block->escapeHtmlAttr($block->getImagesJson()) ?>"
-     data-types="<?= $block->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getImageTypes())) ?>">
+     data-parent-component="<?= $escaper->escapeHtml($block->getData('config/parentComponent')) ?>"
+     data-images="<?= $escaper->escapeHtmlAttr($block->getImagesJson()) ?>"
+     data-types="<?= $escaper->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getImageTypes())) ?>">
 
     <?php if ($cloudinaryMLwidgetOprions): ?>
         <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
-                    <?= $block->escapeHtml(__('Add from Cloudinary')) ?>
+                    <?= $escaper->escapeHtml(__('Add from Cloudinary')) ?>
                 </p>
             </div>
         </div>
@@ -86,7 +87,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
             <?= /* @escapeNotVerified */ $block->getUploaderHtml() ?>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
-                    <?= $block->escapeHtml(__('Browse to find or drag image here')) ?>
+                    <?= $escaper->escapeHtml(__('Browse to find or drag image here')) ?>
                 </p>
             </div>
         </div>
@@ -97,11 +98,11 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
     <?php
     foreach ($block->getImageTypes() as $typeData):
         ?>
-        <input name="<?= $block->escapeHtml($typeData['name']) ?>"
+        <input name="<?= $escaper->escapeHtml($typeData['name']) ?>"
                data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
-               class="image-<?= $block->escapeHtml($typeData['code']) ?>"
+               class="image-<?= $escaper->escapeHtml($typeData['code']) ?>"
                type="hidden"
-               value="<?= $block->escapeHtml($typeData['value']) ?>"/>
+               value="<?= $escaper->escapeHtml($typeData['value']) ?>"/>
         <?php
     endforeach;
     ?>
@@ -184,21 +185,21 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             class="action-remove"
                             data-role="delete-button"
                             title="<% if (data.media_type == 'external-video') {%>
-                                <?= $block->escapeHtml(__('Delete video')) ?>
+                                <?= $escaper->escapeHtml(__('Delete video')) ?>
                             <%} else {%>
-                                <?= $block->escapeHtml(__('Delete image')) ?>
+                                <?= $escaper->escapeHtml(__('Delete image')) ?>
                             <%}%>">
                     <span>
                         <% if (data.media_type == 'external-video') { %>
-                        <?= $block->escapeHtml(__('Delete video')) ?>
+                        <?= $escaper->escapeHtml(__('Delete video')) ?>
                         <% } else {%>
-                        <?= $block->escapeHtml(__('Delete image')) ?>
+                        <?= $escaper->escapeHtml(__('Delete image')) ?>
                         <%} %>
                     </span>
                     </button>
                     <div class="draggable-handle"></div>
                 </div>
-                <div class="image-fade"><span><?= $block->escapeHtml(__('Hidden')) ?></span></div>
+                <div class="image-fade"><span><?= $escaper->escapeHtml(__('Hidden')) ?></span></div>
             </div>
 
             <div class="item-description">
@@ -216,8 +217,8 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                 <?php
                 foreach ($block->getImageTypes() as $typeData):
                     ?>
-                    <li data-role-code="<?= $block->escapeHtml($typeData['code']) ?>" class="item-role item-role-<?= $block->escapeHtml($typeData['code']) ?>">
-                        <?= $block->escapeHtml($typeData['label']) ?>
+                    <li data-role-code="<?= $escaper->escapeHtml($typeData['code']) ?>" class="item-role item-role-<?= $escaper->escapeHtml($typeData['code']) ?>">
+                        <?= $escaper->escapeHtml($typeData['label']) ?>
                     </li>
                     <?php
                 endforeach;
@@ -267,7 +268,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
 
                 <div class="admin__field field-image-role">
                     <label class="admin__field-label">
-                            <span><?= $block->escapeHtml(__('Role')) ?></span>
+                            <span><?= $escaper->escapeHtml(__('Role')) ?></span>
                     </label>
                     <div class="admin__field-control">
                         <ul class="multiselect-alt">
@@ -280,9 +281,9 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                                                data-role="type-selector"
                                                data-form-part="<?= /* @escapeNotVerified */ $formName ?>"
                                                type="checkbox"
-                                               value="<?= $block->escapeHtml($attribute->getAttributeCode()) ?>"
+                                               value="<?= $escaper->escapeHtml($attribute->getAttributeCode()) ?>"
                                         />
-                                        <?= /* @escapeNotVerified */ $block->escapeHtml($attribute->getFrontendLabel()) ?>
+                                        <?= /* @escapeNotVerified */ $escaper->escapeHtml($attribute->getFrontendLabel()) ?>
                                     </label>
                                 </li>
                                 <?php
@@ -319,7 +320,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                             <% if (data.disabled == 1) { %>checked="checked"<% } %> />
 
                             <label for="hide-from-product-page" class="admin__field-label">
-                                <?= $block->escapeHtml(__('Hide from Product Page')) ?>
+                                <?= $escaper->escapeHtml(__('Hide from Product Page')) ?>
                             </label>
                         </div>
                     </div>
@@ -332,21 +333,21 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
         <div id="video-player-preview-location" class="video-player-sidebar">
             <div class="video-player-container"></div>
             <div class="video-information title">
-                <label><?= $block->escapeHtml(__('Title:')) ?> </label><span></span>
+                <label><?= $escaper->escapeHtml(__('Title:')) ?> </label><span></span>
             </div>
             <div class="video-information uploaded">
-                <label><?= $block->escapeHtml(__('Uploaded:')) ?> </label><span></span>
+                <label><?= $escaper->escapeHtml(__('Uploaded:')) ?> </label><span></span>
             </div>
             <div class="video-information uploader">
-                <label><?= $block->escapeHtml(__('Uploader:')) ?> </label><span></span>
+                <label><?= $escaper->escapeHtml(__('Uploader:')) ?> </label><span></span>
             </div>
             <div class="video-information duration">
-                <label><?= $block->escapeHtml(__('Duration:')) ?> </label><span></span>
+                <label><?= $escaper->escapeHtml(__('Duration:')) ?> </label><span></span>
             </div>
         </div>
     </div>
 
-    <?= $block->getChildHtml('new-video') ?>
+    <?= /* @noEscape  */  $block->getChildHtml('new-video') ?>
 
     <div id="cldspinset-modal" style="display:none">
         <div id="cldspinset-preview-location" class="cldspinset-sidebar">
@@ -373,7 +374,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                         </label>
                         <div class="admin__field-control">
                             <div id="cldspinset-preview" class="cldspinset-preview">
-                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
+                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= /* @noEscape  */ $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
                                 <div id="cldspinset-indic"></div>
                             </div>
                         </div>
