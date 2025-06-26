@@ -147,7 +147,7 @@ $cloudinaryGalleryHelper = $this->helper('Cloudinary\Cloudinary\Helper\ProductGa
     </script>
 
     <div x-data="cloudinaryGallery"
-         data-cloudinary-options='<?= $block->getCloudinaryPGOptions() ?>'
+         data-cloudinary-options='<?= /* @noEscape */ $block->getCloudinaryPGOptions() ?>'
          id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
          data-selector="cloudinary-product-gallery"
          class="w-full pt-6 md:pt-0 md:h-auto md:row-start-1 md:row-span-2 md:col-start-1"
@@ -156,6 +156,6 @@ $cloudinaryGalleryHelper = $this->helper('Cloudinary\Cloudinary\Helper\ProductGa
 <?php else: ?>
     <div id="<?= /* @escapeNotVerified */ $this->getCldPGid() ?>"
          class="cloudinary-product-gallery"
-         data-mage-init='{"cloudinaryProductGallery": <?= $block->getCloudinaryPGOptions() ?>}'
+         data-mage-init='{"cloudinaryProductGallery": <?= /* @noEscape */ $block->getCloudinaryPGOptions() ?>}'
          style="max-width:100%;margin:auto"></div>
 <?php endif; ?>

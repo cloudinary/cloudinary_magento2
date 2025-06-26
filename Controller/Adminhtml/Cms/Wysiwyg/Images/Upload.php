@@ -107,27 +107,28 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
     protected $mediaAssetSave;
 
     /**
-     * @method __construct
-     * @param  Context                $context
-     * @param  Registry               $coreRegistry
-     * @param  JsonFactory            $resultJsonFactory
-     * @param  DirectoryResolver|null $directoryResolver
-     * @param  DirectoryList          $directoryList
-     * @param  Config                 $mediaConfig
-     * @param  Filesystem             $fileSystem
-     * @param  AdapterFactory         $imageAdapterFactory
-     * @param  Curl                   $curl
-     * @param  File                   $fileUtility
-     * @param  AllowedProtocols       $protocolValidator
-     * @param  NotProtectedExtension  $extensionValidator
-     * @param  ConfigurationInterface $configuration
-     * @param  MediaLibraryMapFactory $mediaLibraryMapFactory
+     * @param Context $context
+     * @param Registry $coreRegistry
+     * @param JsonFactory $resultJsonFactory
+     * @param DirectoryList $directoryList
+     * @param Config $mediaConfig
+     * @param Filesystem $fileSystem
+     * @param AdapterFactory $imageAdapterFactory
+     * @param Curl $curl
+     * @param File $fileUtility
+     * @param AllowedProtocols $protocolValidator
+     * @param NotProtectedExtension $extensionValidator
+     * @param ConfigurationInterface $configuration
+     * @param MediaLibraryMapFactory $mediaLibraryMapFactory
+     * @param MediaGalleryUploader $mediaGalleryUploader
+     * @param AssetInterfaceFactory $mediaAsset
+     * @param SaveAssetsInterface $mediaAssetSave
+     * @param DirectoryResolver|null $directoryResolver
      */
     public function __construct(
         Context $context,
         Registry $coreRegistry,
         JsonFactory $resultJsonFactory,
-        DirectoryResolver $directoryResolver = null,
         DirectoryList $directoryList,
         Config $mediaConfig,
         Filesystem $fileSystem,
@@ -140,7 +141,8 @@ class Upload extends \Magento\Cms\Controller\Adminhtml\Wysiwyg\Images\Upload
         MediaLibraryMapFactory $mediaLibraryMapFactory,
         MediaGalleryUploader $mediaGalleryUploader,
         AssetInterfaceFactory $mediaAsset,
-        SaveAssetsInterface $mediaAssetSave
+        SaveAssetsInterface $mediaAssetSave,
+        ?DirectoryResolver $directoryResolver = null,
 
     ) {
         parent::__construct($context, $coreRegistry, $resultJsonFactory, $directoryResolver);

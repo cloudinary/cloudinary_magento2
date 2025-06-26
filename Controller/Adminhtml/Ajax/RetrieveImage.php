@@ -166,7 +166,10 @@ class RetrieveImage extends \Magento\Backend\App\Action
     {
         try {
             $localUniqFilePath = $this->remoteFileUrl = $this->getRequest()->getParam('remote_image');
-            if ($this->configuration->isEnabledCachePlaceholder() && strpos($this->getBaseTmpMediaPath(), '/category' == false) ) {
+            if (
+                $this->configuration->isEnabledCachePlaceholder() &&
+                strpos($this->getBaseTmpMediaPath(), '/category') === false
+            ) {
                 $customPlaceholder = $this->configuration->getCustomPlaceholderPath();
                 if ($customPlaceholder && file_exists($customPlaceholder)) {
                     $image = file_get_contents($customPlaceholder);

@@ -1,9 +1,10 @@
 <?php
 /**
  * @var $block Cloudinary\Cloudinary\Block\Adminhtml\System\Config\AutoUploadMapping
- */
+* @var $escaper \Magento\Framework\Escaper
+**/
 ?>
-<?php echo $block->getButtonHtml() ?>
+<?= /* @noEscape */ $block->getButtonHtml() ?>
 <div id="auto-upload-mapping-message"></div>
 
 <?php if ($block->isEnabled()): ?>
@@ -14,7 +15,7 @@
             $(document).on('click', '#auto-upload-mapping-btn', function () {
                 $('body').trigger('processStart');
                 $('#auto-upload-mapping-message').html("");
-                $.getJSON('<?php echo $block->getAjaxUrl() ?>')
+                $.getJSON('<?= /* @noEscape */ $block->getAjaxUrl() ?>')
                     .done(function(res) {
                         if(res && !res.error){
                             $('#auto-upload-mapping-message').html(
@@ -39,5 +40,5 @@
         });
     </script>
 <?php else: ?>
-    <p class="note"><?= __('This button would be available after enabling the module with a valid environment variable.') ?></p>
+    <p class="note"><?= $escaper->escapeHtmlAttr( __('This button would be available after enabling the module with a valid environment variable.')) ?></p>
 <?php endif; ?>

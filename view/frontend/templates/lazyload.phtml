@@ -6,4 +6,4 @@
 <?php if (!$block->isEnabledLazyload()) {
     return;
 } ?>
-<script type="text/x-magento-init">{"*": {"cloudinaryLazyload": <?= $block->getLazyloadOptions() ?>}}</script>
+<script type="text/x-magento-init">{"*": {"cloudinaryLazyload": <?= /* @noEscape */ $block->getLazyloadOptions() ?>}}</script>
