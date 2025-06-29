@@ -175,7 +175,7 @@ define(
 
                     this._initialize();
 
-                    this.element.append('<div><div/>');
+                    this.element.append('<div></div>');
 
                     this._on(
                         window, {
@@ -360,7 +360,7 @@ define(
                         additionalParams;
                     id = 'vimeo' + this._code + timestamp;
                     this.element.append(
-                        $('<iframe><iframe/>')
+                        $('<iframe></iframe>')
                             .attr('frameborder', 0)
                             .attr('id', id)
                             .attr('width', this._width)
@@ -428,7 +428,7 @@ define(
 
                     if (cldVideoSettings.player_type != 'cloudinary') {
                         elem.append(
-                            $('<iframe><iframe/>')
+                            $('<iframe></iframe>')
                                 .attr('frameborder', 0)
                                 .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
                                 .attr('class', 'cld-video-player')
@@ -448,7 +448,7 @@ define(
                         );
                     } else {
                         let id = 'cld_video_player';
-                        this._player = $('<video><video/>');
+                        this._player = $('<video></video>');
                         console.log(elem);
                         elem.append(
                             this._player
