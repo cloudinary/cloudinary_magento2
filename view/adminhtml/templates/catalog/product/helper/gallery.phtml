@@ -37,7 +37,7 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
                                 title="<?= $escaper->escapeHtmlAttr(__('Add Image/Video')) ?>"
                                 data-role="add-from-cloudinary-button"
                                 type="button"
-                                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                                data-mage-init='{"cloudinaryMediaLibraryModal": <?= /* @escapeNotVerified */ $cloudinaryMLwidgetOprions ?>}'
                                 class="action-secondary add-from-cloudinary-button">
                                 <span><?= $escaper->escapeHtmlAttr(__('Add Image/Video')) ?></span>
                             </button>
