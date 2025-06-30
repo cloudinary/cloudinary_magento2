@@ -45,7 +45,7 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
                                 title="<?= $escaper->escapeHtmlAttr(__('Add Spinset')) ?>"
                                 data-role="add-cldspinset-button"
                                 type="button"
-                                data-mage-init='{"cloudinarySpinsetModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                                data-mage-init='{"cloudinarySpinsetModal": <?= /* @escapeNotVerified */ $cloudinaryMLwidgetOprions ?>}'
                                 class="action-secondary">
                                 <span><?= $escaper->escapeHtmlAttr(__('Add Spinset')) ?></span>
                             </button>
@@ -71,7 +71,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
      data-types="<?= $escaper->escapeHtml($this->helper('Magento\Framework\Json\Helper\Data')->jsonEncode($block->getImageTypes())) ?>">
 
     <?php if ($cloudinaryMLwidgetOprions): ?>
-        <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'>
+        <div id="gallery_inner_add_from_cloudinary_placeholder_button_<?= /* @escapeNotVerified */ $block->getHtmlId() ?>" class="image image-placeholder add-from-cloudinary-button" data-role="add-from-cloudinary-button" data-mage-init='{"cloudinaryMediaLibraryModal": <?= /* @escapeNotVerified */ $cloudinaryMLwidgetOprions ?>}'>
             <div class="product-image-wrapper">
                 <p class="image-placeholder-text">
                     <?= $escaper->escapeHtml(__('Add from Cloudinary')) ?>
@@ -374,7 +374,7 @@ $elementToggleCode = $element->getToggleCode() ? $element->getToggleCode() : 'to
                         </label>
                         <div class="admin__field-control">
                             <div id="cldspinset-preview" class="cldspinset-preview">
-                                <img id="cldspinset-preview-img" class="placeholder" src="<?= $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= /* @noEscape  */ $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
+                                <img id="cldspinset-preview-img" class="placeholder" src="<?= /* @noEscape  */ $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>" alt="Cloudinary spinset preview" data-placeholder="<?= /* @noEscape  */ $this->getViewFileUrl('Cloudinary_Cloudinary::images/cloudinary_spinset_placeholder.svg') ?>"/>
                                 <div id="cldspinset-indic"></div>
                             </div>
                         </div>
