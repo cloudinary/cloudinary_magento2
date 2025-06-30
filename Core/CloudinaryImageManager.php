@@ -101,7 +101,7 @@ class CloudinaryImageManager
      * @param OutputInterface|null $output
      * @param string               $message
      */
-    private function report(OutputInterface $output = null, $message = '')
+    private function report(?OutputInterface $output = null, $message = '')
     {
         if ($output) {
             $output->writeln($message);
