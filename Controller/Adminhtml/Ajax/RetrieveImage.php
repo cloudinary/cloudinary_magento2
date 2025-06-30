@@ -202,7 +202,7 @@ class RetrieveImage extends \Magento\Backend\App\Action
             if (!$this->configuration->isEnabledCachePlaceholder()) {
                 // Only download the real Cloudinary image if not using placeholder
                 $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
-            } else if ((strpos($this->getBaseTmpMediaPath(), '/category') != false)) {
+            } else if ((strpos($this->getBaseTmpMediaPath(), '/category') !== false)) {
                     $this->retrieveRemoteImage($this->remoteFileUrl, $localUniqFilePath);
             } else {
                 // Save the already-read placeholder image manually

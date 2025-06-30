@@ -170,7 +170,7 @@ define(
 
                     this._initialize();
 
-                    this.element.append('<div/>');
+                    this.element.append('<div></div>');
 
                     this._on(
                         window, {
@@ -339,7 +339,7 @@ define(
                     timestamp +
                     additionalParams;
                 this.element.append(
-                    $('<iframe/>')
+                    $('<iframe></iframe>')
                         .attr('frameborder', 0)
                         .attr('id', 'vimeo' + this._code + timestamp)
                         .attr('width', this._width)
@@ -362,7 +362,7 @@ define(
                     this._initialize();
 
                     this.element.append(
-                        $('<iframe/>')
+                        $('</iframe></iframe>')
                         .attr('frameborder', 0)
                         .attr('id', 'cloudinary' + this._code + (new Date().getTime()))
                         .attr('class', 'cld-video-player')

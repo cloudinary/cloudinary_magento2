@@ -13,7 +13,7 @@
     <?php foreach ($block->getCustomAttributes() as $name => $value): ?>
         <?= $escaper->escapeHtmlAttr($name) ?>="<?= $escaper->escapeHtmlAttr($value) ?>"
     <?php endforeach; ?>
-    src="<?= $block->getLazyloadPlaceholder() ?>"
+    src="<?=  $escaper->escapeHtmlAttr($block->getLazyloadPlaceholder()) ?>"
     data-original="<?= $escaper->escapeUrl($block->getImageUrl()) ?>"
     width="<?= $escaper->escapeHtmlAttr($block->getWidth()) ?>"
     height="<?= $escaper->escapeHtmlAttr($block->getHeight()) ?>"

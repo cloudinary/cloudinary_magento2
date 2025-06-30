@@ -33,7 +33,7 @@ $cloudinaryMLwidgetOprions = $block->getCloudinaryMediaLibraryWidgetOptions();
                 title="<?= $escaper->escapeHtml(__('Add from Cloudinary')) ?>"
                 data-role="add-from-cloudinary-button"
                 type="button"
-                data-mage-init='{"cloudinaryMediaLibraryModal": <?= $cloudinaryMLwidgetOprions ?>}'
+                data-mage-init='{"cloudinaryMediaLibraryModal": <?= /* @noEscape */ $cloudinaryMLwidgetOprions ?>}'
                 class="action-secondary add-from-cloudinary-button cloudinary-button-with-logo lg-margin-bottom">
                 <span><?= $escaper->escapeHtml(__('Add from Cloudinary')) ?></span>
             </button>

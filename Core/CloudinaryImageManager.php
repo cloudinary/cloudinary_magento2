@@ -54,7 +54,7 @@ class CloudinaryImageManager
      * @param  OutputInterface|null $output
      * @throws \Exception
      */
-    public function uploadAndSynchronise(Image $image, OutputInterface $output = null, $retryAttempt = 0)
+    public function uploadAndSynchronise(Image $image, ?OutputInterface $output = null, $retryAttempt = 0)
     {
         if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
             return;
