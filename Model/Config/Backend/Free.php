@@ -65,8 +65,8 @@ class Free extends \Magento\Framework\App\Config\Value
         ConfigurationInterface $configuration,
         CloudinaryImageProvider $cloudinaryImageProvider,
         ProductMetadataInterface $productMetadata,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configuration = $configuration;

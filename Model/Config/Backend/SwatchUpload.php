@@ -12,7 +12,9 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Swatches\Model\Swatch;
 use Cloudinary\Cloudinary\Model\Configuration;
 use Cloudinary\Cloudinary\Core\CloudinaryImageManager;
-
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
 
 class SwatchUpload extends Value
 {
@@ -55,9 +57,9 @@ class SwatchUpload extends Value
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         ScopeConfigInterface $config,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        TypeListInterface $cacheTypeList,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     )
     {

@@ -77,10 +77,10 @@ class Credentials extends Encrypted
         TypeListInterface $cacheTypeList,
         EncryptorInterface $encryptor,
         ConfigurationInterface $configuration,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
         ConfigurationBuilder $configurationBuilder,
         ReinitableConfigInterface $appConfig,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configuration = $configuration;

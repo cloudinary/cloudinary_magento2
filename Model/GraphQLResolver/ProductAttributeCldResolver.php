@@ -52,7 +52,7 @@
         /**
          * @inheritdoc
          */
-        public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
+        public function resolve(Field $field, $context, ResolveInfo $info, ?array $value = null, ?array $args = null)
         {
             $sku = $value['sku'] ?? null;
             if ($sku) {

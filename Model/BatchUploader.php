@@ -70,7 +70,7 @@ class BatchUploader
      * @return bool
      * @throws \Exception
      */
-    public function uploadUnsynchronisedImages(OutputInterface $output = null)
+    public function uploadUnsynchronisedImages(?OutputInterface $output = null)
     {
         if (!$this->configuration->isEnabled(false)) {
             throw new \Exception("Cloudinary seems to be disabled. Please enable it first or pass -f in order to force it on the CLI");

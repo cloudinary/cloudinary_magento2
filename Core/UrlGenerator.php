@@ -34,7 +34,7 @@ class UrlGenerator
      *
      * @return string
      */
-    public function generateFor(ImageInterface $image, Transformation $transformation = null)
+    public function generateFor(ImageInterface $image, ?Transformation $transformation = null)
     {
         if ($image instanceof LocalImage) {
             return (string)$image;

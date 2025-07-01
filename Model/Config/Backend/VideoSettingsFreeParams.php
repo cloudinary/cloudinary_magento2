@@ -41,10 +41,10 @@ class VideoSettingsFreeParams extends \Magento\Framework\App\Config\Value
         Registry $registry,
         ScopeConfigInterface $config,
         TypeListInterface $cacheTypeList,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
         ManagerInterface $messageManager,
         ReinitableConfigInterface $appConfig,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->messageManager = $messageManager;
