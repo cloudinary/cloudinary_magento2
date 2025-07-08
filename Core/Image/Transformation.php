@@ -97,7 +97,7 @@ class Transformation
                 'fetch_format' => (string)$this->fetchFormat,
                 'quality' => (string)$this->quality ?: null,
                 'crop' => (string)$this->crop,
-                'gravity' => (string)$this->gravity ?: null,
+                'gravity' => (string)$this->gravity ?: '',
                 'width' => $this->dimensions ? $this->dimensions->getWidth() : null,
                 'height' => $this->dimensions ? $this->dimensions->getHeight() : null,
                 'dpr' => (string)$this->dpr,
