@@ -178,7 +178,7 @@ class BatchDownloader
      * @return bool
      * @throws \Exception
      */
-    public function downloadUnsynchronisedImages(OutputInterface $output = null, $override = false)
+    public function downloadUnsynchronisedImages(?OutputInterface $output = null, $override = false)
     {
         if (!$this->_configuration->isEnabled(false)) {
             throw new \Exception("Cloudinary seems to be disabled. Please enable it first or pass -f in order to force it on the CLI");

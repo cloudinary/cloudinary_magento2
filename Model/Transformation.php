@@ -32,8 +32,8 @@ class Transformation extends AbstractModel
         Context $context,
         Registry $registry,
         Configuration $configuration,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->configuration = $configuration;

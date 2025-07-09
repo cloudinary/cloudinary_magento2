@@ -10,6 +10,7 @@ use Cloudinary\Cloudinary\Core\Image\Transformation;
 use Cloudinary\Configuration\Configuration;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Model\Category;
+use Cloudinary\Cloudinary\Core\Image as CoreImage;
 
 class Image
 {
@@ -58,12 +59,16 @@ class Image
             $filename = pathinfo($imagePath, PATHINFO_FILENAME);
             $publicId = preg_replace('/^cld_[a-f0-9]+_/', '', $filename);
 
-            return Media::fromParams($publicId, [
+            $asset =  Media::fromParams($publicId, [
                 'transformation' => $this->transformation->build(),
                 'secure' => true,
                 'sign_url' => $this->configuration->getUseSignedUrls(),
                 'version' => 1
-            ]);
+            ]) . '?_i=AB';
+
+            $image = CoreImage::fromPath($asset, '');
+            return (string) $image;
+
         } catch (\Exception $e) {
             return $result; // fallback to original if Cloudinary fails
         }
