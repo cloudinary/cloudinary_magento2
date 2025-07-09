@@ -31,7 +31,10 @@ class Transformation
 
     public function withDefaultImage(DefaultImage $defaultImage)
     {
-        $this->defaultImage = trim((string)$defaultImage);
+        $defaultImageStr = trim((string)$defaultImage);
+        if (!empty($defaultImageStr)) {
+            $this->defaultImage = $defaultImageStr;
+        }
         return $this;
     }
 
@@ -97,12 +100,12 @@ class Transformation
                 'fetch_format' => (string)$this->fetchFormat,
                 'quality' => (string)$this->quality ?: null,
                 'crop' => (string)$this->crop,
-                'gravity' => (string)$this->gravity ?: null,
+                'gravity' => (string)$this->gravity ?: '',
                 'width' => $this->dimensions ? $this->dimensions->getWidth() : null,
                 'height' => $this->dimensions ? $this->dimensions->getHeight() : null,
                 'dpr' => (string)$this->dpr,
                 'flags' => $this->flags,
-                'default_image' => $this->defaultImage,
+                'default_image' => $this->defaultImage ?? '',
             ]
         ];
     }
