@@ -9,7 +9,7 @@ var config = {
     },
     paths: {
         'jquery.lazyload': "Cloudinary_Cloudinary/js/jquery.lazyload.min",
-        cloudinaryProductGalleryAll: "//product-gallery.cloudinary.com/all"
+        cloudinaryProductGalleryAll: "//product-gallery.cloudinary.com/latest/all"
     },
     shim: {
         'jquery.lazyload': {
