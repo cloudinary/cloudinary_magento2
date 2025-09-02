@@ -103,7 +103,34 @@ class UpdateAdminImage extends Action
         if ($this->configuration->isEnabled()) {
             try{
                 $remoteImageUrl = $this->getRequest()->getParam('remote_image');
-                $filedId = str_replace($this->storeManager->getStore()->getBaseUrl(), '', $remoteImageUrl);
+                $parsedUrl = parse_url($remoteImageUrl);
+                $cleanUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
+                $baseUrl = $this->storeManager->getStore()->getBaseUrl();
+                $relativePath = str_replace($baseUrl, '', $cleanUrl);
+                
+                // Check if this is a Cloudinary rendition path
+                if (strpos($relativePath, '.renditions/cloudinary/') !== false) {
+                    // Extract the filename from the renditions path
+                    $parts = explode('.renditions/cloudinary/', $relativePath);
+                    $filename = end($parts);
+                    
+                    // Remove the first cld_ prefix if there are multiple
+                    // e.g., cld_68b6aa57b4d59_cld_6458c4355ee79_cld-sample-2.jpg -> cld_6458c4355ee79_cld-sample-2.jpg
+                    if (preg_match('/^cld_[a-z0-9]+_cld_/', $filename)) {
+                        $filename = preg_replace('/^cld_[a-z0-9]+_/', '', $filename);
+                    }
+                    
+                    // The public ID should be media/filename for Cloudinary
+                    $filedId = 'media/' . $filename;
+                } else {
+                    // For regular media files, use the relative path as is
+                    $filedId = $relativePath;
+                    
+                    // Remove media/ prefix if present (it will be in the public ID already)
+                    if (strpos($filedId, 'media/') === 0) {
+                        $filedId = substr($filedId, 6);
+                    }
+                }
 
                 $result =  Media::fromParams(
                         $filedId,
