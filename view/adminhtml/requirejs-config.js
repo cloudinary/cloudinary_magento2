@@ -10,6 +10,7 @@ var config = {
             productGallery: 'Cloudinary_Cloudinary/js/product-gallery',
             cloudinaryLazyload: 'Cloudinary_Cloudinary/js/cloudinary-lazyload',
             updateCmsImages: 'Cloudinary_Cloudinary/js/cms/preview-update',
+            'Magento_PageBuilder/js/content-type/image/preview': 'Cloudinary_Cloudinary/js/content-type/image/preview',
         }
     },
     paths: {
