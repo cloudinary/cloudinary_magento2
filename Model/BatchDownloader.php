@@ -178,7 +178,7 @@ class BatchDownloader
      * @return bool
      * @throws \Exception
      */
-    public function downloadUnsynchronisedImages(?OutputInterface $output = null, $override = false, $ignoreSync = false)
+    public function downloadUnsynchronisedImages(?OutputInterface $output = null, $override = false, $includeSync = false)
     {
         if (!$this->_configuration->isEnabled(false)) {
             throw new \Exception("Cloudinary seems to be disabled. Please enable it first or pass -f in order to force it on the CLI");
@@ -195,8 +195,8 @@ class BatchDownloader
         $baseMediaPath = $this->_directoryList->getPath(DirectoryList::MEDIA);
         $directoryInstance = $this->_fileSystem->getDirectoryWrite(DirectoryList::MEDIA);
 
-        if ($ignoreSync) {
-            $this->displayMessage('<comment>== [Notice] == Process started with ignore-synchronization flag.</comment>');
+        if ($includeSync) {
+            $this->displayMessage('<comment>== [Notice] == Process started with include-synchronization flag.</comment>');
         }
 
         //= Checking migration lock / Start migration
@@ -269,7 +269,7 @@ class BatchDownloader
 
                             //Flagging as syncronized
                             $resource->setImage(Image::fromPath($localFilePath, $localFileName));
-                            if ($ignoreSync || $resource->getImage()->getRelativePath() && !$this->_synchronizationChecker->isSynchronized($resource->getImage()->getRelativePath())) {
+                            if ($includeSync || $resource->getImage()->getRelativePath() && !$this->_synchronizationChecker->isSynchronized($resource->getImage()->getRelativePath())) {
                                 $this->displayMessage('<comment>=== [Processing] Flagging As Syncronized...</comment>');
                                 $this->_synchronisationRepository->saveAsSynchronized($resource->getImage()->getRelativePath());
                             } else {
