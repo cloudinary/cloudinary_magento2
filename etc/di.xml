@@ -99,6 +99,11 @@
     <type name="Magento\Cms\Block\Widget\Block">
         <plugin name="cloudinary_plugin_block_cms_block_widget_block" type="Cloudinary\Cloudinary\Plugin\Cms\Block\Widget\Block"/>
     </type>
+
+    <type name="Magento\Theme\Block\Html\Header\Logo">
+        <plugin name="cloudinary_plugin_theme_logo" type="Cloudinary\Cloudinary\Plugin\Theme\Block\Html\Header\Logo"/>
+    </type>
+
     <type name="Magento\Catalog\Model\ResourceModel\Eav\Attribute">
         <plugin name="cloudinary_update_swatch_plugin" type="Cloudinary\Cloudinary\Plugin\AttributeSavePlugin" />
     </type>
