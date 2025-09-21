@@ -16,18 +16,20 @@ define(
                         self.update(key);
                     });
                     $('#save-button').on('click', function (e){
-                        self.images.each(function(elem){
+                        self.images.forEach(function(elem){
                             if (elem.cld_image) {
                                 let cld_src = elem.cld_image;
                                 let img = $('img[src="' +  cld_src +'"]');
-                                return (img.length) ? img.attr('src', elem.remote_image) : '';
+                                if (img.length) {
+                                    img.attr('src', elem.remote_image);
+                                }
                             }
                         });
                     });
                 },
                 update: function(key) {
                     let self = this;
-                    this.images.each(function(elem,ind){
+                    this.images.forEach(function(elem,ind){
                         $.ajax({
                             url: config.ajaxUrl,
                             type: 'POST',
@@ -37,7 +39,7 @@ define(
                                 self.images[ind].cld_image = image;
                                 let img = $('img[src="' +  self.images[ind].remote_image +'"]');
                                 if (img.length) {
-                                    $('img[src="' +  self.images[ind].remote_image +'"]').attr('src', self.images[ind].cld_image);
+                                    img.attr('src', self.images[ind].cld_image);
                                 }
                             },
                             error: function(xhr, textStatus, errorThrown) {

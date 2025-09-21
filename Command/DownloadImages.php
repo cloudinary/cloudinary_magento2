@@ -21,11 +21,14 @@ class DownloadImages extends Command
     const OVERRIDE = 'override';
     const FORCE = 'force';
     const ENV = 'env';
+    const INCLUDE_SYNC = 'include-synchronization';
     /**#@- */
 
     const OVERRIDE_CONFIRM_MESSAGE = "<question>Are you sure you want to override local files (y/n)[n]?</question>";
 
     private $_override = false;
+
+    private $_includeSync = false;
 
     /**
      * @var ObjectManagerInterface
@@ -73,7 +76,7 @@ class DownloadImages extends Command
     protected function configure()
     {
         $this->setName('cloudinary:download:all');
-        $this->setDescription('Download images from Cloudinary to the local pub/media dir');
+        $this->setDescription('Download images from Cloudinary to the local pub/media dir. Optionally, Include synchronization state and download everything');
         $this->setDefinition([
             new InputOption(
                 self::OVERRIDE,
@@ -94,6 +97,12 @@ class DownloadImages extends Command
                 'Cloudinary environment variable that will be used during the process',
                 null
             ),
+            new InputOption(
+                self::INCLUDE_SYNC,
+                '-i',
+                InputOption::VALUE_NONE,
+                'Include synchronization state and download all images',
+            )
         ]);
     }
 
@@ -119,8 +128,11 @@ class DownloadImages extends Command
             if ($input->getOption(self::FORCE)) {
                 $this->coreRegistry->register(Configuration::CONFIG_PATH_ENABLED, true);
             }
+            if ($input->getOption(self::INCLUDE_SYNC)) {
+                $this->_includeSync = true;
+            }
             $this->outputLogger->setOutput($output);
-            $this->batchDownloader->downloadUnsynchronisedImages($this->outputLogger, $this->_override);
+            $this->batchDownloader->downloadUnsynchronisedImages($this->outputLogger, $this->_override, $this->_includeSync);
 
             return 1;
 
