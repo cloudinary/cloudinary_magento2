@@ -196,7 +196,11 @@ class Logo
 
                     // Clean up temp file if it was downloaded
                     if (strpos($logoFullPath, '/tmp/') !== false) {
-                        @unlink($logoFullPath);
+                        try {
+                            unlink($logoFullPath);
+                        } catch (\Exception $unlinkException) {
+                            $this->logger->debug('Could not delete temporary logo file: ' . $unlinkException->getMessage());
+                        }
                     }
 
                     return $uploadResult['secure_url'];
@@ -274,7 +278,12 @@ class Logo
                 ]
             ]);
 
-            $headers = @get_headers($url, 1, $context);
+            $headers = false;
+            try {
+                $headers = get_headers($url, 1, $context);
+            } catch (\Exception $headerException) {
+                $this->logger->debug('Could not retrieve headers for URL: ' . $headerException->getMessage());
+            }
 
             if ($headers && isset($headers[0])) {
                 // Check for successful HTTP status codes (200, 201, etc.)
