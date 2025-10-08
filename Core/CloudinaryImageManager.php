@@ -56,25 +56,30 @@ class CloudinaryImageManager
      */
     public function uploadAndSynchronise(Image $image, ?OutputInterface $output = null, $retryAttempt = 0)
     {
+        $uploadResult = null;
         if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
             return;
         }
 
         try {
+
             $this->report($output, sprintf(self::MESSAGE_UPLOADING_IMAGE, $image));
-            $this->cloudinaryImageProvider->upload($image);
+            $uploadResult = $this->cloudinaryImageProvider->upload($image);
         } catch (FileExists $e) {
             $this->report($output, sprintf(self::MESSAGE_UPLOADED_EXISTS, $image));
+            $uploadResult['file_exist'] = preg_replace('/\.[^.]+$/', '', $image->getRelativePath());
+
         } catch (\Exception $e) {
             if ($e->getMessage() === FileExists::DEFAULT_MESSAGE) {
                 $this->report($output, sprintf(self::MESSAGE_UPLOADED_EXISTS, $image));
+                $uploadResult['file_exist'] = preg_replace('/\.[^.]+$/', '', $image->getRelativePath());
             } else {
                 if ($retryAttempt < self::MAXIMUM_RETRY_ATTEMPTS) {
                     $retryAttempt++;
                     $this->report($output, sprintf(self::MESSAGE_RETRY, $e->getMessage(), $retryAttempt));
                     usleep(rand(10, 1000) * 1000);
                     $this->uploadAndSynchronise($image, $output, $retryAttempt);
-                    return;
+                    return $uploadResult;
                 }
 
                 throw $e;
@@ -82,6 +87,7 @@ class CloudinaryImageManager
         }
 
         $this->synchronisationRepository->saveAsSynchronized($image->getRelativePath());
+        return $uploadResult;
     }
 
     /**
