@@ -20,6 +20,7 @@ use Magento\Framework\Message\ManagerInterface;
 class AutoUploadMapping extends Action
 {
     const AUTO_UPLOAD_SETUP_FAIL_MESSAGE = 'Error. Unable to setup auto upload mapping.';
+    const NON_AJAX_REQUEST = 'Rejected: Non-ajax request';
 
     /**
      * @var JsonFactory
