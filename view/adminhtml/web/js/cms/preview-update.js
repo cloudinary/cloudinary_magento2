@@ -20,10 +20,9 @@ define(
                         self.update(key);
                     });
                     $('#save-button').on('click', function () {
-                        self.images.each(function (elem) {
+                        $.each(self.images, function (key, elem) {
                             if (elem.cld_image) {
-                                let cld_src = elem.cld_image;
-                                let img = $('img[src="' +  cld_src +'"]');
+                                let img = $('img[src="' +  elem.cld_image +'"]');
 
                                 if (img.length) {
                                     img.attr('src', elem.remote_image);
