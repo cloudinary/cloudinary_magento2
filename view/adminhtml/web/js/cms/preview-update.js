@@ -1,25 +1,29 @@
 define(
-    ['jquery','Magento_PageBuilder/js/events','mage/url'],
-    function($,_PBEvents, urlBuilder){
-        'use strict'
+    ['jquery','Magento_PageBuilder/js/events'],
+    function ($,_PBEvents) {
+        'use strict';
         return function (config, element) {
-            var updateHandler = {
-                images: [],
+            let updateHandler = {
+                images: {},
                 init: function () {
                     let self = this;
-                    _PBEvents.on('image:renderAfter', function (event){
+
+                    _PBEvents.on('image:renderAfter', function (event) {
                         let elem = event.element, key = event.id;
                         let image = $(elem).find('img');
-                        let src = {'remote_image': image.attr('src')};
-                        self.images.push(src);
+
+                        self.images[key] = {
+                            key: key,
+                            remote_image: image.attr('src')
+                        };
 
                         self.update(key);
                     });
-                    $('#save-button').on('click', function (e){
-                        self.images.forEach(function(elem){
+                    $('#save-button').on('click', function () {
+                        $.each(self.images, function (key, elem) {
                             if (elem.cld_image) {
-                                let cld_src = elem.cld_image;
-                                let img = $('img[src="' +  cld_src +'"]');
+                                let img = $('img[src="' +  elem.cld_image +'"]');
+
                                 if (img.length) {
                                     img.attr('src', elem.remote_image);
                                 }
@@ -27,29 +31,34 @@ define(
                         });
                     });
                 },
-                update: function(key) {
+                update: function (key) {
                     let self = this;
-                    this.images.forEach(function(elem,ind){
-                        $.ajax({
-                            url: config.ajaxUrl,
-                            type: 'POST',
-                            dataType: 'json',
-                            data: elem,
-                            success: function(image) {
-                                self.images[ind].cld_image = image;
-                                let img = $('img[src="' +  self.images[ind].remote_image +'"]');
-                                if (img.length) {
-                                    img.attr('src', self.images[ind].cld_image);
-                                }
-                            },
-                            error: function(xhr, textStatus, errorThrown) {
-                                console.log('Error:', textStatus, errorThrown);
-                            }
-                        });
+                    let imageData = self.images[key];
 
-                    })
+                    if (!imageData) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: config.ajaxUrl,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { remote_image: imageData.remote_image },
+                        success: function (image) {
+                            self.images[key].cld_image = image;
+                            let img = $('img[src="' +  imageData.remote_image +'"]');
+
+                            if (img.length) {
+                                img.attr('src', image);
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.log('Error:', textStatus, errorThrown);
+                        }
+                    });
                 }
             };
+
             return updateHandler.init();
-        }
+        };
     });
