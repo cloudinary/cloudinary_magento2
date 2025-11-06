@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\Image\ImageFactory;
 use Cloudinary\Cloudinary\Core\UrlGenerator;
+use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Configuration\Configuration;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\UrlInterface;
@@ -83,12 +84,11 @@ class UpdateAdminImage extends Action
     public function execute()
     {
         $this->authorise();
-        $result = ['error' => 'Invalid configuration'];
+        $remoteImageUrl = $this->getRequest()->getParam('remote_image');
+        $result = $remoteImageUrl ?: ['error' => 'Invalid configuration'];
 
         if ($this->configuration->isEnabled()) {
             try {
-                $remoteImageUrl = $this->getRequest()->getParam('remote_image');
-
                 // Validate URL
                 if (!$remoteImageUrl) {
                     throw new \InvalidArgumentException('Missing remote_image parameter');
@@ -103,34 +103,22 @@ class UpdateAdminImage extends Action
                 $cleanUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
                 $baseUrl = $this->storeManager->getStore()->getBaseUrl();
                 $relativePath = str_replace($baseUrl, '', $cleanUrl);
+                $relativePath = ltrim($relativePath, '/');
 
-                // Check if this is a Cloudinary rendition path
-                if (strpos($relativePath, '.renditions/cloudinary/') !== false) {
-                    $parts = explode('.renditions/cloudinary/', $relativePath);
-                    $filename = end($parts);
+                // Create Image object and use UrlGenerator (same as storefront)
+                $image = Image::fromPath($remoteImageUrl, $relativePath);
 
-                    // Remove the first cld_ prefix if there are multiple
-                    if (preg_match('/^cld_[a-zA-Z0-9]+_/', $filename)) {
-                        $filename = preg_replace('/^cld_[a-zA-Z0-9]+_/', '', $filename);
-                    }
-
-                    $fileId = 'media/' . $filename;
-                } else {
-                    $fileId = $relativePath;
-                }
-
-                $result = Media::fromParams(
-                    $fileId,
-                    [
-                        'transformation' => $this->transformation->build(),
-                        'secure' => true,
-                        'sign_url' => $this->configuration->getUseSignedUrls(),
-                        'version' => 1
-                    ]
-                ) . '?_i=AB';
+                // Use UrlGenerator which handles all the logic including database mapping
+                $cloudinaryUrl = $this->urlGenerator->generateFor($image, $this->transformation);
+                $result = (string)$cloudinaryUrl;
 
             } catch (\Exception $e) {
-                $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
+                // Return original URL on error for graceful fallback
+                error_log(sprintf(
+                    'Cloudinary UpdateAdminImage error: %s for image: %s',
+                    $e->getMessage(),
+                    $remoteImageUrl
+                ));
             }
         }
 
