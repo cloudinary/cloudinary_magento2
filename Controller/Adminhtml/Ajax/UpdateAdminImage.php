@@ -15,6 +15,7 @@ use Magento\Framework\Controller\Result\RawFactory as ResultRawFactory;
 use Magento\Backend\App\Action\Context;
 use Cloudinary\Asset\Media;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
+use Psr\Log\LoggerInterface;
 
 class UpdateAdminImage extends Action
 {
@@ -28,6 +29,7 @@ class UpdateAdminImage extends Action
     protected $resultFactory;
     protected $configurationBuilder;
     protected $transformation;
+    protected $logger;
     private $_authorised;
 
 
@@ -41,6 +43,7 @@ class UpdateAdminImage extends Action
      * @param ResultRawFactory $resultFactory
      * @param ConfigurationBuilder $configurationBuilder
      * @param Transformation $transformation
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -51,7 +54,8 @@ class UpdateAdminImage extends Action
         UrlInterface $urlInterface,
         ResultRawFactory $resultFactory,
         ConfigurationBuilder $configurationBuilder,
-        Transformation $transformation
+        Transformation $transformation,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->imageFactory = $imageFactory;
@@ -62,6 +66,7 @@ class UpdateAdminImage extends Action
         $this->resultFactory = $resultFactory;
         $this->configurationBuilder = $configurationBuilder;
         $this->transformation = $transformation;
+        $this->logger = $logger;
     }
 
     protected function _isAllowed()
@@ -89,6 +94,7 @@ class UpdateAdminImage extends Action
 
         if ($this->configuration->isEnabled()) {
             try {
+          
                 // Validate URL
                 if (!$remoteImageUrl) {
                     throw new \InvalidArgumentException('Missing remote_image parameter');
@@ -114,11 +120,13 @@ class UpdateAdminImage extends Action
 
             } catch (\Exception $e) {
                 // Return original URL on error for graceful fallback
-                error_log(sprintf(
-                    'Cloudinary UpdateAdminImage error: %s for image: %s',
-                    $e->getMessage(),
-                    $remoteImageUrl
-                ));
+                $this->logger->error(
+                    'Cloudinary UpdateAdminImage error: ' . $e->getMessage(),
+                    [
+                        'image_url' => $remoteImageUrl,
+                        'exception' => $e
+                    ]
+                );
             }
         }
 
