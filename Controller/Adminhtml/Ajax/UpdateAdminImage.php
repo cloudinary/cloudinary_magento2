@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary\Core\ConfigurationInterface;
 use Cloudinary\Cloudinary\Core\ConfigurationBuilder;
 use Cloudinary\Cloudinary\Core\Image\ImageFactory;
 use Cloudinary\Cloudinary\Core\UrlGenerator;
+use Cloudinary\Cloudinary\Core\Image;
 use Cloudinary\Configuration\Configuration;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\UrlInterface;
@@ -14,6 +15,7 @@ use Magento\Framework\Controller\Result\RawFactory as ResultRawFactory;
 use Magento\Backend\App\Action\Context;
 use Cloudinary\Asset\Media;
 use Cloudinary\Cloudinary\Core\Image\Transformation;
+use Psr\Log\LoggerInterface;
 
 class UpdateAdminImage extends Action
 {
@@ -27,6 +29,7 @@ class UpdateAdminImage extends Action
     protected $resultFactory;
     protected $configurationBuilder;
     protected $transformation;
+    protected $logger;
     private $_authorised;
 
 
@@ -40,6 +43,7 @@ class UpdateAdminImage extends Action
      * @param ResultRawFactory $resultFactory
      * @param ConfigurationBuilder $configurationBuilder
      * @param Transformation $transformation
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -50,7 +54,8 @@ class UpdateAdminImage extends Action
         UrlInterface $urlInterface,
         ResultRawFactory $resultFactory,
         ConfigurationBuilder $configurationBuilder,
-        Transformation $transformation
+        Transformation $transformation,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->imageFactory = $imageFactory;
@@ -61,6 +66,7 @@ class UpdateAdminImage extends Action
         $this->resultFactory = $resultFactory;
         $this->configurationBuilder = $configurationBuilder;
         $this->transformation = $transformation;
+        $this->logger = $logger;
     }
 
     protected function _isAllowed()
@@ -83,12 +89,12 @@ class UpdateAdminImage extends Action
     public function execute()
     {
         $this->authorise();
-        $result = ['error' => 'Invalid configuration'];
+        $remoteImageUrl = $this->getRequest()->getParam('remote_image');
+        $result = $remoteImageUrl ?: ['error' => 'Invalid configuration'];
 
         if ($this->configuration->isEnabled()) {
             try {
-                $remoteImageUrl = $this->getRequest()->getParam('remote_image');
-
+          
                 // Validate URL
                 if (!$remoteImageUrl) {
                     throw new \InvalidArgumentException('Missing remote_image parameter');
@@ -103,34 +109,24 @@ class UpdateAdminImage extends Action
                 $cleanUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
                 $baseUrl = $this->storeManager->getStore()->getBaseUrl();
                 $relativePath = str_replace($baseUrl, '', $cleanUrl);
+                $relativePath = ltrim($relativePath, '/');
 
-                // Check if this is a Cloudinary rendition path
-                if (strpos($relativePath, '.renditions/cloudinary/') !== false) {
-                    $parts = explode('.renditions/cloudinary/', $relativePath);
-                    $filename = end($parts);
+                // Create Image object and use UrlGenerator (same as storefront)
+                $image = Image::fromPath($remoteImageUrl, $relativePath);
 
-                    // Remove the first cld_ prefix if there are multiple
-                    if (preg_match('/^cld_[a-zA-Z0-9]+_/', $filename)) {
-                        $filename = preg_replace('/^cld_[a-zA-Z0-9]+_/', '', $filename);
-                    }
-
-                    $fileId = 'media/' . $filename;
-                } else {
-                    $fileId = $relativePath;
-                }
-
-                $result = Media::fromParams(
-                    $fileId,
-                    [
-                        'transformation' => $this->transformation->build(),
-                        'secure' => true,
-                        'sign_url' => $this->configuration->getUseSignedUrls(),
-                        'version' => 1
-                    ]
-                ) . '?_i=AB';
+                // Use UrlGenerator which handles all the logic including database mapping
+                $cloudinaryUrl = $this->urlGenerator->generateFor($image, $this->transformation);
+                $result = (string)$cloudinaryUrl;
 
             } catch (\Exception $e) {
-                $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
+                // Return original URL on error for graceful fallback
+                $this->logger->error(
+                    'Cloudinary UpdateAdminImage error: ' . $e->getMessage(),
+                    [
+                        'image_url' => $remoteImageUrl,
+                        'exception' => $e
+                    ]
+                );
             }
         }
 
