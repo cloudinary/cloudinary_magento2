@@ -37,7 +37,11 @@ class ConfigurationBuilder
             if ($url && is_array($url)) {
                 $config['url'] = $url;
             }
-
+            /**
+             * This feature is deprecated and will be removed in the next major version.
+             *
+             * @deprecated will be removed in the next major version.
+             */
             if ($this->configuration->getCdnSubdomainStatus()) {
                 $config['cloud']['cdn_subdomain'] = true;
             }

@@ -343,6 +343,9 @@ class Configuration implements ConfigurationInterface
     }
 
     /**
+     * This feature is deprecated and will be removed in the next major version.
+     *
+     * @deprecated will be removed in the next major version.
      * @return boolean
      */
     public function getCdnSubdomainStatus()
