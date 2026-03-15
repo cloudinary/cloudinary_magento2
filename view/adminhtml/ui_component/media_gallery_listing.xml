@@ -23,21 +23,4 @@
             <dep>media_gallery_listing.media_gallery_listing_data_source</dep>
         </deps>
     </settings>
-    <columns name="media_gallery_columns">
-        <column sortOrder="1" name="overlay" component="Magento_Ui/js/grid/columns/overlay" class="Magento\AdobeStockImageAdminUi\Ui\Component\Listing\Columns\UnlicensedOverlay">
-            <settings>
-                <label translate="true">Overlay</label>
-                <visible>true</visible>
-                <sortable>false</sortable>
-            </settings>
-        </column>
-        <column name="thumbnail_url" component="Magento_AdobeStockImageAdminUi/js/mediaGallery/grid/columns/licenseImage">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="imageDetailsurl" xsi:type="url" path="media_gallery/image/details"/>
-                    <item name="imageComponent" xsi:type="string">adobe_stock_images_listing.adobe_stock_images_listing.adobe_stock_images_columns.preview</item>
-                </item>
-            </argument>
-        </column>
-    </columns>
 </listing>
