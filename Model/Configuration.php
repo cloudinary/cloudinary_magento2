@@ -73,6 +73,9 @@ class Configuration implements ConfigurationInterface
 
     const CONFIG_PATH_CUSTOM_PLACEHOLDER_IMAGE = 'cloudinary/advanced/custom_placeholder_image';
 
+    const CONFIG_PATH_CUSTOM_MEDIA_PATH_ENABLED = 'cloudinary/advanced/custom_media_path_enabled';
+    const CONFIG_PATH_CUSTOM_MEDIA_PATHS = 'cloudinary/advanced/custom_media_paths';
+
 
     //= Product Gallery
     const CONFIG_PATH_PG_ALL = 'cloudinary/product_gallery';
@@ -536,6 +539,26 @@ class Configuration implements ConfigurationInterface
         }
 
         return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabledCustomMediaPath(): bool
+    {
+        return (bool) $this->configReader->getValue(self::CONFIG_PATH_CUSTOM_MEDIA_PATH_ENABLED);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCustomMediaPaths(): array
+    {
+        $value = (string) $this->configReader->getValue(self::CONFIG_PATH_CUSTOM_MEDIA_PATHS);
+        if (!$value) {
+            return [];
+        }
+        return array_filter(array_map('trim', explode("\n", $value)));
     }
 
     public function isEnabledLazyload()
