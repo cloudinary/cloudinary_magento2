@@ -494,6 +494,19 @@
                         <field id="cache_placeholder_enable">1</field>
                     </depends>
                 </field>
+                <field id="custom_media_path_enabled" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Custom Media Path Support</label>
+                    <comment><![CDATA[When enabled, images in the specified custom media paths will be served through Cloudinary CDN with the same optimizations applied to other images. Only images that have been synced to Cloudinary will be replaced; unsynced images will continue to be served locally. After changing this setting, flush the page cache for changes to take effect.]]></comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="custom_media_paths" translate="label comment" type="textarea" sortOrder="51" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Custom Media Paths</label>
+                    <comment><![CDATA[Enter one path per line, relative to the <b>/media/</b> directory. For example: <b>contentmanager/content</b>.<br/>The listed folders will also be made browsable in the Magento media library (WYSIWYG image manager) so admins can pick images from them directly.]]></comment>
+                    <backend_model>Cloudinary\Cloudinary\Model\Config\Backend\CustomMediaPaths</backend_model>
+                    <depends>
+                        <field id="custom_media_path_enabled">1</field>
+                    </depends>
+                </field>
             </group>
         </section>
     </system>

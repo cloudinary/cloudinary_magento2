@@ -21,4 +21,9 @@
     </type>
     -->
 
+    <type name="Magento\Framework\App\Config\ScopeConfigInterface">
+        <plugin name="cloudinary_custom_media_path_media_gallery_allowed_folders"
+                type="Cloudinary\Cloudinary\Plugin\CustomMediaPath\MediaGalleryAllowedFolders" />
+    </type>
+
 </config>
