@@ -29,6 +29,8 @@
                 <product_gallery_api_queue_max_tryouts>5</product_gallery_api_queue_max_tryouts>
                 <enable_product_free_transformations>1</enable_product_free_transformations>
                 <cache_placeholder_enable>0</cache_placeholder_enable>
+                <custom_media_path_enabled>0</custom_media_path_enabled>
+                <custom_media_paths></custom_media_paths>
             </advanced>
             <product_gallery>
                 <enabled>0</enabled>

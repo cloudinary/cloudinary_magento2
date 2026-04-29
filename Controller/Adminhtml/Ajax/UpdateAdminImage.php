@@ -107,12 +107,23 @@ class UpdateAdminImage extends Action
                 }
 
                 $cleanUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
-                $baseUrl = $this->storeManager->getStore()->getBaseUrl();
-                $relativePath = str_replace($baseUrl, '', $cleanUrl);
-                $relativePath = ltrim($relativePath, '/');
+
+                // Derive the relative path from the URL path component directly — the admin
+                // store's base URL doesn't always match the public storefront URL used by the
+                // media gallery, so str_replace($baseUrl, ...) can leave the host in the path.
+                $relativePath = ltrim($parsedUrl['path'], '/');
+
+                // Strip leading `pub/` when Magento is served from <docroot>/pub/.
+                $relativePath = preg_replace('#^pub/#', '', $relativePath);
+
+                // Strip the `.renditions/` segment so Cloudinary fetches the original image
+                // instead of the local PageBuilder/admin-gallery rendition derivative, which
+                // 404s through the auto-upload mapping (mapping points at the original path).
+                $relativePath = preg_replace('#(^|/)\.renditions/#', '$1', $relativePath);
+                $cleanUrl = preg_replace('#/\.renditions/#', '/', $cleanUrl);
 
                 // Create Image object and use UrlGenerator (same as storefront)
-                $image = Image::fromPath($remoteImageUrl, $relativePath);
+                $image = Image::fromPath($cleanUrl, $relativePath);
 
                 // Use UrlGenerator which handles all the logic including database mapping
                 $cloudinaryUrl = $this->urlGenerator->generateFor($image, $this->transformation);
