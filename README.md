@@ -22,6 +22,6 @@ php bin/magento cache:flush
 ​
 https://www.cloudinary.com/
 
-Copyright © 2020 Cloudinary. All rights reserved.
+Copyright © 2026 Cloudinary. All rights reserved.
 ​
 ![Cloudinary Logo](https://cloudinary-res.cloudinary.com/image/upload/c_scale,w_300/v1/logo/for_white_bg/cloudinary_logo_for_white_bg.svg)
