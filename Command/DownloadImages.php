@@ -112,7 +112,7 @@ class DownloadImages extends Command
      *
      * @return init
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         try {

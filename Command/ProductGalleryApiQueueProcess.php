@@ -57,7 +57,7 @@ class ProductGalleryApiQueueProcess extends Command
      *
      * @return void
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->job = $this->objectManager
             ->get(\Cloudinary\Cloudinary\Cron\ProductGalleryApiQueue::class);
