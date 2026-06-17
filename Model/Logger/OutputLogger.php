@@ -59,7 +59,7 @@ class OutputLogger implements OutputInterface
      * @param bool         $newline  Whether to add a newline
      * @param int          $options  A bitmask of options (one of the OUTPUT or VERBOSITY constants), 0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
      */
-    public function write($messages, $newline = false, $options = 0)
+    public function write($messages, $newline = false, $options = 0): void
     {
         $this->getOutput()->write($messages, $newline, $options);
         $this->log($messages);
@@ -70,7 +70,7 @@ class OutputLogger implements OutputInterface
      * @param string|array $messages The message as an array of lines of a single string
      * @param int          $options  A bitmask of options (one of the OUTPUT or VERBOSITY constants), 0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
      */
-    public function writeln($messages, $options = 0)
+    public function writeln($messages, $options = 0): void
     {
         $this->getOutput()->writeln($messages, $options);
         $this->log($messages);
@@ -80,7 +80,7 @@ class OutputLogger implements OutputInterface
      *
      * @param int $level The level of verbosity (one of the VERBOSITY constants)
      */
-    public function setVerbosity($level)
+    public function setVerbosity($level): void
     {
         $this->getOutput()->setVerbosity($level);
     }
@@ -134,7 +134,7 @@ class OutputLogger implements OutputInterface
      *
      * @param bool $decorated Whether to decorate the messages
      */
-    public function setDecorated($decorated)
+    public function setDecorated($decorated): void
     {
         $this->getOutput()->setDecorated($decorated);
     }
@@ -152,7 +152,7 @@ class OutputLogger implements OutputInterface
      *
      * @param OutputFormatterInterface $formatter
      */
-    public function setFormatter(OutputFormatterInterface $formatter)
+    public function setFormatter(OutputFormatterInterface $formatter): void
     {
         $this->getOutput()->setFormatter($formatter);
     }

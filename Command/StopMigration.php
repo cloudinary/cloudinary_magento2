@@ -49,7 +49,7 @@ class StopMigration extends Command
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->migrationTask = $this->objectManager
             ->get(\Cloudinary\Cloudinary\Model\MigrationTask::class);

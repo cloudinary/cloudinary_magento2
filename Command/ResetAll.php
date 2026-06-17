@@ -77,7 +77,7 @@ class ResetAll extends Command
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->resetHelper = $this->objectManager
             ->get(\Cloudinary\Cloudinary\Helper\Reset::class);
