@@ -68,7 +68,8 @@ class FileUploader
      */
     public function afterSave(Uploader $uploader, $result)
     {
-        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
+        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()
+            || !$this->configuration->isImageSyncEnabled()) {
             return $result;
         }
 

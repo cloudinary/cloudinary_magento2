@@ -44,7 +44,7 @@ class ImageCreator
      */
     public function __invoke(array $imageData)
     {
-        $fullPath = $this->baseMediaPath . $imageData['file'];
+        $fullPath = rtrim($this->baseMediaPath, '/') . '/' . ltrim($imageData['file'], '/');
         $relativePath = 'media' . DIRECTORY_SEPARATOR . $fullPath;
 
         return Image::fromPath(

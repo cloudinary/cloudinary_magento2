@@ -57,7 +57,8 @@ class CloudinaryImageManager
     public function uploadAndSynchronise(Image $image, ?OutputInterface $output = null, $retryAttempt = 0)
     {
         $uploadResult = null;
-        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()) {
+        if (!$this->configuration->isEnabled() || !$this->configuration->hasEnvironmentVariable()
+            || !$this->configuration->isImageSyncEnabled()) {
             return;
         }
 

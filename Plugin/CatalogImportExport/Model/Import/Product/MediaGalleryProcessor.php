@@ -121,7 +121,7 @@ class MediaGalleryProcessor
     {
         $cloudinaryVideosImportMap = $this->coreRegistry->registry('cloudinary_videos_import_map') ?: [];
 
-        if (!$this->configuration->isEnabled() || !$cloudinaryVideosImportMap) {
+        if (!$this->configuration->isEnabled() || !$this->configuration->isVideoSyncEnabled() || !$cloudinaryVideosImportMap) {
             return $proceed($mediaGalleryData);
         }
 

@@ -45,6 +45,20 @@ interface ConfigurationInterface
     public function isEnabled();
 
     /**
+     * Image sync sub-gate — independent of the master toggle; AND with isEnabled().
+     *
+     * @return boolean
+     */
+    public function isImageSyncEnabled();
+
+    /**
+     * Video sync sub-gate — independent of the master toggle; AND with isEnabled().
+     *
+     * @return boolean
+     */
+    public function isVideoSyncEnabled();
+
+    /**
      * @return array
      */
     public function getFormatsToPreserve();

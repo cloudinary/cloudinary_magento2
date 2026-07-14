@@ -89,7 +89,7 @@ class CloudinaryImageProvider implements ImageProvider
     public function upload(Image $image)
     {
         $this->authorise();
-        if (!$this->configuration->isEnabled()) {
+        if (!$this->configuration->isEnabled() || !$this->configuration->isImageSyncEnabled()) {
             return false;
         }
 
@@ -97,7 +97,13 @@ class CloudinaryImageProvider implements ImageProvider
             $this->uploader = new UploadApi($this->configuration->getCredentials());
             $uploadResult = $this->uploader->upload(
                 (string)$image,
-                $this->configuration->getUploadConfig()->toArray() + [ "folder" => $image->getRelativeFolder()]
+                $this->configuration->getUploadConfig()->toArray() + [
+                    "folder" => $image->getRelativeFolder(),
+                    // Purge CDN caches (including cached fetch errors) — with auto-upload
+                    // mapping active, this public ID may have been requested (and its
+                    // failure cached) before the asset was uploaded.
+                    "invalidate" => true,
+                ]
             );
             if (isset($uploadResult['public_id'])) {
                 $publicIds = [$uploadResult['public_id']];

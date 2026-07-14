@@ -130,7 +130,7 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
                 $this->connection->getTableName("cloudinary_synchronisation"),
                 ['cloudinary_synchronisation_id']
             )
-            ->where('image_path = ?', $imagePath)
+            ->where('image_path = ?', $this->normalizeImagePath($imagePath))
             ->limit(1)) ? true : false;
     }
 
@@ -140,7 +140,7 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
     public function saveAsSynchronized($imagePath)
     {
         $this->synchronisationFactory->create()
-            ->setImagePath($imagePath)
+            ->setImagePath($this->normalizeImagePath($imagePath))
             ->tagAsSynchronized();
     }
 
@@ -166,9 +166,22 @@ class SynchronisationRepository implements SynchronisationRepositoryInterface, S
     {
         $this->filterBuilder->setField('image_path');
         $this->filterBuilder->setConditionType('eq');
-        $this->filterBuilder->setValue($imagePath);
+        $this->filterBuilder->setValue($this->normalizeImagePath($imagePath));
 
         return $this->filterBuilder->create();
+    }
+
+    /**
+     * Callers build image paths by concatenating segments that may carry
+     * leading/trailing slashes (e.g. 'catalog/product' . '/r/i/img.png'),
+     * so paths must be normalized on both write and lookup to match.
+     *
+     * @param  string $imagePath
+     * @return string
+     */
+    private function normalizeImagePath($imagePath)
+    {
+        return preg_replace('#/{2,}#', '/', (string) $imagePath);
     }
 
     /**

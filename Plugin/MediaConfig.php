@@ -38,7 +38,7 @@ class MediaConfig
     public function aroundGetMediaUrl(CatalogMediaConfig $mediaConfig, \Closure $originalMethod, $file)
     {
         $image = $this->imageFactory->build(
-            $mediaConfig->getBaseMediaPath() . $file,
+            rtrim($mediaConfig->getBaseMediaPath(), '/') . '/' . ltrim((string) $file, '/'),
             function () use ($originalMethod, $file) {
                 return $originalMethod($file);
             }

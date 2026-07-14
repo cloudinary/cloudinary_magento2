@@ -109,9 +109,15 @@ class Uploader
             $this->remoteFileUrl = $fileName;
             $this->parsedRemoteFileUrl = $this->configuration->parseCloudinaryUrl($this->remoteFileUrl);
             if ($this->parsedRemoteFileUrl["scheme"] && \strpos($this->parsedRemoteFileUrl["host"], "cloudinary.com") !== false) {
-                $fileName = $this->parsedRemoteFileUrl['transformationless_url'];
-                if ($this->parsedRemoteFileUrl['type'] === 'video') {
-                    $fileName = $this->parsedRemoteFileUrl['thumbnail_url'];
+                $type = $this->parsedRemoteFileUrl['type'];
+                if (($type === 'video' && !$this->configuration->isVideoSyncEnabled())
+                    || ($type === 'image' && !$this->configuration->isImageSyncEnabled())) {
+                    $this->parsedRemoteFileUrl["publicId"] = null; // skip Cloudinary handling for this type
+                } else {
+                    $fileName = $this->parsedRemoteFileUrl['transformationless_url'];
+                    if ($type === 'video') {
+                        $fileName = $this->parsedRemoteFileUrl['thumbnail_url'];
+                    }
                 }
             } else {
                 $this->parsedRemoteFileUrl["publicId"] = null;

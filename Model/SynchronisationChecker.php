@@ -94,7 +94,10 @@ class SynchronisationChecker implements SynchronizationCheck
             return false;
         }
 
-        if ($this->autoUploadConfiguration->isActive()) {
+        // Auto-upload mapping makes any image URL resolvable on Cloudinary (lazy fetch),
+        // but only while image sync is enabled — with image sync off, images must fall
+        // through to the mapping/sync-table checks so unsynced ones are served locally.
+        if ($this->autoUploadConfiguration->isActive() && $this->configuration->isImageSyncEnabled()) {
             return true;
         }
 
