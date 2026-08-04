@@ -51,7 +51,7 @@ class VideoDataImport
 
     public function execute()
     {
-        if ($this->configuration->isEnabled()) {
+        if ($this->configuration->isEnabled() && $this->configuration->isVideoSyncEnabled()) {
             $productVideosCollection = $this->productVideoFactory->create()->getCollection()
                 ->addFieldToSelect('*')
                 ->addFieldToFilter('provider', 'cloudinary')

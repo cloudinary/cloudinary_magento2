@@ -48,6 +48,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_GLOBAL_FREEFORM = 'cloudinary/transformations/cloudinary_free_transform_global';
     const CONFIG_PATH_GLOBAL_FREEFORM_PRODUCTS = 'cloudinary/transformations/cloudinary_free_transform_global_products';
     const CONFIG_PATH_GLOBAL_FREEFORM_PRODUCTS_BEHAVIOR = 'cloudinary/transformations/cloudinary_free_transform_global_products_behavior';
+    const CONFIG_PATH_ENABLE_IMAGE_SYNC = 'cloudinary/transformations/enable_image_sync';
 
     //= Lazyload
     const XML_PATH_LAZYLOAD_ENABLED = 'cloudinary/lazyload/enabled';
@@ -112,6 +113,7 @@ class Configuration implements ConfigurationInterface
     const CONFIG_PATH_CLD_VIDEO_PLAYER_SHOW_CONTROLS = 'cloudinary/cld_video/controls';
     const CONFIG_PATH_CLD_VIDEO_PLAYER_LOOP = 'cloudinary/cld_video/loop';
     const CONFIG_PATH_CLD_VIDEO_PLAYER_AUTOPLAY = 'cloudinary/cld_video/autoplay';
+    const CONFIG_PATH_ENABLE_VIDEO_SYNC = 'cloudinary/cld_video/enable_video_sync';
 
 
     //= Others
@@ -385,6 +387,26 @@ class Configuration implements ConfigurationInterface
     public function isEnabled($checkEnvVar = true)
     {
         return ($this->hasEnvironmentVariable() || !$checkEnvVar) && ($this->coreRegistry->registry(self::CONFIG_PATH_ENABLED) || $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLED));
+    }
+
+    /**
+     * Sub-gate under the master cloudinary_enabled toggle — callers must AND with isEnabled().
+     *
+     * @return boolean
+     */
+    public function isImageSyncEnabled()
+    {
+        return $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLE_IMAGE_SYNC);
+    }
+
+    /**
+     * Sub-gate under the master cloudinary_enabled toggle — callers must AND with isEnabled().
+     *
+     * @return boolean
+     */
+    public function isVideoSyncEnabled()
+    {
+        return $this->configReader->isSetFlag(self::CONFIG_PATH_ENABLE_VIDEO_SYNC);
     }
 
     public function enable()

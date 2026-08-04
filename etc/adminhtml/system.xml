@@ -55,6 +55,11 @@
             <group id="transformations" translate="label" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Default Image Transformations</label>
                 <attribute type="expanded">0</attribute>
+                <field id="enable_image_sync" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Image Sync</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Set to <b>Yes</b> to upload and synchronise product and catalog images to Cloudinary. Set to <b>No</b> to stop syncing new images. Existing Cloudinary image mappings are left untouched — to remove them, clear the mapping in your Cloudinary console (Settings → Upload → Auto upload mapping). This does not affect video syncing.]]></comment>
+                </field>
                 <field id="cloudinary_fetch_format" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Automatic Image Format Optimisation</label>
                     <comment>Automatically deliver images converted to modern image formats based on viewing device and browser. For example, deliver WebP on Chrome and JPEG-XR on Internet Explorer for better performance and user experience.</comment>
@@ -296,6 +301,11 @@
                 <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="enable_video_sync" translate="label comment" type="select" sortOrder="0" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Enable Video Sync</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Set to <b>Yes</b> to import and synchronise Cloudinary videos into product media galleries (during product import and the scheduled metadata refresh). Set to <b>No</b> to stop syncing new videos. Existing video entries are left untouched. This does not affect image syncing.]]></comment>
                 </field>
                 <field id="controls" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Show controls</label>

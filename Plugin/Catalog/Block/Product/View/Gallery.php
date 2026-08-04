@@ -45,6 +45,13 @@ class Gallery
     protected $cloudinaryPGoptions;
 
     /**
+     * True when a gallery asset could not be resolved to a Cloudinary asset
+     * (e.g. an image served locally because image sync is disabled)
+     * @var bool
+     */
+    protected $hasUnresolvedAssets = false;
+
+    /**
      * @method __construct
      * @param  ProductGalleryHelper   $productGalleryHelper
      * @param  EncoderInterface       $jsonEncoder
@@ -73,8 +80,16 @@ class Gallery
         if (!$this->processed && $this->productGalleryHelper->canDisplayProductGallery()) {
             $this->processed = true;
             $this->productGalleryBlock = $productGalleryBlock;
+            $cloudinaryPGOptions = $this->getCloudinaryPGOptions();
+            if ($this->hasUnresolvedAssets) {
+                // The Cloudinary gallery widget can only render assets that exist on
+                // Cloudinary. When any gallery item is served from another source
+                // (e.g. a local image while image sync is disabled), keep Magento's
+                // default gallery so every item is displayed.
+                return;
+            }
             $productGalleryBlock->setTemplate('Cloudinary_Cloudinary::product/gallery.phtml');
-            $productGalleryBlock->setCloudinaryPGOptions($this->getCloudinaryPGOptions());
+            $productGalleryBlock->setCloudinaryPGOptions($cloudinaryPGOptions);
             $productGalleryBlock->setCldPGid($this->getCldPGid());
         }
     }
@@ -82,6 +97,28 @@ class Gallery
     {
         $config = $this->configuration->getCredentials();
         return ($config['cname']) ?? '';
+    }
+
+    /**
+     * A URL is a Cloudinary URL only when it targets this account's cloud (or its
+     * configured CNAME). An empty CNAME must not match — strpos($url, '') is 0, which
+     * would classify every URL (including local media URLs) as Cloudinary.
+     *
+     * @param string|null $url
+     * @return bool
+     */
+    private function isCloudinaryUrl($url)
+    {
+        if (!$url) {
+            return false;
+        }
+        $cloudName = $this->productGalleryHelper->getCloudName();
+        if (strpos($url, '.cloudinary.com/') !== false
+            && (strpos($url, '/' . $cloudName . '/') !== false || strpos($url, '://' . $cloudName) !== false)) {
+            return true;
+        }
+        $cname = $this->getCname();
+        return $cname && strpos($url, $cname) !== false;
     }
     public function getHtmlId()
     {
@@ -171,7 +208,7 @@ class Gallery
                 } elseif ($value['type'] === 'video') {
                     $url = $value['videoUrl'];
                 }
-                if ((strpos($url, '.cloudinary.com/') !== false)  && (strpos($url, '/' . $this->productGalleryHelper->getCloudName() . '/') !== false || strpos($url, '://' . $this->productGalleryHelper->getCloudName()) !== false) ||  strpos($url, $this->getCname()) !== false) {
+                if ($this->isCloudinaryUrl($url)) {
                     $parsed = $this->configuration->parseCloudinaryUrl($url);
                     $publicId = ($value['type'] === 'image') ? $parsed['publicId'] . '.' . $parsed['extension'] : $parsed['publicId'];
                     $transformation = \str_replace('/', ',', $parsed['transformations_string']);
@@ -182,6 +219,8 @@ class Gallery
                         "mediaType" => $value['type'],
                         "transformation" => $transformation,
                     ];
+                } elseif ($url) {
+                    $this->hasUnresolvedAssets = true;
                 }
             }
         }

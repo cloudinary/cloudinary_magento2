@@ -8,6 +8,7 @@
                 <cloudinary_image_quality>auto</cloudinary_image_quality>
                 <cloudinary_image_dpr>2.0</cloudinary_image_dpr>
                 <cloudinary_free_transform_global_products_behavior>add</cloudinary_free_transform_global_products_behavior>
+                <enable_image_sync>1</enable_image_sync>
             </transformations>
             <configuration>
                 <cloudinary_cdn_subdomain>0</cloudinary_cdn_subdomain>
@@ -60,6 +61,7 @@
             </product_gallery>
             <cld_video>
                 <enabled>1</enabled>
+                <enable_video_sync>1</enable_video_sync>
                 <progressive_sourcetypes>webm/vp9,mp4/h265,mp4/h264</progressive_sourcetypes>
             </cld_video>
         </cloudinary>

@@ -163,8 +163,10 @@ class HtmlReplacer
      */
     private function revertUnsyncedCloudinaryUrls(string $html, string $mediaBaseUrl, array $paths): string
     {
-        // When auto-upload is active, Cloudinary URLs are valid even without sync — no reverting needed.
-        if ($this->autoUploadConfiguration->isActive()) {
+        // When auto-upload is active (and image sync is on), Cloudinary URLs are valid
+        // even without sync — no reverting needed. With image sync off, unsynced images
+        // must be reverted so they are served from the local server.
+        if ($this->autoUploadConfiguration->isActive() && $this->configuration->isImageSyncEnabled()) {
             return $html;
         }
 
@@ -218,7 +220,10 @@ class HtmlReplacer
 
         $pattern = '~(' . $mediaBaseUrlEscaped . '(?:' . $pathAlternation . ')/[^\s\'"\\\\)?#]+\.(?:jpe?g|png|gif|webp|svg|avif))~i';
 
-        $autoUploadActive = $this->autoUploadConfiguration->isActive();
+        // Treat auto-upload as "everything is on Cloudinary" only while image sync is
+        // enabled; with image sync off, only actually-synced images keep Cloudinary URLs.
+        $autoUploadActive = $this->autoUploadConfiguration->isActive()
+            && $this->configuration->isImageSyncEnabled();
 
         return preg_replace_callback($pattern, function ($matches) use ($mediaBaseUrl, $autoUploadActive) {
             $fullUrl = $matches[1];
