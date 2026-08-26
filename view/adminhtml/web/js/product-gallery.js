@@ -1,6 +1,6 @@
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright 2014 Adobe
+ * All Rights Reserved.
  */
 
 /**
@@ -13,7 +13,7 @@ define([
     'uiRegistry',
     'jquery/ui',
     'baseImage'
-], function($, _, mageTemplate, registry) {
+], function ($, _, mageTemplate, registry) {
     'use strict';
 
     /**
@@ -48,6 +48,7 @@ define([
             imageSizeLabel: '[data-role=size]',
             cldspinset: '[data-role=image-cldspinset]',
             types: null,
+            showSpinner: true,
             initialized: false
         },
 
@@ -55,7 +56,7 @@ define([
          * Gallery creation
          * @protected
          */
-        _create: function() {
+        _create: function () {
             this.options.types = this.options.types || this.element.data('types');
             this.options.images = this.options.images || this.element.data('images');
             this.options.parentComponent = this.options.parentComponent || this.element.data('parent-component');
@@ -64,10 +65,18 @@ define([
 
             this._bind();
 
-            $.each(this.options.images, $.proxy(function(index, imageData) {
+            this._isInitializingItems = true;
+            this._initializedItemCount = 0;
+            this._lastInitializedElement = null;
+
+            $.each(this.options.images, $.proxy(function (index, imageData) {
                 this.element.trigger('addItem', imageData);
             }, this));
 
+            this._updateImagesRoles();
+            this._contentUpdated();
+
+            this._isInitializingItems = false;
             this.options.initialized = true;
         },
 
@@ -75,7 +84,7 @@ define([
          * Bind handler to elements
          * @protected
          */
-        _bind: function() {
+        _bind: function () {
             this._on({
                 updateImageTitle: '_updateImageTitle',
                 updateVisibility: '_updateVisibility',
@@ -89,7 +98,7 @@ define([
                 /**
                  * @param {jQuery.Event} event
                  */
-                'mouseup [data-role=delete-button]': function(event) {
+                'mouseup [data-role=delete-button]': function (event) {
                     var $imageContainer;
 
                     event.preventDefault();
@@ -101,7 +110,7 @@ define([
                 /**
                  * @param {jQuery.Event} event
                  */
-                'mouseup [data-role=make-base-button]': function(event) {
+                'mouseup [data-role=make-base-button]': function (event) {
                     var $imageContainer,
                         imageData;
 
@@ -118,7 +127,7 @@ define([
                 items: this.options.imageSelector,
                 tolerance: 'pointer',
                 cancel: 'input, button, .uploader',
-                update: $.proxy(function() {
+                update: $.proxy(function () {
                     this.element.trigger('resort');
                 }, this)
             });
@@ -129,23 +138,25 @@ define([
          * @param {Object} imageData
          * @private
          */
-        setBase: function(imageData) {
+        setBase: function (imageData) {
             var baseImage = this.options.types.image,
                 sameImages = $.grep(
-                    $.map(this.options.types, function(el) {
+                    $.map(this.options.types, function (el) {
                         return el;
                     }),
-                    function(el) {
+                    function (el) {
                         return el.value === baseImage.value;
                     }
                 ),
                 isImageOpened = this.findElement(imageData).hasClass('active');
 
-            $.each(sameImages, $.proxy(function(index, image) {
+            $.each(sameImages, $.proxy(function (index, image) {
                 this.element.trigger('setImageType', {
                     type: image.code,
                     imageData: imageData
                 });
+
+                this.element.find('[type="hidden"][name="use_default[' + image.code + ']"]').val('0');
 
                 if (isImageOpened) {
                     this.element.find('.item').addClass('selected');
@@ -161,8 +172,8 @@ define([
          * @param {Object} data
          * @returns {Element}
          */
-        findElement: function(data) {
-            return this.element.find(this.options.imageSelector).filter(function() {
+        findElement: function (data) {
+            return this.element.find(this.options.imageSelector).filter(function () {
                 return $(this).data('imageData').file === data.file;
             }).first();
         },
@@ -170,10 +181,10 @@ define([
         /**
          * Mark parent fieldset that content was updated
          */
-        _contentUpdated: function() {
+        _contentUpdated: function () {
             if (this.options.initialized && this.options.parentComponent) {
                 registry.async(this.options.parentComponent)(
-                    function(parentComponent) {
+                    function (parentComponent) {
                         parentComponent.bubble('update', true);
                     }
                 );
@@ -186,15 +197,30 @@ define([
          * @param {Object} imageData
          * @private
          */
-        _addItem: function(event, imageData) {
-            var count = this.element.find(this.options.imageSelector).length,
-                element,
-                imgElement;
+        _addItem: function (event, imageData) {
+            var element,
+                imgElement,
+                lastElement,
+                count,
+                position;
 
+            if (this._isInitializingItems) {
+                count = this._initializedItemCount++;
+                lastElement = this._lastInitializedElement;
+            } else {
+                count = this.element.find(this.options.imageSelector).length;
+                lastElement = this.element.find(this.options.imageSelector + ':last');
+            }
+
+            position = count + 1;
+
+            if (lastElement && lastElement.length === 1) {
+                position = parseInt(lastElement.data('imageData').position || count, 10) + 1;
+            }
             imageData = $.extend({
                 'file_id': imageData['value_id'] ? imageData['value_id'] : Math.random().toString(33).substr(2, 18),
                 'disabled': imageData.disabled ? imageData.disabled : 0,
-                'position': count + 1,
+                'position': position,
                 sizeLabel: bytesToSize(imageData.size)
             }, imageData);
 
@@ -207,8 +233,10 @@ define([
             if (count === 0) {
                 element.prependTo(this.element);
             } else {
-                element.insertAfter(this.element.find(this.options.imageSelector + ':last'));
+                element.insertAfter(lastElement);
             }
+
+            this._lastInitializedElement = element;
 
             if (!this.options.initialized &&
                 this.options.images.length === 0 ||
@@ -222,7 +250,7 @@ define([
 
             imgElement.on('load', this._updateImageDimesions.bind(this, element));
 
-            $.each(this.options.types, $.proxy(function(index, image) {
+            $.each(this.options.types, $.proxy(function (index, image) {
                 if (imageData.file === image.value) {
                     this.element.trigger('setImageType', {
                         type: image.code,
@@ -231,8 +259,10 @@ define([
                 }
             }, this));
 
-            this._updateImagesRoles();
-            this._contentUpdated();
+            if (!this._isInitializingItems) {
+                this._updateImagesRoles();
+                this._contentUpdated();
+            }
         },
 
         /**
@@ -240,7 +270,7 @@ define([
          *
          * @returns {jQueryCollection}
          */
-        _getImages: function() {
+        _getImages: function () {
             return this.element.find(this.options.imageSelector);
         },
 
@@ -249,8 +279,8 @@ define([
          *
          * @return {Object}
          */
-        _getRoles: function() {
-            return _.mapObject(this.options.types, function(data, key) {
+        _getRoles: function () {
+            return _.mapObject(this.options.types, function (data, key) {
                 var elem = this.element.find('.image-' + key);
 
                 return {
@@ -264,20 +294,20 @@ define([
         /**
          * Updates labels with roles information for each image.
          */
-        _updateImagesRoles: function() {
+        _updateImagesRoles: function () {
             var $images = this._getImages().toArray(),
                 roles = this._getRoles();
 
-            $images.forEach(function(img) {
+            $images.forEach(function (img) {
                 var $img = $(img),
                     data = $img.data('imageData');
 
-                $img.find('[data-role=roles-labels] li').each(function(index, elem) {
+                $img.find('[data-role=roles-labels] li').each(function (index, elem) {
                     var $elem = $(elem),
                         roleCode = $elem.data('roleCode'),
                         role = roles[roleCode];
 
-                    role.value === data.file ?
+                    role.value === data.file  ?
                         $elem.show() :
                         $elem.hide();
                 });
@@ -290,7 +320,7 @@ define([
          *
          * @param {jQeuryCollection} imgContainer
          */
-        _updateImageDimesions: function(imgContainer) {
+        _updateImageDimesions: function (imgContainer) {
             var $img = imgContainer.find(this.options.imageElementSelector)[0],
                 $dimens = imgContainer.find('[data-role=image-dimens]');
 
@@ -302,7 +332,7 @@ define([
          * @param {jQuery.Event} event
          * @param {Object} data
          */
-        _updateImageTitle: function(event, data) {
+        _updateImageTitle: function (event, data) {
             var imageData = data.imageData,
                 $imgContainer = this.findElement(imageData),
                 $title = $imgContainer.find(this.options.imgTitleSelector),
@@ -323,11 +353,19 @@ define([
          * @param {Object} imageData
          * @private
          */
-        _removeItem: function(event, imageData) {
+        _removeItem: function (event, imageData) {
             var $imageContainer = this.findElement(imageData);
 
             imageData.isRemoved = true;
             $imageContainer.addClass('removed').hide().find('.is-removed').val(1);
+
+            // Reset all image role/type selections to 'no_selection' value
+            // For each role (like base image, small image, etc.), clears both
+            // the UI select element and the internal types data structure
+            $.each(this.options.types, $.proxy(function (index, type) {
+                this.element.find('.image-' + type.code).val('no_selection');
+                this.options.types[index].value = 'no_selection';
+            }, this));
 
             this._contentUpdated();
         },
@@ -338,7 +376,7 @@ define([
          * @param {Obejct} data
          * @private
          */
-        _setImageType: function(event, data) {
+        _setImageType: function (event, data) {
             if (data.type === 'image') {
                 this.element.find('.base-image').removeClass('base-image');
             }
@@ -361,8 +399,8 @@ define([
          * Resort images
          * @private
          */
-        _resort: function() {
-            this.element.find('.position').each($.proxy(function(index, element) {
+        _resort: function () {
+            this.element.find('.position').each($.proxy(function (index, element) {
                 var value = $(element).val();
 
                 if (value != index) { //eslint-disable-line eqeqeq
@@ -383,7 +421,7 @@ define([
          * @param {Object} data
          * @private
          */
-        _setPosition: function(event, data) {
+        _setPosition: function (event, data) {
             var $element = this.findElement(data.imageData),
                 curIndex = this.element.find(this.options.imageSelector).index($element),
                 newPosition = data.position + (curIndex > data.position ? -1 : 0);
@@ -411,7 +449,7 @@ define([
         },
 
         /** @inheritdoc */
-        _create: function() {
+        _create: function () {
             var template = this.element.find(this.options.dialogTemplate),
                 containerTmpl = this.element.find(this.options.dialogContainerTmpl);
 
@@ -435,19 +473,19 @@ define([
          * Bind handler to elements
          * @protected
          */
-        _bind: function() {
+        _bind: function () {
             var events = {};
 
             this._super();
 
-            events['click [data-role=close-panel]'] = $.proxy(function() {
+            events['click [data-role=close-panel]'] = $.proxy(function () {
                 this.element.find('[data-role=dialog]').trigger('close');
             }, this);
 
             /**
              * @param {jQuery.Event} event
              */
-            events['click ' + this.options.imageSelector] = function(event) {
+            events['click ' + this.options.imageSelector] = function (event) {
                 var imageData, $imageContainer;
 
                 if (!$(event.currentTarget).is('.ui-sortable-helper')) {
@@ -462,7 +500,7 @@ define([
                 }
             };
             this._on(events);
-            this.element.on('sortstart', $.proxy(function() {
+            this.element.on('sortstart', $.proxy(function () {
                 this.element.find('[data-role=dialog]').trigger('close');
             }, this));
         },
@@ -470,7 +508,7 @@ define([
         /**
          * Initializes dialog element.
          */
-        _initDialog: function() {
+        _initDialog: function () {
             var $dialog = $(this.dialogContainerTmpl());
 
             $dialog.modal({
@@ -479,25 +517,25 @@ define([
                 buttons: [],
 
                 /** @inheritdoc */
-                opened: function() {
+                opened: function () {
                     $dialog.trigger('open');
                 },
 
                 /** @inheritdoc */
-                closed: function() {
+                closed: function () {
                     $dialog.trigger('close');
                 }
             });
 
             $dialog.on('open', this.onDialogOpen.bind(this));
-            $dialog.on('close', function() {
+            $dialog.on('close', function () {
                 var $imageContainer = $dialog.data('imageContainer');
 
                 $imageContainer.removeClass('active');
                 $dialog.find('#hide-from-product-page').remove();
             });
 
-            $dialog.on('change', '[data-role=type-selector]', function() {
+            $dialog.on('change', '[data-role=type-selector]', function () {
                 var parent = $(this).closest('.item'),
                     selectedClass = 'selected';
 
@@ -506,7 +544,7 @@ define([
 
             $dialog.on('change', '[data-role=type-selector]', $.proxy(this._notifyType, this));
 
-            $dialog.on('change', '[data-role=visibility-trigger]', $.proxy(function(e) {
+            $dialog.on('change', '[data-role=visibility-trigger]', $.proxy(function (e) {
                 var imageData = $dialog.data('imageData');
 
                 this.element.trigger('updateVisibility', {
@@ -515,7 +553,7 @@ define([
                 });
             }, this));
 
-            $dialog.on('change', '[data-role="image-description"]', function(e) {
+            $dialog.on('change', '[data-role="image-description"]', function (e) {
                 var target = $(e.target),
                     targetName = target.attr('name'),
                     desc = target.val(),
@@ -531,7 +569,7 @@ define([
                 });
             }.bind(this));
 
-            $dialog.on('change', '[data-role="image-cldspinset"]', function(e) {
+            $dialog.on('change', '[data-role="image-cldspinset"]', function (e) {
                 var target = $(e.target),
                     targetName = target.attr('name'),
                     cldspinset = target.val(),
@@ -542,6 +580,26 @@ define([
                 imageData.cldspinset = cldspinset;
             }.bind(this));
 
+            $dialog.on('change', '[data-role="use-default"]', function (e) {
+                const target = $(e.target),
+                    isChecked = target.is(':checked'),
+                    name = target.attr('name'),
+                    imageData = $dialog.data('imageData');
+
+                this.element.find('input[type="hidden"][name="' + name + '"]').val(isChecked ? 1 : 0);
+                if (name.indexOf('[images]') !== -1) {
+                    const attrName = name.substring(name.lastIndexOf('[') + 1, name.length - 1);
+
+                    if (attrName) {
+                        imageData[attrName] = isChecked ? 1 : 0;
+                    }
+                }
+                target.closest('.field')
+                    .toggleClass('_disabled', isChecked)
+                    .find('input:not([data-role="use-default"]), textarea:not([data-role="use-default"])')
+                    .prop('disabled', isChecked);
+            }.bind(this));
+
             this.$dialog = $dialog;
         },
 
@@ -549,12 +607,15 @@ define([
          * @param {Object} imageData
          * @private
          */
-        _showDialog: function(imageData) {
+        _showDialog: function (imageData) {
             var $imageContainer = this.findElement(imageData),
                 $template;
 
             $template = this.dialogTmpl({
-                'data': imageData
+                'data': imageData,
+                context: {
+                    showSpinner: this.options.showSpinner
+                }
             });
 
             this.$dialog
@@ -562,6 +623,9 @@ define([
                 .data('imageData', imageData)
                 .data('imageContainer', $imageContainer)
                 .modal('openModal');
+            if (this.options.showSpinner) {
+                this.$dialog.find('[data-role=spinner]').hide();
+            }
         },
 
         /**
@@ -569,14 +633,14 @@ define([
          *
          * @param {EventObject} event
          */
-        onDialogOpen: function(event) {
+        onDialogOpen: function (event) {
             var imageData = this.$dialog.data('imageData'),
                 imageSizeKb = imageData.sizeLabel,
                 image = document.createElement('img'),
                 sizeSpan = this.$dialog.find(this.options.imageSizeLabel)
-                .find('[data-message]'),
+                    .find('[data-message]'),
                 resolutionSpan = this.$dialog.find(this.options.imageResolutionLabel)
-                .find('[data-message]'),
+                    .find('[data-message]'),
                 sizeText = sizeSpan.attr('data-message').replace('{size}', imageSizeKb),
                 resolutionText;
 
@@ -591,7 +655,7 @@ define([
 
             $(event.target)
                 .find('[data-role=type-selector]')
-                .each($.proxy(function(index, checkbox) {
+                .each($.proxy(function (index, checkbox) {
                     var $checkbox = $(checkbox),
                         parent = $checkbox.closest('.item'),
                         selectedClass = 'selected',
@@ -603,6 +667,19 @@ define([
                     );
                     parent.toggleClass(selectedClass, isChecked);
                 }, this));
+
+            this.$dialog.find('[data-role="use-default"]').each(function (index, element) {
+                const $useDefaultCheckbox = $(element),
+                    name = $useDefaultCheckbox.attr('name');
+
+                if (name) {
+                    const $useDefaultInput = this.element.find('input[type="hidden"][name="' + name + '"]');
+
+                    if ($useDefaultInput.length) {
+                        $useDefaultCheckbox.prop('checked', $useDefaultInput.val() === '1').trigger('change');
+                    }
+                }
+            }.bind(this));
         },
 
         /**
@@ -613,7 +690,7 @@ define([
          * @param {Object} imageData
          * @private
          */
-        _onOpenDialog: function(e, imageData) {
+        _onOpenDialog: function (e, imageData) {
             if (imageData['media_type'] && imageData['media_type'] != 'image') { //eslint-disable-line eqeqeq
                 return;
             }
@@ -627,7 +704,7 @@ define([
          * * @param {Object} data
          * @private
          */
-        _updateVisibility: function(event, data) {
+        _updateVisibility: function (event, data) {
             var imageData = data.imageData,
                 disabled = +data.disabled,
                 $imageContainer = this.findElement(imageData);
@@ -636,7 +713,7 @@ define([
                 $imageContainer.addClass('hidden-for-front') :
                 $imageContainer.removeClass('hidden-for-front');
 
-            $imageContainer.find('[name*="disabled"]').val(disabled);
+            $imageContainer.find('[name*="[disabled]"]').val(disabled);
             imageData.disabled = disabled;
 
             this._contentUpdated();
@@ -647,7 +724,7 @@ define([
          * @param {jQuery.Event} event
          * @private
          */
-        _notifyType: function(event) {
+        _notifyType: function (event) {
             var $checkbox = $(event.currentTarget),
                 $imageContainer = $checkbox.closest('[data-role=dialog]').data('imageContainer');
 
